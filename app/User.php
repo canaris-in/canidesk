@@ -42,10 +42,16 @@ class User extends Authenticatable
      */
     const ROLE_USER = 1;
     const ROLE_ADMIN = 2;
+    const ROLE_TICKETCOORDINATOR = 3;
+    const ROLE_TICKETENGINEER = 4;
+    const ROLE_ITHEAD = 5;
 
     public static $roles = [
         self::ROLE_ADMIN => 'admin',
         self::ROLE_USER  => 'user',
+        self::ROLE_TICKETCOORDINATOR  => 'ticketCoordinator',
+        self::ROLE_TICKETENGINEER  => 'ticketEngineer',
+        self::ROLE_ITHEAD  => 'ithead',
     ];
 
     /**
