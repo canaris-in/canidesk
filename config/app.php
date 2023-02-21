@@ -350,7 +350,7 @@ return [
     | Disable update checker
     |--------------------------------------------------------------------------
     */
-    'disable_updating'    => env('APP_DISABLE_UPDATING', false),
+    'disable_updating'    => env('APP_DISABLE_UPDATING', true),
 
     /*
     |--------------------------------------------------------------------------
