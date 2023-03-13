@@ -30,7 +30,7 @@
 
   * No limitations on the number of users, tickets, mailboxes, etc.
   * 100% Mobile-friendly.
-  * Multilingual (English, Croatian, Czech, Danish, Dutch, French, German, Italian, Japanese, Korean, Persian, Polish, Portuguese, Russian, Spanish, Slovak, Swedish).
+  * Multilingual (English, Croatian, Czech, Danish, Dutch, Finnish, French, German, Italian, Japanese, Korean, Persian, Polish, Portuguese, Russian, Spanish, Slovak, Swedish).
   * Seamless email integration.
   * Suppports modern Microsoft Exchange authentication.
   * Web installer & updater.
@@ -71,6 +71,8 @@ FreeScout is a pure PHP/MySQL application, so it can be easily deployed even on 
   * Nginx / Apache / IIS
   * PHP 7.1 - 8.2
   * MySQL 5.0+ / MariaDB 5.0+ / PostgreSQL
+
+There is no minimum system requirements (CPU / RAM) – FreeScout will run on any system.
 
 ## Installation
 

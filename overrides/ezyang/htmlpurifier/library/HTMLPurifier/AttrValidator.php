@@ -76,6 +76,10 @@ class HTMLPurifier_AttrValidator
         $attr_key = false;
         $context->register('CurrentAttr', $attr_key);
 
+        // Used to make sure width/height are changed proportionally
+        // when HTML.MaxImgLength is used.
+        $proportions_change = [];
+
         // iterate through all the attribute keypairs
         // Watch out for name collisions: $key has previously been used
         foreach ($attr as $attr_key => $value) {
@@ -97,6 +101,15 @@ class HTMLPurifier_AttrValidator
                         $config,
                         $context
                     );
+                    if ($token->name == 'img' 
+                        && $result
+                        && (int)$value
+                        && (int)$result
+                        && ($attr_key == 'width' || $attr_key == 'height')
+                    ) {
+                        $proportions_change[$attr_key]['original'] = (int)$value;
+                        $proportions_change[$attr_key]['new'] = (int)$result;
+                    }
                 }
             } elseif (isset($d_defs[$attr_key])) {
                 // there is a global definition defined, validate according
@@ -137,6 +150,20 @@ class HTMLPurifier_AttrValidator
             // although we're not sure how colliding attributes would
             // resolve (certain ones would be completely overriden,
             // others would prepend themselves).
+        }
+
+        if (!empty($proportions_change['width']) && !empty($proportions_change['height'])) {
+            if ($proportions_change['width']['new'] < $proportions_change['width']['original']
+                && (int)$proportions_change['width']['original']
+            ) {
+                // Adjust height.
+                $attr['height'] = floor($proportions_change['height']['original'] * $proportions_change['width']['new'] / $proportions_change['width']['original']);
+            } elseif ($proportions_change['height']['new'] < $proportions_change['height']['original']
+                && (int)$proportions_change['height']['original']
+            ) {
+                // Adjust width.
+                $attr['width'] = floor($proportions_change['height']['original'] * $proportions_change['height']['new'] / $proportions_change['height']['original']);
+            }
         }
 
         $context->destroy('CurrentAttr');

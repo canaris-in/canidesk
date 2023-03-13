@@ -76,7 +76,7 @@ class OpenController extends Controller
                 if ($path_url) {
                     $user->photo_url = $path_url;
                 } else {
-                    $validator->errors()->add('photo_url', __('Error occured processing the image. Make sure that PHP GD extension is enabled.'));
+                    $validator->errors()->add('photo_url', __('Error occurred processing the image. Make sure that PHP GD extension is enabled.'));
                 }
             }
         });
@@ -177,6 +177,20 @@ class OpenController extends Controller
         // Some file type should be viewed in the browser instead of downloading.
         if (in_array($file_ext, config('app.viewable_attachments'))) {
             $view_attachment = true;
+        }
+        // If HTML file is renamed into .txt for example it will be shown by the browser as HTML.
+        if ($view_attachment && $attachment->mime_type) {
+            $allowed_mime_type = false;
+
+            foreach (config('app.viewable_mime_types') as $mime_type) {
+                if (preg_match('#'.$mime_type.'#', $attachment->mime_type)) {
+                    $allowed_mime_type = true;
+                    break;
+                }
+            }
+            if (!$allowed_mime_type) {
+                $view_attachment = false;
+            }
         }
 
         if (config('app.download_attachments_via') == 'apache') {

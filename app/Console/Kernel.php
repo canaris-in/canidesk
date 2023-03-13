@@ -10,6 +10,8 @@ use App\Option;
 
 class Kernel extends ConsoleKernel
 {
+    const FETCH_MAX_EXECUTION_TIME = 30; // minutes
+
     /**
      * The Artisan commands provided by your application.
      *
@@ -31,7 +33,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // Keep in mind that this function is also called on clearing cache.
-        
+
         // Remove failed jobs
         $schedule->command('queue:flush')
             ->weekly();
@@ -42,6 +44,11 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('freescout:fetch-monitor')
             ->everyMinute()
+            ->withoutOverlapping();
+
+        $schedule->command('freescout:send-monitor')
+            // Every 12 hours.
+            ->cron('0 */12 * * *')
             ->withoutOverlapping();
 
         $schedule->command('freescout:update-folder-counters')
@@ -61,6 +68,9 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('freescout:clean-send-log')
             ->monthly();
+
+        $schedule->command('freescout:clean-tmp')
+            ->weekly();
 
         // Logs monitoring.
         $alert_logs_period = config('app.alert_logs_period');
@@ -87,9 +97,47 @@ class Kernel extends ConsoleKernel
             }
         }
 
+        $fetch_command_identifier = \Helper::getWorkerIdentifier('freescout:fetch-emails');
+
+        // Kill fetch commands running for too long.
+        // In shedule:run this code is executed every time $schedule->command() in this function is executed.
+        if ($this->isScheduleRun() && function_exists('shell_exec')) {
+            $fetch_command_pids = \Helper::getRunningProcesses($fetch_command_identifier);
+
+            $mutex_name = $schedule->command('freescout:fetch-emails')
+                ->skip(function () {
+                    return true;
+                })
+                ->mutexName();
+            
+            // If there is no cache mutext but there are running fetch commands 
+            // it means the mutex had expired after self::FETCH_MAX_EXECUTION_TIME
+            // and the existing command(s) is running longer than self::FETCH_MAX_EXECUTION_TIME.
+            if (count($fetch_command_pids) > 0 && !\Cache::get($mutex_name)) {
+                // Kill freescout:fetch-emails commands running for too long
+                shell_exec('kill '.implode(' | kill ', $fetch_command_pids));
+            } elseif (count($fetch_command_pids) == 0) {
+                // Make sure 'ps' command actually works.
+                $ps_works = \Helper::getRunningProcesses('schedule:run');
+
+                if (count($ps_works)) {
+                    // Previous freescout:fetch-emails may have been killed or errored and did not remove the mutex.
+                    // So here we are forcefully removing the mutex. Otherwise mutex will live for 24 hours.
+                    if (\Cache::has($mutex_name)) {
+                        \Cache::forget($mutex_name);
+                    }
+                }
+            }
+        }
+
         // Fetch emails from mailboxes
-        $fetch_command = $schedule->command('freescout:fetch-emails')
-            ->withoutOverlapping()
+        $fetch_command = $schedule->command('freescout:fetch-emails --identifier='.$fetch_command_identifier)
+            // withoutOverlapping() option creates a mutex in the cache 
+            // which by default expires in 24 hours.
+            // So we are passing an 'expiresAt' parameter to withoutOverlapping() to
+            // prevent fetching from not being executed when fetching command by some reason
+            // does not remove the mutex from the cache. 
+            ->withoutOverlapping($expiresAt = self::FETCH_MAX_EXECUTION_TIME /* minutes */)
             ->sendOutputTo(storage_path().'/logs/fetch-emails.log');
 
         switch (config('app.fetch_schedule')) {
@@ -126,24 +174,28 @@ class Kernel extends ConsoleKernel
         // subprocess does not clear the mutex and it stays in the cache until cache:clear is executed.
         // By default, the lock will expire after 24 hours.
 
+        $queue_work_params = Config('app.queue_work_params');
+        // Add identifier to avoid conflicts with other FreeScout instances on the same server.
+        $queue_work_params['--queue'] .= ','.\Helper::getWorkerIdentifier();
+
         // $schedule->command('queue:work') command below has withoutOverlapping() option,
         // which works via special mutex stored in the cache preventing several 'queue:work' to work at the same time.
         // So when the cache is cleared the mutex indicating that the 'queue:work' is running is removed,
         // and the second 'queue:work' command is launched by cron. When `artisan schedule:run` is executed it sees 
         // that there are two 'queue:work' processes running and kills them.
         // After one minute 'queue:work' is executed by cron via `artisan schedule:run` and works in the background.
-        if (function_exists('shell_exec')) {
-            $running_commands = $this->getRunningQueueProcesses();
+        if ($this->isScheduleRun() && function_exists('shell_exec')) {
+            $running_commands = \Helper::getRunningProcesses();
 
             if (count($running_commands) > 1) {
                 // Stop all queue:work processes.
                 // queue:work command is stopped by settings a cache key
-                \Helper::queueWorkRestart();
+                \Helper::queueWorkerRestart();
                 // Sometimes processes stuck and just continue running, so we need to kill them.
                 // Sleep to let processes stop.
                 sleep(1);
                 // Check processes again.
-                $worker_pids = $this->getRunningQueueProcesses();
+                $worker_pids = \Helper::getRunningProcesses();
                 
                 if (count($worker_pids) > 1) {
                     // Current process also has to be killed, as otherwise it "stucks"
@@ -156,12 +208,24 @@ class Kernel extends ConsoleKernel
                     // }
                     shell_exec('kill '.implode(' | kill ', $worker_pids));
                 }
+            } elseif (count($running_commands) == 0) {
+                // Make sure 'ps' command actually works.
+                $ps_works = \Helper::getRunningProcesses('schedule:run');
+
+                if (count($ps_works)) {
+                    // Previous queue:work may have been killed or errored and did not remove the mutex.
+                    // So here we are forcefully removing the mutex.
+                    $mutex_name = $schedule->command('queue:work', $queue_work_params)
+                        ->skip(function () {
+                            return true;
+                        })
+                        ->mutexName();
+                    if (\Cache::get($mutex_name)) {
+                        \Cache::forget($mutex_name);
+                    }
+                }
             }
         }
-
-        $queue_work_params = Config('app.queue_work_params');
-        // Add identifier to avoid conflicts with other FreeScout instances on the same server.
-        $queue_work_params['--queue'] .= ','.\Helper::getWorkerIdentifier();
 
         $schedule->command('queue:work', $queue_work_params)
             ->everyMinute()
@@ -170,26 +234,16 @@ class Kernel extends ConsoleKernel
     }
 
     /**
-     * Get pids of the queue:work processes.
-     * 
-     * @return [type] [description]
+     * This function is needed because every time $schedule->command() is executed 
+     * the schedule() is executed also.
      */
-    protected function getRunningQueueProcesses()
+    public function isScheduleRun()
     {
-        $pids = [];
-
-        try {
-            $processes = preg_split("/[\r\n]/", shell_exec("ps aux | grep '".\Helper::getWorkerIdentifier()."'"));
-            foreach ($processes as $process) {
-                preg_match("/^[\S]+\s+([\d]+)\s+/", $process, $m);
-                if (!preg_match("/(sh \-c|grep )/", $process) && !empty($m[1])) {
-                    $pids[] = $m[1];
-                }
-            }
-        } catch (\Exception $e) {
-            // Do nothing
+        if (!\Helper::isConsole()) {
+            return true;
+        } else {
+            return !empty($_SERVER['argv']) && in_array('schedule:run', $_SERVER['argv']);
         }
-        return $pids;
     }
 
     /**

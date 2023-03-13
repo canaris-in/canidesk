@@ -131,7 +131,7 @@ class Structure {
         $final_parts = [];
         foreach($base_parts as $ctx) {
             $ctx = substr($ctx, 2);
-            if ($ctx !== "--" && $ctx != "") {
+            if ($ctx !== "--" && $ctx != "" && $ctx != "\r\n") {
                 $parts = $this->parsePart($ctx, $part_number);
                 foreach ($parts as $part) {
                     $final_parts[] = $part;

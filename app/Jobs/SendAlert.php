@@ -20,7 +20,16 @@ class SendAlert implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $text;
+
     public $title;
+
+    /**
+     * The number of seconds the job can run before timing out.
+     * fwrite() function in /vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php
+     * in some cases may stuck and continue infinitely. This blocks queue:work and no other jobs are processed.
+     * So we need to set the timeout. On timeout the whole queue:work process is being killed by Laravel.
+     */
+    public $timeout = 120;
 
     /**
      * Create a new job instance.
@@ -43,18 +52,17 @@ class SendAlert implements ShouldQueue
         // Configure mail driver according to Mailbox settings
         \MailHelper::setSystemMailDriver();
 
-        $recipients = [];
-
-        $super_admin = User::getSuperAdmin();
-        if ($super_admin) {
-            $recipients[] = $super_admin->email;
-        }
+        $recipients = User::nonDeleted()
+            ->where('role', User::ROLE_ADMIN)
+            ->where('invite_state', User::INVITE_STATE_ACTIVATED)
+            ->pluck('email')
+            ->toArray();
 
         $extra = \MailHelper::sanitizeEmails(\Option::get('alert_recipients'));
         if ($extra) {
             $recipients = array_unique(array_merge($recipients, $extra));
         }
-
+      
         foreach ($recipients as $recipient) {
             $exception = null;
 

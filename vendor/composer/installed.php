@@ -1,13 +1,13 @@
 <?php return array(
     'root' => array(
         'name' => 'freescout-helpdesk/freescout',
-        'pretty_version' => 'dev-develop',
-        'version' => 'dev-develop',
-        'reference' => '445723c0e79547440aee4c4b35dab3eea5d4ad5e',
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => '44084b4f1dd8d0484f8aa2ce87feab87ffbcbde8',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'dev' => true,
+        'dev' => false,
     ),
     'versions' => array(
         'anahkiasen/underscore-php' => array(
@@ -221,9 +221,9 @@
             'dev_requirement' => true,
         ),
         'freescout-helpdesk/freescout' => array(
-            'pretty_version' => 'dev-develop',
-            'version' => 'dev-develop',
-            'reference' => '445723c0e79547440aee4c4b35dab3eea5d4ad5e',
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => '44084b4f1dd8d0484f8aa2ce87feab87ffbcbde8',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

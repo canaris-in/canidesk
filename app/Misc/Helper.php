@@ -7,6 +7,7 @@
 namespace App\Misc;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class Helper
 {
@@ -29,6 +30,11 @@ class Helper
      * Limit for IN queries.
      */
     const IN_LIMIT = 1000;
+
+    /**
+     * Permissions for directories.
+     */
+    const DIR_PERMISSIONS = 0755;
 
     /**
      * Stores list of global entities (for caching).
@@ -534,6 +540,11 @@ class Helper
      */
     public static function textPreview($text, $length = self::PREVIEW_MAXLENGTH)
     {
+        $text = strtr($text ?? '', [
+            '</div>' => ' </div>',
+            '</p>' => ' </p>'
+        ]);
+
         $text = self::stripTags($text);
 
         $text = mb_substr($text, 0, $length);
@@ -717,6 +728,11 @@ class Helper
         return \Storage::disk('private');
     }
 
+    public static function getPublicStorage()
+    {
+        return \Storage::disk('public');
+    }
+
     public static function formatException($e)
     {
         return 'Error: '.$e->getMessage().'; File: '.$e->getFile().' ('.$e->getLine().')';
@@ -746,10 +762,16 @@ class Helper
     {
         $client = new \GuzzleHttp\Client();
 
-        $client->request('GET', $url, [
-            'sink' => $destinationFilePath,
-            'connect_timeout' => 7,
-        ]);
+        try {
+            $client->request('GET', $url, [
+                'sink' => $destinationFilePath,
+                'timeout' => 300, // seconds
+                'connect_timeout' => 7,
+                'proxy' => config('app.proxy'),
+            ]);
+        } catch (\Exception $e) {
+            self::logException($e);
+        }
     }
 
     /**
@@ -949,7 +971,12 @@ class Helper
 
         // User may add an extra translation to the app on Translate page,
         // we should allow user to see his custom translations.
-        $custom_locales = \Helper::getCustomLocales();
+        $custom_locales = [];
+        try {
+            $custom_locales = \Helper::getCustomLocales();
+        } catch (\Exception $e) {
+            // During installation it throws an error as there is no tables yet.
+        }
 
         if (count($custom_locales)) {
             $app_locales = array_unique(array_merge($app_locales, $custom_locales));
@@ -1128,9 +1155,17 @@ class Helper
     /**
      * Stop all queue:work processes.
      */
-    public static function queueWorkRestart()
+    public static function queueWorkerRestart()
     {
         \Cache::forever('illuminate:queue:restart', Carbon::now()->getTimestamp());
+        // In some systems queue:work runs on a separate file system,
+        // so those queue:work processes may not get illuminate:queue:restart.
+        $job_exists = \App\Job::where('queue', 'default')
+            ->where('payload', 'like', '{"displayName":"App\\\\\\\\Jobs\\\\\\\\RestartQueueWorker"%')
+            ->exists();
+        if (!$job_exists) {
+            \App\Jobs\RestartQueueWorker::dispatch()->onQueue('default');
+        }
     }
 
     /**
@@ -1258,9 +1293,11 @@ class Helper
 
         $html = \Purifier::clean($html);
 
+        // It's not clear why it was needed to remove spaces after tags.
+        // 
         // Remove all kinds of spaces after tags
         // https://stackoverflow.com/questions/3230623/filter-all-types-of-whitespace-in-php
-        $html = preg_replace("/^(.*)>[\r\n]*\s+/mu", '$1>', $html);
+        //$html = preg_replace("/^(.*)>[\r\n]*\s+/mu", '$1>', $html);
 
         return $html;
     }
@@ -1333,12 +1370,37 @@ class Helper
     /**
      * Get identifier for queue:work
      */
-    public static function getWorkerIdentifier()
+    public static function getWorkerIdentifier($salt = '')
     {
-        return md5(config('app.key') ?? '');
+        return md5((config('app.key') ?? '').$salt);
     }
 
-    public static function uploadFile($file, $allowed_exts = [], $allowed_mimes = [], $sanitize_file_name = true)
+    /**
+     * Get pids of the specified processes.
+     */
+    public static function getRunningProcesses($search = '')
+    {
+        if (empty($search)) {
+            $search = \Helper::getWorkerIdentifier();
+        }
+
+        $pids = [];
+
+        try {
+            $processes = preg_split("/[\r\n]/", shell_exec("ps aux | grep '".$search."'"));
+            foreach ($processes as $process) {
+                preg_match("/^[\S]+\s+([\d]+)\s+/", $process, $m);
+                if (!preg_match("/(sh \-c|grep )/", $process) && !empty($m[1])) {
+                    $pids[] = $m[1];
+                }
+            }
+        } catch (\Exception $e) {
+            // Do nothing
+        }
+        return $pids;
+    }
+
+    public static function uploadFile($file, $allowed_exts = [], $allowed_mimes = [])
     {
         $ext = strtolower($file->getClientOriginalExtension());
 
@@ -1356,13 +1418,29 @@ class Helper
         }
         $file_name = \Str::random(25).'.'.$ext;
 
-        if ($sanitize_file_name) {
-            $file_name = \Helper::sanitizeUploadedFileName($file_name);
-        }
+        $file_name = \Helper::sanitizeUploadedFileName($file_name, $file);
 
         $file->storeAs('uploads', $file_name);
 
+        self::sanitizeUploadedFileData('uploads'.DIRECTORY_SEPARATOR.$file_name, self::getPublicStorage());
+
         return self::uploadedFilePath($file_name);
+    }
+
+    public static function sanitizeUploadedFileData($file_path, $storage, $content = null)
+    {
+        // Remove <script> from SVG files.
+        if (strtolower(pathinfo($file_path, PATHINFO_EXTENSION)) == 'svg'
+            && $storage->exists($file_path)
+        ) {
+            if (!$content) {
+                $content = $storage->get($file_path);
+            }
+            if ($content) {
+                $content = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $content);
+                $storage->put($file_path, $content);
+            }
+        }
     }
 
     public static function uploadedFileRemove($name)
@@ -1481,7 +1559,7 @@ class Helper
                 return false;
             }
 
-            $temp_file = tempnam(sys_get_temp_dir(), 'fs');
+            $temp_file = self::getTempFileName();
 
             \File::put($temp_file, $contents);
 
@@ -1495,6 +1573,23 @@ class Helper
         }
     }
 
+    public static function getTempDir()
+    {
+        return sys_get_temp_dir() ?: '/tmp';
+    }
+
+    public static function getTempFileName()
+    {
+        return tempnam(self::getTempDir(), self::getTempFilePrefix());
+    }
+
+    public static function getTempFilePrefix()
+    {
+        return 'fs-'.substr(md5(config('app.key').'temp_prefix'), 0, 8).'_';
+    }
+
+    // Keep in mind that $uploaded_file->getClientMimeType() returns
+    // incorrect mime type for images: application/octet-stream
     public static function downloadRemoteFileAsTmpFile($uri)
     {
         $file_path = self::downloadRemoteFileAsTmp($uri);
@@ -1508,13 +1603,22 @@ class Helper
         }
     }
 
-    public static function sanitizeUploadedFileName($file_name)
+    public static function sanitizeUploadedFileName($file_name, $uploaded_file = null, $contents = null)
     {
         // Check extension.
-        $extension = pathinfo($file_name, PATHINFO_EXTENSION);
-        if (preg_match('/('.implode('|', self::$restricted_extensions).')/', strtolower($extension))) {
+        $ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+
+        if (preg_match('/('.implode('|', self::$restricted_extensions).')/', $ext)) {
             // Add underscore to the extension if file has restricted extension.
             $file_name = $file_name.'_';
+        } elseif ($ext == 'pdf') {
+            // Rename PDF to avoid running embedded JavaScript.
+            if ($uploaded_file && !$contents) {
+                $contents = file_get_contents($uploaded_file->getRealPath());
+            }
+            if ($contents && strstr($contents, '/JavaScript')) {
+                $file_name = $file_name.'_';
+            }
         }
 
         return $file_name;
@@ -1669,5 +1773,35 @@ class Helper
             'fpassthru (PHP)' => function_exists('fpassthru'),
             'ps (shell)' => function_exists('shell_exec') ? shell_exec('ps') : false,
         ];
+    }
+
+    public static function isInstalled()
+    {
+        return file_exists(storage_path().DIRECTORY_SEPARATOR.'.installed');
+    }
+
+    public static function isConsole()
+    {
+        return app()->runningInConsole();
+    }
+
+    /**
+     * Show a warning when background jobs sending emails
+     * are not processed for some time.
+     * https://github.com/freescout-helpdesk/freescout/issues/2808
+     */
+    public static function maybeShowSendingProblemsAlert()
+    {
+        $flashes = [];
+
+        if (\Option::get('send_emails_problem')) {
+            $flashes[] = [
+                'type'      => 'warning',
+                'text'      =>  __('There is a problem processing outgoing mail queue — an admin should check :%a_begin%System Status:%a_end% and :%a_begin_recommendations%Recommendations:%a_end%', ['%a_begin%' => '<a href="'.route('system').'#cron" target="_blank">', '%a_end%' => '</a>', /*'%a_begin_logs%' => '<a href="'.route('logs', ['name' => 'send_errors']).'#cron" target="_blank">',*/ '%a_begin_recommendations%' => '<a href="https://github.com/freescout-helpdesk/freescout/wiki/Background-Jobs" target="_blank">']),
+                'unescaped' => true,
+            ];
+        }
+
+        return $flashes;
     }
 }

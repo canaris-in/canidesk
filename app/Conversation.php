@@ -6,6 +6,7 @@ use App\Attachment;
 use App\Customer;
 use App\Mailbox;
 use App\Folder;
+use App\Follower;
 use App\Thread;
 use App\User;
 use App\Events\UserAddedNote;
@@ -70,8 +71,8 @@ class Conversation extends Model
     const STATUS_PENDING = 2;
     const STATUS_CLOSED = 3;
     const STATUS_SPAM = 4;
-    // Present in the API, but what does it mean?
-    const STATUS_OPEN = 5;
+    // Not used
+    //const STATUS_OPEN = 5;
 
     public static $statuses = [
         self::STATUS_ACTIVE  => 'active',
@@ -501,6 +502,11 @@ class Conversation extends Model
         return $this->status == self::STATUS_ACTIVE;
     }
 
+    public function isPending()
+    {
+        return $this->status == self::STATUS_PENDING;
+    }
+
     public function isSpam()
     {
         return $this->status == self::STATUS_SPAM;
@@ -509,6 +515,11 @@ class Conversation extends Model
     public function isClosed()
     {
         return $this->status == self::STATUS_CLOSED;
+    }
+
+    public function isPublished()
+    {
+        return $this->state == self::STATE_PUBLISHED;
     }
 
     /**
@@ -547,9 +558,9 @@ class Conversation extends Model
                 return __('Spam');
                 break;
 
-            case self::STATUS_OPEN:
-                return __('Open');
-                break;
+            // case self::STATUS_OPEN:
+            //     return __('Open');
+            //     break;
 
             default:
                 return '';
@@ -655,6 +666,7 @@ class Conversation extends Model
 
         $order_bys = $folder->getOrderByArray();
 
+        // Next.
         if ($mode != 'prev') {
             // Try to get next conversation
             $query_next = $query;
@@ -673,19 +685,12 @@ class Conversation extends Model
             }
             $conversation = $query_next->first();
         }
-        // echo 'folder_id'.$folder->id.'|';
-        // echo 'id'.$this->id.'|';
-        // echo 'status'.self::STATUS_ACTIVE.'|';
-        // echo '$this->status'.$this->status.'|';
-        // echo '$this->last_reply_at'.$this->last_reply_at.'|';
-        // echo $query_next->toSql();
-        // exit();
 
         if ($conversation || $mode == 'next') {
             return $conversation;
         }
 
-        // Try to get previous conversation
+        // Prev.
         $query_prev = $query;
         foreach ($order_bys as $order_by) {
             foreach ($order_by as $field => $sort_order) {
@@ -697,7 +702,7 @@ class Conversation extends Model
                 } else {
                     $query_prev->where($field, '>=', $this->$field);
                 }
-                $query_prev->orderBy($field, $sort_order);
+                $query_prev->orderBy($field, $sort_order == 'asc' ? 'desc' : 'asc');
             }
         }
 
@@ -1289,6 +1294,11 @@ class Conversation extends Model
             'meta'        => [Thread::META_MERGED_INTO_CONV => $this->id],
         ]);
 
+        if ($merge_conversation->has_attachments && !$this->has_attachments) {
+            $this->has_attachments = true;
+            $this->save();
+        }
+
         // Delete old conversation.
         $merge_conversation->deleteToFolder($user);
 
@@ -1566,6 +1576,14 @@ class Conversation extends Model
     }
 
     /**
+     * Is it an email conversation.
+     */
+    public function isEmail()
+    {
+        return ($this->type == self::TYPE_EMAIL);
+    }
+
+    /**
      * Is it as phone conversation.
      */
     public function isPhone()
@@ -1765,6 +1783,10 @@ class Conversation extends Model
 
             // Delete threads.
             Thread::whereIn('conversation_id', $ids)->delete();
+
+            // Delete followers.
+            Follower::whereIn('conversation_id', $ids)->delete();
+
             // Delete conversations.
             Conversation::whereIn('id', $ids)->delete();
             ConversationFolder::whereIn('conversation_id', $ids)->delete();

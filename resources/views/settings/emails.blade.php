@@ -109,15 +109,17 @@
 
     <h3 class="subheader">{{ __('Fetching Emails') }}</h3>
     <div class="form-group{{ $errors->has('settings.fetch_schedule') ? ' has-error' : '' }}">
-        <label for="fetch_schedule" class="col-sm-2 control-label">{{ __('Fetch Mail Schedule') }}</label>
+        <label for="fetch_schedule" class="col-sm-2 control-label">{{ __('Fetching Interval') }}</label>
 
         <div class="col-sm-6">
             <select id="fetch_schedule" class="form-control input-sized" name="settings[fetch_schedule]">
                 <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_MINUTE }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_MINUTE)selected="selected"@endif>{{ __('Every minute') }}</option>
-                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_FIVE_MINUTES }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_FIVE_MINUTES)selected="selected"@endif>{{ __('Every 5 minutes') }}</option>
-                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_TEN_MINUTES }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_TEN_MINUTES)selected="selected"@endif>{{ __('Every 10 minutes') }}</option>
-                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_FIFTEEN_MINUTES }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_FIFTEEN_MINUTES)selected="selected"@endif>{{ __('Every 15 minutes') }}</option>
-                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_THIRTY_MINUTES }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_THIRTY_MINUTES)selected="selected"@endif>{{ __('Every 30 minutes') }}</option>
+                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_TWO_MINUTES }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_TWO_MINUTES)selected="selected"@endif>{{ __('Every :number minutes', ['number' => \MailHelper::FETCH_SCHEDULE_EVERY_TWO_MINUTES]) }}</option>
+                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_THREE_MINUTES }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_THREE_MINUTES)selected="selected"@endif>{{ __('Every :number minutes', ['number' => \MailHelper::FETCH_SCHEDULE_EVERY_THREE_MINUTES]) }}</option>
+                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_FIVE_MINUTES }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_FIVE_MINUTES)selected="selected"@endif>{{ __('Every :number minutes', ['number' => \MailHelper::FETCH_SCHEDULE_EVERY_FIVE_MINUTES]) }}</option>
+                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_TEN_MINUTES }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_TEN_MINUTES)selected="selected"@endif>{{ __('Every :number minutes', ['number' => \MailHelper::FETCH_SCHEDULE_EVERY_TEN_MINUTES]) }}</option>
+                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_FIFTEEN_MINUTES }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_FIFTEEN_MINUTES)selected="selected"@endif>{{ __('Every :number minutes', ['number' => \MailHelper::FETCH_SCHEDULE_EVERY_FIFTEEN_MINUTES]) }}</option>
+                <option value="{{ \MailHelper::FETCH_SCHEDULE_EVERY_THIRTY_MINUTES }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_EVERY_THIRTY_MINUTES)selected="selected"@endif>{{ __('Every :number minutes', ['number' => \MailHelper::FETCH_SCHEDULE_EVERY_THIRTY_MINUTES]) }}</option>
                 <option value="{{ \MailHelper::FETCH_SCHEDULE_HOURLY }}" @if (old('settings.fetch_schedule', $settings['fetch_schedule']) == \MailHelper::FETCH_SCHEDULE_HOURLY)selected="selected"@endif>{{ __('Hourly') }}</option>
             </select>
         </div>
