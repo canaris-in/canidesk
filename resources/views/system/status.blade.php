@@ -22,24 +22,7 @@
             <tr id="version">
                 <th>{{ __('App Version') }}</th>
                 <td class="table-main-col">
-                    @if (!\Config::get('app.disable_updating'))
-                        @if ($new_version_available)
-                            <strong class="text-danger">{{ \Config::get('app.version') }}</strong>
-                            <div class="alert alert-danger margin-top-10">
-                                {{ __('A new version is available') }}: <strong>{{ $latest_version }}</strong> <a href="{{ config('app.freescout_repo') }}/releases" target="_blank">({{ __('View details') }})</a>
-                                <button class="btn btn-default btn-sm update-trigger margin-left-10" data-loading-text="{{ __('Updating') }}…{{ __('This may take several minutes') }}"><small class="glyphicon glyphicon-refresh"></small> {{ __('Update Now') }}</button>
-                            </div>
-                        @else
-                            <strong class="text-success">{{ \Config::get('app.version') }}</strong>
-                            &nbsp;&nbsp;
-                            <a href="#" class="btn btn-default btn-xs check-updates-trigger" data-loading-text="{{ __('Checking') }}…">{{ __('Check for updates') }}</a>
-                            @if ($latest_version_error)
-                                <div class="text-danger margin-top">{{ $latest_version_error }}</div>
-                            @endif
-                        @endif
-                    @else
-                        <strong class="text-success">{{ \Config::get('app.version') }}</strong>
-                    @endif
+                    <strong class="text-success">{{ \Config::get('app.version') }}</strong>
                 </td>
             </tr>
             <tr>
@@ -143,8 +126,8 @@
                                 <strong class="text-danger">{{ __('Not writable') }} @if ($perm['value'])({{ $perm['value'] }})@endif</strong>
 
                                 <br/><br/>
-                                {{ __('Run the following command') }} (<a href="https://github.com/freescout-helpdesk/freescout/wiki/Installation-Guide#6-configuring-web-server" target="_blank">{{ __('read more') }}</a>):<br/>
-                                <code>sudo chown -R www-data:www-data {{ base_path() }}</code>
+                                {{-- {{ __('Run the following command') }} (<a href="https://github.com/freescout-helpdesk/freescout/wiki/Installation-Guide#6-configuring-web-server" target="_blank">{{ __('read more') }}</a>):<br/>
+                                <code>sudo chown -R www-data:www-data {{ base_path() }}</code> --}}
                             @endif
                         @endif
                     </td>
@@ -179,15 +162,15 @@
         </tbody>
     </table>
 
-    <h3 id="cron" class="margin-top-40">Cron Commands</h3>
+    {{-- <h3 id="cron" class="margin-top-40">Cron Commands</h3>
     <p>
         {!! __('Make sure that you have the following line in your crontab:') !!}<br/>
         <code>* * * * * php {{ base_path() }}/artisan schedule:run &gt;&gt; /dev/null 2&gt;&amp;1</code>
         <br/>
         {!! __('Alternatively cron job can be executed by requesting the following URL every minute (this method is not recommended as some features may not work as expected, use it at your own risk)') !!}:<br/>
         <a href="{{ route('system.cron', ['hash' => \Helper::getWebCronHash()]) }}" target="_blank">{{ route('system.cron', ['hash' => \Helper::getWebCronHash()]) }}</a>
-    </p>
-    <table class="table table-dark-header table-bordered table-responsive">
+    </p> --}}
+    {{-- <table class="table table-dark-header table-bordered table-responsive">
         <tbody>
             @foreach ($commands as $command)
                 <tr>
@@ -201,7 +184,7 @@
                 </tr>
             @endforeach
         </tbody>
-    </table>
+    </table> --}}
 
     <h3 id="jobs" class="margin-top-40">{{ __('Background Jobs') }}</h3>
     @if (count($queued_jobs) || count($failed_jobs))

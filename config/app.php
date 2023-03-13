@@ -18,7 +18,7 @@ return [
     | or any other location as required by the application or its packages.
     */
 
-    'version' => '1.8.48',
+    'version' => '1.8.50',
 
     /*
     |--------------------------------------------------------------------------
@@ -31,7 +31,7 @@ return [
     |
     */
 
-    'name' => 'FreeScout',
+    'name' => 'Canidesk',
 
     /*
     |--------------------------------------------------------------------------
@@ -198,9 +198,10 @@ return [
     /*
     |--------------------------------------------------------------------------
     | PHP extensions required by the app
+    | Replaced with installer.requirements.php
     |-------------------------------------------------------------------------
     */
-    'required_extensions' => ['mysql / mysqli', 'mbstring', 'xml', 'imap', /*'mcrypt' mcrypt is deprecated*/ 'json', 'gd', 'fileinfo', 'openssl', 'zip', 'tokenizer', 'curl', 'iconv'/*, 'dom', 'xmlwriter', 'libxml', 'phar'*/],
+    //'required_extensions' => ['mysql / mysqli', 'mbstring', 'xml', 'imap', /*'mcrypt' mcrypt is deprecated*/ 'json', 'gd', 'fileinfo', 'openssl', 'zip', 'tokenizer', 'curl', 'iconv'/*, 'dom', 'xmlwriter', 'libxml', 'phar'*/],
 
     /*
     |--------------------------------------------------------------------------
@@ -349,7 +350,7 @@ return [
     | Disable update checker
     |--------------------------------------------------------------------------
     */
-    'disable_updating'    => env('APP_DISABLE_UPDATING', false),
+    'disable_updating'    => env('APP_DISABLE_UPDATING', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -365,6 +366,14 @@ return [
     |--------------------------------------------------------------------------
     */
     'proxy' => env('APP_PROXY', ''),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Custom headers to add to all outgoing emails.
+    | https://github.com/freescout-helpdesk/freescout/issues/2546#issuecomment-1380414908
+    |--------------------------------------------------------------------------
+    */
+    'custom_mail_headers' => env('APP_CUSTOM_MAIL_HEADERS', ''),
 
     /*
     |--------------------------------------------------------------------------
