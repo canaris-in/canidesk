@@ -9,11 +9,8 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '023d27dca8066ef29e6739335ea73bad' => __DIR__ . '/..' . '/symfony/polyfill-php70/bootstrap.php',
-        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
-<<<<<<< HEAD
-=======
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
->>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'e39a8b23c42d4e1452234d762b03835a' => __DIR__ . '/..' . '/ramsey/uuid/src/functions.php',
@@ -22,10 +19,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'f0906e6318348a765ffb6eb24e0d0938' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/helpers.php',
         '58571171fd5812e6e447dce228f52f4d' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/helpers.php',
-<<<<<<< HEAD
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
-=======
->>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
         '801c31d8ed748cfa537fa45402288c95' => __DIR__ . '/..' . '/psy/psysh/src/functions.php',
         'e91d0dc994644828154ae2387ede1ca8' => __DIR__ . '/..' . '/spatie/string/src/string_functions.php',
         '4a1f389d6ce373bda9e57857d3b61c84' => __DIR__ . '/..' . '/barryvdh/laravel-debugbar/src/helpers.php',
@@ -36,19 +30,11 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
     );
 
     public static $prefixLengthsPsr4 = array (
-<<<<<<< HEAD
-        'p' => 
-        array (
-            'phpDocumentor\\Reflection\\' => 25,
-        ),
-        'X' => 
-=======
         'p' =>
         array (
             'phpDocumentor\\Reflection\\' => 25,
         ),
         'X' =>
->>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
         array (
             'XdgBaseDir\\' => 11,
         ),
@@ -103,7 +89,6 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
             'RachidLaasri\\LaravelInstaller\\Providers\\' => 40,
             'RachidLaasri\\LaravelInstaller\\Middleware\\' => 41,
             'RachidLaasri\\LaravelInstaller\\Helpers\\' => 38,
-            'RachidLaasri\\LaravelInstaller\\Events\\' => 37,
             'RachidLaasri\\LaravelInstaller\\Controllers\\' => 42,
             'RachidLaasri\\LaravelInstaller\\' => 30,
         ),
@@ -154,7 +139,6 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
             'Illuminate\\Foundation\\' => 22,
             'Illuminate\\Database\\Eloquent\\' => 29,
             'Illuminate\\Container\\' => 21,
-            'Illuminate\\Config\\' => 18,
             'Illuminate\\Cache\\Console\\' => 25,
             'Illuminate\\Cache\\' => 17,
             'Illuminate\\Broadcasting\\Broadcasters\\' => 37,
@@ -224,37 +208,17 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
     );
 
     public static $prefixDirsPsr4 = array (
-<<<<<<< HEAD
-        'phpDocumentor\\Reflection\\' => 
-=======
         'phpDocumentor\\Reflection\\' =>
->>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
             1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
         ),
-<<<<<<< HEAD
-        'XdgBaseDir\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/dnoegel/php-xdg-base-dir/src',
-        ),
-        'Whoops\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/filp/whoops/src/Whoops',
-        ),
-        'Webmozart\\Assert\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/webmozart/assert/src',
-        ),
-        'Webklex\\PHPIMAP\\' => 
-=======
         'XdgBaseDir\\' =>
         array (
             0 => __DIR__ . '/..' . '/dnoegel/php-xdg-base-dir/src',
         ),
         'Whoops\\' =>
->>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
         array (
             0 => __DIR__ . '/..' . '/filp/whoops/src/Whoops',
         ),
@@ -264,8 +228,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         ),
         'Webklex\\PHPIMAP\\' =>
         array (
-            0 => __DIR__ . '/../..' . '/overrides/webklex/php-imap/src',
-            1 => __DIR__ . '/..' . '/webklex/php-imap/src',
+            0 => __DIR__ . '/..' . '/webklex/php-imap/src',
         ),
         'Webklex\\IMAP\\' =>
         array (
@@ -290,19 +253,11 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         array (
             0 => __DIR__ . '/..' . '/tijsverkoyen/css-to-inline-styles/src',
         ),
-<<<<<<< HEAD
-        'Tests\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/tests',
-        ),
-        'Symfony\\Polyfill\\Php70\\' => 
-=======
         'Tests\\' =>
         array (
             0 => __DIR__ . '/../..' . '/tests',
         ),
         'Symfony\\Polyfill\\Php70\\' =>
->>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php70',
         ),
@@ -421,10 +376,6 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         array (
             0 => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Helpers',
         ),
-        'RachidLaasri\\LaravelInstaller\\Events\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Events',
-        ),
         'RachidLaasri\\LaravelInstaller\\Controllers\\' =>
         array (
             0 => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Controllers',
@@ -453,19 +404,11 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
-<<<<<<< HEAD
-        'Prophecy\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy',
-        ),
-        'PhpParser\\' => 
-=======
         'Prophecy\\' =>
         array (
             0 => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy',
         ),
         'PhpParser\\' =>
->>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
         ),
@@ -563,10 +506,6 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         array (
             0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Container',
         ),
-        'Illuminate\\Config\\' =>
-        array (
-            0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Config',
-        ),
         'Illuminate\\Cache\\Console\\' =>
         array (
             0 => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Cache/Console',
@@ -618,19 +557,11 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         array (
             0 => __DIR__ . '/..' . '/fideloper/proxy/src',
         ),
-<<<<<<< HEAD
-        'Faker\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker',
-        ),
-        'Egulias\\EmailValidator\\' => 
-=======
         'Faker\\' =>
         array (
             0 => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker',
         ),
         'Egulias\\EmailValidator\\' =>
->>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
         array (
             0 => __DIR__ . '/..' . '/egulias/email-validator/EmailValidator',
         ),
@@ -639,19 +570,11 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
             0 => __DIR__ . '/../..' . '/overrides/vlucas/phpdotenv/src',
             1 => __DIR__ . '/..' . '/vlucas/phpdotenv/src',
         ),
-<<<<<<< HEAD
-        'Doctrine\\Instantiator\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
-        ),
-        'Doctrine\\Deprecations\\' => 
-=======
         'Doctrine\\Instantiator\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
         ),
         'Doctrine\\Deprecations\\' =>
->>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
         array (
             0 => __DIR__ . '/..' . '/doctrine/deprecations/lib/Doctrine/Deprecations',
         ),
@@ -675,19 +598,11 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         array (
             0 => __DIR__ . '/..' . '/doctrine/cache/lib/Doctrine/Common/Cache',
         ),
-<<<<<<< HEAD
-        'Doctrine\\Common\\Annotations\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/doctrine/annotations/lib/Doctrine/Common/Annotations',
-        ),
-        'Doctrine\\Common\\' => 
-=======
         'Doctrine\\Common\\Annotations\\' =>
         array (
             0 => __DIR__ . '/..' . '/doctrine/annotations/lib/Doctrine/Common/Annotations',
         ),
         'Doctrine\\Common\\' =>
->>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
         array (
             0 => __DIR__ . '/..' . '/doctrine/event-manager/src',
         ),
@@ -699,19 +614,11 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         array (
             0 => __DIR__ . '/..' . '/devfactory/minify/src',
         ),
-<<<<<<< HEAD
-        'DeepCopy\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
-        ),
-        'DebugBar\\DataFormatter\\' => 
-=======
         'DeepCopy\\' =>
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
         'DebugBar\\DataFormatter\\' =>
->>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
         array (
             0 => __DIR__ . '/../..' . '/overrides/maximebf/debugbar/src/DataFormatter/DataFormatter',
         ),
@@ -798,18 +705,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
                 0 => __DIR__ . '/..' . '/erusev/parsedown',
             ),
         ),
-<<<<<<< HEAD
-        'M' => 
-        array (
-            'Mockery' => 
-            array (
-                0 => __DIR__ . '/..' . '/mockery/mockery/library',
-            ),
-        ),
-        'J' => 
-=======
         'M' =>
->>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
         array (
             'Mockery' =>
             array (
@@ -840,11 +736,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
             array (
                 0 => __DIR__ . '/..' . '/doctrine/lexer/lib',
             ),
-<<<<<<< HEAD
-            'Doctrine\\Common\\Collections\\' => 
-=======
             'Doctrine\\Common\\Collections\\' =>
->>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
             array (
                 0 => __DIR__ . '/..' . '/doctrine/collections/lib',
             ),
@@ -859,9 +751,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'App\\Console\\Commands\\AfterAppUpdate' => __DIR__ . '/../..' . '/app/Console/Commands/AfterAppUpdate.php',
         'App\\Console\\Commands\\Build' => __DIR__ . '/../..' . '/app/Console/Commands/Build.php',
         'App\\Console\\Commands\\CheckConvViewers' => __DIR__ . '/../..' . '/app/Console/Commands/CheckConvViewers.php',
-        'App\\Console\\Commands\\CheckRequirements' => __DIR__ . '/../..' . '/app/Console/Commands/CheckRequirements.php',
         'App\\Console\\Commands\\CleanSendLog' => __DIR__ . '/../..' . '/app/Console/Commands/CleanSendLog.php',
-        'App\\Console\\Commands\\CleanTmp' => __DIR__ . '/../..' . '/app/Console/Commands/CleanTmp.php',
         'App\\Console\\Commands\\ClearCache' => __DIR__ . '/../..' . '/app/Console/Commands/ClearCache.php',
         'App\\Console\\Commands\\CreateUser' => __DIR__ . '/../..' . '/app/Console/Commands/CreateUser.php',
         'App\\Console\\Commands\\FetchEmails' => __DIR__ . '/../..' . '/app/Console/Commands/FetchEmails.php',
@@ -1084,64 +974,64 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Cron\\MinutesField' => __DIR__ . '/..' . '/mtdowling/cron-expression/src/Cron/MinutesField.php',
         'Cron\\MonthField' => __DIR__ . '/..' . '/mtdowling/cron-expression/src/Cron/MonthField.php',
         'Cron\\YearField' => __DIR__ . '/..' . '/mtdowling/cron-expression/src/Cron/YearField.php',
-        'CssAtCharsetParserPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtCharsetToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtFontFaceDeclarationToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtFontFaceEndToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtFontFaceParserPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtFontFaceStartToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtImportParserPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtImportToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtKeyframesEndToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtKeyframesParserPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtKeyframesRulesetDeclarationToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtKeyframesRulesetEndToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtKeyframesRulesetStartToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtKeyframesStartToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtMediaEndToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtMediaParserPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtMediaStartToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtPageDeclarationToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtPageEndToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtPageParserPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtPageStartToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtVariablesDeclarationToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtVariablesEndToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtVariablesParserPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssAtVariablesStartToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssCommentParserPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssCommentToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssCompressColorValuesMinifierPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssCompressExpressionValuesMinifierPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssCompressUnitValuesMinifierPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssConvertFontWeightMinifierPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssConvertHslColorsMinifierPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssConvertLevel3AtKeyframesMinifierFilter' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssConvertLevel3PropertiesMinifierFilter' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssConvertNamedColorsMinifierPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssConvertRgbColorsMinifierPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssError' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssExpressionParserPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssImportImportsMinifierFilter' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssMin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssMinifier' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssNullToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssOtbsFormatter' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssParser' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssRemoveCommentsMinifierFilter' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssRemoveEmptyAtBlocksMinifierFilter' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssRemoveEmptyRulesetsMinifierFilter' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssRemoveLastDelarationSemiColonMinifierFilter' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssRulesetDeclarationToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssRulesetEndToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssRulesetParserPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssRulesetStartToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssSortRulesetPropertiesMinifierFilter' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssStringParserPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssUrlParserPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssVariablesMinifierFilter' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssVariablesMinifierPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'CssWhitesmithsFormatter' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
+        'CssAtCharsetParserPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtCharsetToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtFontFaceDeclarationToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtFontFaceEndToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtFontFaceParserPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtFontFaceStartToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtImportParserPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtImportToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtKeyframesEndToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtKeyframesParserPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtKeyframesRulesetDeclarationToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtKeyframesRulesetEndToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtKeyframesRulesetStartToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtKeyframesStartToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtMediaEndToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtMediaParserPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtMediaStartToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtPageDeclarationToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtPageEndToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtPageParserPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtPageStartToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtVariablesDeclarationToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtVariablesEndToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtVariablesParserPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssAtVariablesStartToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssCommentParserPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssCommentToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssCompressColorValuesMinifierPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssCompressExpressionValuesMinifierPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssCompressUnitValuesMinifierPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssConvertFontWeightMinifierPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssConvertHslColorsMinifierPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssConvertLevel3AtKeyframesMinifierFilter' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssConvertLevel3PropertiesMinifierFilter' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssConvertNamedColorsMinifierPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssConvertRgbColorsMinifierPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssError' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssExpressionParserPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssImportImportsMinifierFilter' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssMin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssMinifier' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssNullToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssOtbsFormatter' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssParser' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssRemoveCommentsMinifierFilter' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssRemoveEmptyAtBlocksMinifierFilter' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssRemoveEmptyRulesetsMinifierFilter' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssRemoveLastDelarationSemiColonMinifierFilter' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssRulesetDeclarationToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssRulesetEndToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssRulesetParserPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssRulesetStartToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssSortRulesetPropertiesMinifierFilter' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssStringParserPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssUrlParserPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssVariablesMinifierFilter' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssVariablesMinifierPlugin' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
+        'CssWhitesmithsFormatter' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
         'CustomersTableSeeder' => __DIR__ . '/../..' . '/database/seeds/CustomersTableSeeder.php',
         'DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
         'DebugBar\\Bridge\\CacheCacheCollector' => __DIR__ . '/..' . '/maximebf/debugbar/src/DebugBar/Bridge/CacheCacheCollector.php',
@@ -2278,14 +2168,14 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'HTMLPurifier_AttrTransform_TargetNoreferrer' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/AttrTransform/TargetNoreferrer.php',
         'HTMLPurifier_AttrTransform_Textarea' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/AttrTransform/Textarea.php',
         'HTMLPurifier_AttrTypes' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/AttrTypes.php',
-        'HTMLPurifier_AttrValidator' => __DIR__ . '/../..' . '/overrides/ezyang/htmlpurifier/library/HTMLPurifier/AttrValidator.php',
+        'HTMLPurifier_AttrValidator' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/AttrValidator.php',
         'HTMLPurifier_Bootstrap' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/Bootstrap.php',
         'HTMLPurifier_CSSDefinition' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/CSSDefinition.php',
         'HTMLPurifier_ChildDef' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/ChildDef.php',
         'HTMLPurifier_ChildDef_Chameleon' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/ChildDef/Chameleon.php',
         'HTMLPurifier_ChildDef_Custom' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/ChildDef/Custom.php',
         'HTMLPurifier_ChildDef_Empty' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/ChildDef/Empty.php',
-        'HTMLPurifier_ChildDef_List' => __DIR__ . '/../..' . '/overrides/ezyang/htmlpurifier/library/HTMLPurifier/ChildDef/List.php',
+        'HTMLPurifier_ChildDef_List' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/ChildDef/List.php',
         'HTMLPurifier_ChildDef_Optional' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/ChildDef/Optional.php',
         'HTMLPurifier_ChildDef_Required' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/ChildDef/Required.php',
         'HTMLPurifier_ChildDef_StrictBlockquote' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier/ChildDef/StrictBlockquote.php',
@@ -2592,7 +2482,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Illuminate\\Cache\\TagSet' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Cache/TagSet.php',
         'Illuminate\\Cache\\TaggableStore' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Cache/TaggableStore.php',
         'Illuminate\\Cache\\TaggedCache' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Cache/TaggedCache.php',
-        'Illuminate\\Config\\Repository' => __DIR__ . '/../..' . '/overrides/laravel/framework/src/Illuminate/Config/Repository.php',
+        'Illuminate\\Config\\Repository' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Config/Repository.php',
         'Illuminate\\Console\\Application' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Console/Application.php',
         'Illuminate\\Console\\Command' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Console/Command.php',
         'Illuminate\\Console\\ConfirmableTrait' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Console/ConfirmableTrait.php',
@@ -4527,7 +4417,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'RachidLaasri\\LaravelInstaller\\Controllers\\RequirementsController' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Controllers/RequirementsController.php',
         'RachidLaasri\\LaravelInstaller\\Controllers\\UpdateController' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Controllers/UpdateController.php',
         'RachidLaasri\\LaravelInstaller\\Controllers\\WelcomeController' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Controllers/WelcomeController.php',
-        'RachidLaasri\\LaravelInstaller\\Events\\EnvironmentSaved' => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Events/EnvironmentSaved.php',
+        'RachidLaasri\\LaravelInstaller\\Events\\EnvironmentSaved' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Events/EnvironmentSaved.php',
         'RachidLaasri\\LaravelInstaller\\Events\\LaravelInstallerFinished' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Events/LaravelInstallerFinished.php',
         'RachidLaasri\\LaravelInstaller\\Helpers\\DatabaseManager' => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Helpers/DatabaseManager.php',
         'RachidLaasri\\LaravelInstaller\\Helpers\\EnvironmentManager' => __DIR__ . '/../..' . '/overrides/rachidlaasri/laravel-installer/src/Helpers/EnvironmentManager.php',
@@ -4701,16 +4591,11 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Spatie\\String\\Integrations\\Underscore' => __DIR__ . '/..' . '/spatie/string/src/Integrations/Underscore.php',
         'Spatie\\String\\Str' => __DIR__ . '/../..' . '/overrides/spatie/string/src/Str.php',
         'Swift_Attachment' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/Attachment.php',
-<<<<<<< HEAD
-=======
-        'Swift_EmbeddedFile' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/EmbeddedFile.php',
->>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
         'Swift_MailTransport' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/MailTransport.php',
         'Swift_Message' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/Message.php',
         'Swift_MimePart' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/MimePart.php',
         'Swift_Mime_ContentEncoder_Base64ContentEncoder' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/Mime/ContentEncoder/Base64ContentEncoder.php',
         'Swift_Mime_MimePart' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/Mime/MimePart.php',
-        'Swift_SendmailTransport' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/SendmailTransport.php',
         'Swift_SmtpTransport' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/SmtpTransport.php',
         'Swift_SwiftException' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/SwiftException.php',
         'Swift_Transport_EsmtpTransport' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/Transport/EsmtpTransport.php',
@@ -4718,7 +4603,6 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Swift_Transport_MailInvoker' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/Transport/MailInvoker.php',
         'Swift_Transport_MailTransport' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/Transport/MailTransport.php',
         'Swift_Transport_SimpleMailInvoker' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/Transport/SimpleMailInvoker.php',
-        'Swift_Transport_StreamBuffer' => __DIR__ . '/../..' . '/overrides/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php',
         'Symfony\\Component\\Console\\Application' => __DIR__ . '/..' . '/symfony/console/Application.php',
         'Symfony\\Component\\Console\\CommandLoader\\CommandLoaderInterface' => __DIR__ . '/..' . '/symfony/console/CommandLoader/CommandLoaderInterface.php',
         'Symfony\\Component\\Console\\CommandLoader\\ContainerCommandLoader' => __DIR__ . '/..' . '/symfony/console/CommandLoader/ContainerCommandLoader.php',
@@ -5347,7 +5231,7 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Webklex\\PHPIMAP\\Attribute' => __DIR__ . '/..' . '/webklex/php-imap/src/Attribute.php',
         'Webklex\\PHPIMAP\\Client' => __DIR__ . '/..' . '/webklex/php-imap/src/Client.php',
         'Webklex\\PHPIMAP\\ClientManager' => __DIR__ . '/..' . '/webklex/php-imap/src/ClientManager.php',
-        'Webklex\\PHPIMAP\\Connection\\Protocols\\ImapProtocol' => __DIR__ . '/../..' . '/overrides/webklex/php-imap/src/Connection/Protocols/ImapProtocol.php',
+        'Webklex\\PHPIMAP\\Connection\\Protocols\\ImapProtocol' => __DIR__ . '/..' . '/webklex/php-imap/src/Connection/Protocols/ImapProtocol.php',
         'Webklex\\PHPIMAP\\Connection\\Protocols\\LegacyProtocol' => __DIR__ . '/..' . '/webklex/php-imap/src/Connection/Protocols/LegacyProtocol.php',
         'Webklex\\PHPIMAP\\Connection\\Protocols\\Protocol' => __DIR__ . '/..' . '/webklex/php-imap/src/Connection/Protocols/Protocol.php',
         'Webklex\\PHPIMAP\\Connection\\Protocols\\ProtocolInterface' => __DIR__ . '/..' . '/webklex/php-imap/src/Connection/Protocols/ProtocolInterface.php',
@@ -5382,13 +5266,13 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Webklex\\PHPIMAP\\Exceptions\\ProtocolNotSupportedException' => __DIR__ . '/..' . '/webklex/php-imap/src/Exceptions/ProtocolNotSupportedException.php',
         'Webklex\\PHPIMAP\\Exceptions\\RuntimeException' => __DIR__ . '/..' . '/webklex/php-imap/src/Exceptions/RuntimeException.php',
         'Webklex\\PHPIMAP\\Folder' => __DIR__ . '/..' . '/webklex/php-imap/src/Folder.php',
-        'Webklex\\PHPIMAP\\Header' => __DIR__ . '/../..' . '/overrides/webklex/php-imap/src/Header.php',
+        'Webklex\\PHPIMAP\\Header' => __DIR__ . '/..' . '/webklex/php-imap/src/Header.php',
         'Webklex\\PHPIMAP\\IMAP' => __DIR__ . '/..' . '/webklex/php-imap/src/IMAP.php',
-        'Webklex\\PHPIMAP\\Message' => __DIR__ . '/../..' . '/overrides/webklex/php-imap/src/Message.php',
+        'Webklex\\PHPIMAP\\Message' => __DIR__ . '/..' . '/webklex/php-imap/src/Message.php',
         'Webklex\\PHPIMAP\\Part' => __DIR__ . '/..' . '/webklex/php-imap/src/Part.php',
         'Webklex\\PHPIMAP\\Query\\Query' => __DIR__ . '/..' . '/webklex/php-imap/src/Query/Query.php',
         'Webklex\\PHPIMAP\\Query\\WhereQuery' => __DIR__ . '/..' . '/webklex/php-imap/src/Query/WhereQuery.php',
-        'Webklex\\PHPIMAP\\Structure' => __DIR__ . '/../..' . '/overrides/webklex/php-imap/src/Structure.php',
+        'Webklex\\PHPIMAP\\Structure' => __DIR__ . '/..' . '/webklex/php-imap/src/Structure.php',
         'Webklex\\PHPIMAP\\Support\\AttachmentCollection' => __DIR__ . '/..' . '/webklex/php-imap/src/Support/AttachmentCollection.php',
         'Webklex\\PHPIMAP\\Support\\FlagCollection' => __DIR__ . '/..' . '/webklex/php-imap/src/Support/FlagCollection.php',
         'Webklex\\PHPIMAP\\Support\\FolderCollection' => __DIR__ . '/..' . '/webklex/php-imap/src/Support/FolderCollection.php',
@@ -5418,7 +5302,6 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'Whoops\\Util\\SystemFacade' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Util/SystemFacade.php',
         'Whoops\\Util\\TemplateHelper' => __DIR__ . '/..' . '/filp/whoops/src/Whoops/Util/TemplateHelper.php',
         'XdgBaseDir\\Xdg' => __DIR__ . '/..' . '/dnoegel/php-xdg-base-dir/src/Xdg.php',
-<<<<<<< HEAD
         'aCssAtBlockEndToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
         'aCssAtBlockStartToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
         'aCssDeclarationToken' => __DIR__ . '/..' . '/natxet/cssmin/src/CssMin.php',
@@ -5523,18 +5406,6 @@ class ComposerStaticInitbf8dc242a640d7c740f283f226d0bdb4
         'phpDocumentor\\Reflection\\Types\\String_' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/String_.php',
         'phpDocumentor\\Reflection\\Types\\This' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/This.php',
         'phpDocumentor\\Reflection\\Types\\Void_' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Void_.php',
-=======
-        'aCssAtBlockEndToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'aCssAtBlockStartToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'aCssDeclarationToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'aCssFormatter' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'aCssMinifierFilter' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'aCssMinifierPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'aCssParserPlugin' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'aCssRulesetEndToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'aCssRulesetStartToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
-        'aCssToken' => __DIR__ . '/../..' . '/overrides/natxet/cssmin/src/CssMin.php',
->>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
     );
 
     public static function getInitializer(ClassLoader $loader)
