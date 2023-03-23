@@ -28,7 +28,9 @@ class Filter extends Event
                 $this->value = call_user_func_array($this->getFunction($listener['callback']), $parameters);
             });
         }
-
+        // if (!is_array($this->value)){
+        //     return parse_url($this->value);
+        // }
         return $this->value;
     }
 }

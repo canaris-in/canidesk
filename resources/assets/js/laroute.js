@@ -8,6 +8,7 @@
             rootUrl: Vars.public_url,
             routes : $ROUTES$,
             prefix: '$PREFIX$',
+            params: 'testing',
 
             route : function (name, parameters, route) {
                 route = route || this.getByName(name);
@@ -143,7 +144,7 @@
             // Add route: used by modules
             add_routes : function (new_routes) {
                 new_routes = new_routes || [];
-                
+
                 routes.routes = routes.routes.concat(new_routes);
             },
 

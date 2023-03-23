@@ -427,6 +427,13 @@ class UrlGenerator implements UrlGeneratorContract
             }
 
             $root = $this->cachedRoot;
+            $malformedPort = config('app.app_port').":".config('app.app_port');
+            // port is available at config('app.app_port')
+            // Check if two ports are added :8000:8000
+            // if yes remove one port with :8000
+            if (str_contains($root,$malformedPort)) {
+                $root = str_replace($malformedPort, config('app.app_port'),$root);
+            }
         }
 
         $start = Str::startsWith($root, 'http://') ? 'http://' : 'https://';

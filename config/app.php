@@ -18,7 +18,7 @@ return [
     | or any other location as required by the application or its packages.
     */
 
-    'version' => '1.8.50',
+    'version' => '2.0.0',
 
     /*
     |--------------------------------------------------------------------------
@@ -70,7 +70,10 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', ''),
+    'no_port_url' => env('APP_URL_NO_PORT', ''),
+    'app_port' => env('APP_PORT_NO', ''),
+
 
     /*
     |--------------------------------------------------------------------------

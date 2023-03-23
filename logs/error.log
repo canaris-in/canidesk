@@ -1,0 +1,2 @@
+[Thu Jan 19 07:08:48.700552 2023] [ssl:error] [pid 815472] [client 3.94.128.52:54494] AH02042: rejecting client initiated renegotiation
+[Mon Mar 13 21:09:24.112435 2023] [authz_core:error] [pid 1386519] [client 162.158.190.9:33880] AH01630: client denied by server configuration: /var/www/html/canidesk/public/server-status

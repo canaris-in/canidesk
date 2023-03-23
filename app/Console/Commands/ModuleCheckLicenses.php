@@ -38,6 +38,7 @@ class ModuleCheckLicenses extends Command
      */
     public function handle()
     {
+        return true;
         // Get active official modules and check validity of their licenses
         $modules = \Module::getActive();
 
@@ -50,7 +51,7 @@ class ModuleCheckLicenses extends Command
 
         foreach ($modules as $module) {
             $license = $module->getLicense();
-        
+
             if (!$module->isOfficial() || !$license) {
                 continue;
             }

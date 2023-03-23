@@ -10,9 +10,9 @@
 	    	{{ $module['description'] }}
 	    </p>
 	    <div class="module-details">
-		    <span>{{ __('Version') }}: {{ $module['version'] }}</span>
+		   <span>{{ __('Version') }}: {{ $module['version'] }}</span>
 		    @if (!empty($module['detailsUrl']))
-		    	| <a href="{{ $module['detailsUrl'] }}" target="_blank">{{ __('View details') }}</a>
+		    	<!--| <a href="{{ $module['detailsUrl'] }}" target="_blank">{{ __('View details') }}</a>-->
 		    @endif
 			@if (!empty($module['license']) && Eventy::filter('modules.show_license', true))
 		    	<span>| {{ __('License') }}: <small><span class="license-key-text">{{ $module['license'] }}</span> <i class="deactivate-license-trigger glyphicon glyphicon-trash clickable" data-toggle="tooltip" title="{{ __('Deactivate the license for this domain (to use on another domain)') }}"></i></small></span>
@@ -57,11 +57,11 @@
 				<a href="javascript" class="btn btn-link text-danger delete-module-trigger" data-loading-text="{{ __('Deleting') }}…">{{ __('Delete') }}</a>
 			@endif
 		</div>
-		@if (!empty($module['new_version']))
+		<!--@if (!empty($module['new_version']))
 			<div class="alert alert-warning alert-module-update">
 				{{ __('A new version is available') }}: <strong>{{ $module['new_version'] }}</strong> (<a href="{{ $module['detailsUrl'] }}?changelog=1" target="_blank">{{ __('View details') }}</a>) 
 				<a href="" class="btn btn-default btn-sm update-module-trigger margin-left-10" data-loading-text="{{ __('Updating') }}…"><i class="glyphicon glyphicon-refresh"></i> {{ __('Update Now') }}</a>
 			</div>
-		@endif
+		@endif-->
 	</div>
 </div>
