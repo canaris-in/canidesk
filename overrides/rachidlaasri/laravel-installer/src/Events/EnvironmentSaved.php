@@ -11,6 +11,8 @@ class EnvironmentSaved
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    public $request;
+
     /**
      * Create a new event instance.
      *

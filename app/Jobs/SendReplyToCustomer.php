@@ -17,9 +17,6 @@ class SendReplyToCustomer implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    // Number of retries + 1
-    public $tries = 168; // one per hour
-
     public $conversation;
 
     public $threads;
@@ -32,6 +29,17 @@ class SendReplyToCustomer implements ShouldQueue
     private $message_id = '';
     private $customer_email = '';
 
+    // Number of retries + 1
+    public $tries = 168; // one per hour
+    
+    /**
+     * The number of seconds the job can run before timing out.
+     * fwrite() function in /vendor/swiftmailer/swiftmailer/lib/classes/Swift/Transport/StreamBuffer.php
+     * in some cases may stuck and continue infinitely. This blocks queue:work and no other jobs are processed.
+     * So we need to set the timeout. On timeout the whole queue:work process is being killed by Laravel.
+     */
+    public $timeout = 120;
+    
     /**
      * Create a new job instance.
      *
@@ -213,9 +221,15 @@ class SendReplyToCustomer implements ShouldQueue
         //     $bcc_array = [];
         // }
 
+        $subject = $this->conversation->subject;
+        if (!$new && !$is_forward) {
+            $subject = 'Re: '.$subject;
+        }
+        $subject = \Eventy::filter('email.reply_to_customer.subject', $subject, $this->conversation);
+
         $headers['X-FreeScout-Mail-Type'] = 'customer.message';
 
-        $reply_mail = new ReplyToCustomer($this->conversation, $this->threads, $headers, $mailbox, $threads_count);
+        $reply_mail = new ReplyToCustomer($this->conversation, $this->threads, $headers, $mailbox, $subject, $threads_count);
 
         try {
             Mail::to($to)
@@ -278,7 +292,7 @@ class SendReplyToCustomer implements ShouldQueue
 
                 $envelope['from'] = $mailbox->getMailFrom(null, $this->conversation)['address'];
                 $envelope['to'] = $this->customer_email;
-                $envelope['subject'] = 'Re: ' . $this->conversation->subject;
+                $envelope['subject'] = $subject;
                 $envelope['date'] = now()->toRfc2822String();
                 $envelope['message_id'] = $this->message_id;
 
@@ -294,19 +308,72 @@ class SendReplyToCustomer implements ShouldQueue
                     $envelope[$i] = preg_replace("/[\r\n]/", '', $envelope_value);
                 }
 
-                $part1['type'] = TYPETEXT;
-                $part1['subtype'] = 'html';
-                $part1['contents.data'] = $reply_mail->render();
-                $part1['charset'] = 'utf-8';
+                $parts = [];
+
+                // Multipart flag.
+                if ($this->last_thread->has_attachments) {
+                    $multipart = [];
+                    $multipart["type"] = TYPEMULTIPART;
+                    $multipart["subtype"] = "alternative";
+                    $parts[] = $multipart;
+                }
+
+                // Body.
+                $part_body['type'] = TYPETEXT;
+                $part_body['subtype'] = 'html';
+                $part_body['contents.data'] = $reply_mail->render();
+                $part_body['charset'] = 'utf-8';
+
+                $parts[] = $part_body;
+
+                // Add attachments.
+                if ($this->last_thread->has_attachments) {
+
+                    foreach ($this->last_thread->attachments as $attachment) {
+
+                        if ($attachment->embedded) {
+                            continue;
+                        }
+
+                        if ($attachment->fileExists()) {
+                            $part = [];
+                            $part["type"] = 'APPLICATION';
+                            $part["encoding"] = ENCBASE64;
+                            $part["subtype"] = "octet-stream";
+                            $part["description"] = $attachment->file_name;
+                            $part['disposition.type'] = 'attachment';
+                            $part['disposition'] = array('filename' => $attachment->file_name);
+                            $part['type.parameters'] = array('name' => $attachment->file_name);
+                            $part["description"] = '';
+                            $part["contents.data"] = base64_encode($attachment->getFileContents());
+                            
+                            $parts[] = $part;
+                        } else {
+                            \Log::error('[IMAP Folder To Save Outgoing Replies] Thread: '.$this->last_thread->id.'. Attachment file not find on disk: '.$attachment->getLocalFilePath());
+                        }
+                    }
+                }
 
                 try {
-                    // getFolder does not work if sent folder has spaces.
-                    $folder = $client->getFolder($imap_sent_folder);
+                    // https://github.com/Webklex/php-imap/issues/380
+                    if (method_exists($client, 'getFolderByPath')) {
+                        $folder = $client->getFolderByPath($imap_sent_folder);
+                    } else {
+                        $folder = $client->getFolder($imap_sent_folder);
+                    }
+                    // Get folder method does not work if sent folder has spaces.
                     if ($folder) {
-                        if (get_class($client) == 'Webklex\PHPIMAP\Client') {
-                            $folder->appendMessage(imap_mail_compose($envelope, [$part1]), ['Seen'], now()->format('d-M-Y H:i:s O'));
-                        } else {
-                            $folder->appendMessage(imap_mail_compose($envelope, [$part1]), '\Seen', now()->format('d-M-Y H:i:s O'));
+                        try {
+                            $save_result = $this->saveEmailToFolder($client, $folder, $envelope, $parts);
+                            // Sometimes emails with attachments by some reason are not saved.
+                            // https://github.com/freescout-helpdesk/freescout/issues/2749
+                            if (!$save_result) {
+                                // Save without attachments.
+                                $this->saveEmailToFolder($client, $folder, $envelope, [$part_body]);
+                            }
+                        } catch (\Exception $e) {
+                            // Just log error and continue.
+                            \Helper::logException($e, 'Could not save outgoing reply to the IMAP folder: ');
                         }
                     } else {
                         \Log::error('Could not save outgoing reply to the IMAP folder (make sure IMAP folder does not have spaces - folders with spaces do not work): '.$imap_sent_folder);
@@ -333,6 +400,16 @@ class SendReplyToCustomer implements ShouldQueue
 
         // Save to send log
         $this->saveToSendLog();
+    }
+
+    // Save an email to IMAP folder.
+    public function saveEmailToFolder($client, $folder, $envelope, $parts)
+    {
+        if (get_class($client) == 'Webklex\PHPIMAP\Client') {
+            return $folder->appendMessage(imap_mail_compose($envelope, $parts), ['Seen'], now()->format('d-M-Y H:i:s O'));
+        } else {
+            return $folder->appendMessage(imap_mail_compose($envelope, $parts), '\Seen', now()->format('d-M-Y H:i:s O'));
+        }
     }
 
     /**

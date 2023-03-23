@@ -1014,7 +1014,7 @@ function initConversation()
 						showFloatingAlert('error', response.msg);
 						loaderHide();
 					} else {
-						showFloatingAlert('error', Lang.get("messages.error_occured"));
+						showFloatingAlert('error', Lang.get("messages.error_occurred"));
 						loaderHide();
 					}
 				});
@@ -1055,7 +1055,7 @@ function initConversation()
 					} else if (typeof(response.msg) != "undefined") {
 						showFloatingAlert('error', response.msg);
 					} else {
-						showFloatingAlert('error', Lang.get("messages.error_occured"));
+						showFloatingAlert('error', Lang.get("messages.error_occurred"));
 					}
 					loaderHide();
 				});
@@ -1439,14 +1439,21 @@ function showReplyForm(data, scroll_offset)
 				// Display body value in editor
 				$('#body').summernote("code", data[field]);
 			}
+			// Happens when opening draft or after Undo
 			if (field == 'to_email' || field == 'cc' || field == 'bcc') {
 				if (data && typeof(data.to) != "undefined") {
+					// Clean previous values.
+					// Also allows to avoid duplicating emails - for example
+					// when restoring  a draft in a conversation with CC.
+					cleanSelect2($("#"+field));
 					for (var i in data[field]) {
+						var email = data[field][i];
 						addSelect2Option($("#"+field), {
-							id: data[field][i], text: data[field][i]
+							id: email, text: email
 						});
 					}
 				} else {
+					// It's not clear when this is supposed to happen.
 					$("#"+field).children('option:first').removeAttr('selected');
 				}
 			}
@@ -1474,6 +1481,12 @@ function showReplyForm(data, scroll_offset)
 		scroll_offset = 0;
 	}
 	maybeScrollToReplyBlock(scroll_offset);
+}
+
+function cleanSelect2(select)
+{
+	select.children('option').remove();
+	select.val('').trigger('change');
 }
 
 // Add an option to select2
@@ -1744,7 +1757,7 @@ function editorSendFile(file, attach, is_conv, editor_id, container)
 		type: 'POST',
 		success: function(response){
 			if (typeof(response.url) == "undefined" || !response.url) {
-				showFloatingAlert('error', Lang.get("messages.error_occured"));
+				showFloatingAlert('error', Lang.get("messages.error_occurred"));
 				loaderHide();
 				removeAttachment(attachment_dummy_id);
 				return;
@@ -1794,7 +1807,7 @@ function editorSendFile(file, attach, is_conv, editor_id, container)
 				loaderHide();
 			}
 			console.log(textStatus+": "+errorThrown);
-			showFloatingAlert('error', Lang.get("messages.error_occured"));
+			showFloatingAlert('error', Lang.get("messages.error_occurred"));
 		}
 	});
 }
@@ -2270,7 +2283,7 @@ function triggerModal(a, params)
             '<div class="modal-content">',
                 '<div class="modal-header '+(params.no_header == 'true' ? 'hidden' : '')+'">',
                     '<button type="button" class="close" data-dismiss="modal" aria-label="'+Lang.get("messages.close")+'"><span>&times;</span></button>',
-                    '<h3 class="modal-title" id="jsmodal-label">'+title+'</h3>',
+                    '<h3 class="modal-title" id="jsmodal-label">'+htmlEscape(title)+'</h3>',
                 '</div>',
                 '<div class="modal-body '+(fit == 'true' ? 'modal-body-fit' : '')+'"><div class="text-center modal-loader"><img src="'+Vars.public_url+'/img/loader-grey.gif" width="31" height="31"/></div></div>',
                 '<div class="modal-footer '+(params.no_footer == 'true' ? 'hidden' : '')+'">',
@@ -2321,7 +2334,7 @@ function triggerModal(a, params)
 			        }
                 },
                 error: function(data) {
-                    modal.children().find(".modal-body").html('<p class="alert alert-danger">'+Lang.get("messages.error_occured")+'</p>');
+                    modal.children().find(".modal-body").html('<p class="alert alert-danger">'+Lang.get("messages.error_occurred")+'</p>');
                 }
             });
         }, 500);
@@ -2342,7 +2355,7 @@ function showAjaxError(response, no_autohide)
 	if (msg) {
 		showFloatingAlert('error', response.msg, no_autohide);
 	} else {
-		showFloatingAlert('error', Lang.get("messages.error_occured"), no_autohide);
+		showFloatingAlert('error', Lang.get("messages.error_occurred"), no_autohide);
 	}
 }
 
@@ -3036,7 +3049,7 @@ function userProfileInit()
 						showFloatingAlert('success', Lang.get("messages.invite_sent"));
 					}
 				} else {
-					showAjaxError(response);
+					showAjaxError(response, true);
 				}
 				button.button('reset');
 			},
@@ -3452,7 +3465,19 @@ function polycastInit()
 		    if (typeof(data.folders_html) != "undefined" && data.folders_html) {
 		    	var folder_id = el_folders.children('li.active:first').attr('data-folder_id');
 		    	el_folders.html(data.folders_html);
-		    	el_folders.children('li[data-folder_id="'+folder_id+'"]').addClass('active');
+		    	var active_folder = el_folders.children('li[data-folder_id="'+folder_id+'"]');
+		    	active_folder.addClass('active');
+
+		    	// Update number of active conversations in the page title
+		    	if (!getGlobalAttr('conversation_id')) {
+			    	var new_count = parseInt(active_folder.attr('data-active-count'));
+			    	if (!isNaN(new_count) && new_count > 0) {
+			    		new_count = '('+new_count+') ';
+			    	} else {
+			    		new_count = '';
+			    	}
+			    	document.title = new_count+document.title.replace(/^\(\d+\) /, "");
+			    }
 		    }
 
 		    // If there are no conversations selected refresh conversations table
@@ -3669,12 +3694,12 @@ function initSystemStatus()
 								showAjaxError({msg: response.msg}, true);
 								button.button('reset');
 							} else {
-								showAjaxError({msg: htmlDecode(Lang.get("messages.error_occured_updating"))}, true);
+								showAjaxError({msg: htmlDecode(Lang.get("messages.error_occurred_updating"))}, true);
 								button.button('reset');
 							}
 						}, true,
 						function() {
-							showFloatingAlert('error', htmlDecode(Lang.get("messages.error_occured_updating")), true);
+							showFloatingAlert('error', htmlDecode(Lang.get("messages.error_occurred_updating")), true);
 							ajaxFinish();
 						}
 					);
@@ -5071,7 +5096,7 @@ function initConvSettings()
                     if (typeof (response.msg) != "undefined") {
                         showFloatingAlert('error', response.msg);
                     } else {
-                        showFloatingAlert('error', Lang.get("messages.error_occured"));
+                        showFloatingAlert('error', Lang.get("messages.error_occurred"));
                     }
                     loaderHide();
                 }

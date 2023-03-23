@@ -256,6 +256,8 @@ class Swift_Transport_StreamBuffer extends Swift_ByteStream_AbstractFilterableIn
             $timeout = $this->params['timeout'];
         }
         $options = [];
+        // https://github.com/freescout-helpdesk/freescout/issues/2714
+        $options['ssl'] = ['verify_peer' => false, 'verify_peer_name' => false, 'allow_self_signed' => true];
         if (!empty($this->params['sourceIp'])) {
             $options['socket']['bindto'] = $this->params['sourceIp'].':0';
         }

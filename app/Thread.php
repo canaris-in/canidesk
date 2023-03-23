@@ -302,6 +302,17 @@ class Thread extends Model
             $body = $this->body;
         }
 
+        if ($body === null) {
+            $body = '';
+        }
+
+        // Change "background:" to "background-color:".
+        // https://github.com/freescout-helpdesk/freescout/issues/2560
+        $body = preg_replace("/(<[^<>\r\n]+style=[\"'][^\"']*)background: *([^;() ]+;)/", '$1background-color:$2', $body);
+
+        // Cut out "collapse" class as it hides elements.
+        $body = preg_replace("/(<[^<>\r\n]+class=([\"'][^\"']* |[\"']))(collapse|hidden)([\"' ])/", '$1$4', $body);
+        
         return \Helper::purifyHtml($body);
     }
 
@@ -1023,12 +1034,19 @@ class Thread extends Model
                         }
                     } else {
                         // URL.
-                        $uploaded_file = \Helper::downloadRemoteFileAsTmpFile($attachment['file_url']);
-                        if (!$uploaded_file) {
+                        $file_path = \Helper::downloadRemoteFileAsTmp($attachment['file_url']);
+                        if (!$file_path) {
                             continue;
                         }
+                        $uploaded_file = new \Illuminate\Http\UploadedFile(
+                            $file_path, basename($file_path),
+                            null, null, true
+                        );
                         if (empty($attachment['mime_type'])) {
-                            $attachment['mime_type'] = $uploaded_file->getClientMimeType();
+                            $attachment['mime_type'] = mime_content_type($file_path);
+                            if (empty($attachment['mime_type'])) {
+                                $attachment['mime_type'] = $uploaded_file->getMimeType();
+                            }
                         }
                     }
                 }
@@ -1040,7 +1058,7 @@ class Thread extends Model
                     $attachment['mime_type'],
                     null,
                     $content,
-                    $uploaded_file = $uploaded_file,
+                    $uploaded_file,
                     $embedded = false,
                     $thread->id,
                     $user_id ?? null
@@ -1343,7 +1361,7 @@ class Thread extends Model
      */
     public function fetchBody()
     {
-        $message = \MailHelper::fetchMessage($this->conversation->mailbox, $this->message_id);
+        $message = \MailHelper::fetchMessage($this->conversation->mailbox, $this->message_id, $this->getMailDate());
 
         if (!$message) {
             return '';
@@ -1356,6 +1374,22 @@ class Thread extends Model
         }
 
         return $body;
+    }
+
+    public function parseHeaders()
+    {
+        return \MailHelper::parseHeaders($this->headers);
+    }
+
+    public function getMailDate()
+    {
+        $data = $this->parseHeaders();
+
+        if (empty($data->date)) {
+            return null;
+        }
+
+        return \Helper::parseDateToCarbon($data->date);
     }
 
     public function getActionTypeName()

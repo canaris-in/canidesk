@@ -494,6 +494,7 @@ class User extends Authenticatable
                         'H'     => 'h',
                         'G'     => 'g',
                         ':i'    => ':ia',
+                        ':i:s'  => ':i:sa',
                         ':ia:s' => ':i:sa',
                     ]);
                 } else {
@@ -656,7 +657,7 @@ class User extends Authenticatable
             saveToSendLog($this, SendLog::STATUS_SEND_ERROR);
 
             if ($throw_exceptions) {
-                throw new \Exception(__('Error occured sending email to :email. Please check logs for more details.', ['email' => $this->email]), 1);
+                throw new \Exception(__('Error occurred sending email to :email. Please check logs for more details.', ['email' => $this->email]), 1);
             } else {
                 return false;
             }
@@ -900,7 +901,7 @@ class User extends Authenticatable
      */
     public static function getSuperAdmin()
     {
-        return self::where('role', self::ROLE_ADMIN)->first();
+        return self::nonDeleted()->where('role', self::ROLE_ADMIN)->first();
     }
 
     /**

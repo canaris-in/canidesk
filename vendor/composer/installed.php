@@ -1,6 +1,7 @@
 <?php return array(
     'root' => array(
         'name' => 'freescout-helpdesk/freescout',
+<<<<<<< HEAD
         'pretty_version' => 'dev-develop',
         'version' => 'dev-develop',
         'reference' => '7a66a51914e530c28fb93f7e6341784413430531',
@@ -8,6 +9,15 @@
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
         'dev' => true,
+=======
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => '44084b4f1dd8d0484f8aa2ce87feab87ffbcbde8',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'dev' => false,
+>>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
     ),
     'versions' => array(
         'anahkiasen/underscore-php' => array(
@@ -221,9 +231,15 @@
             'dev_requirement' => true,
         ),
         'freescout-helpdesk/freescout' => array(
+<<<<<<< HEAD
             'pretty_version' => 'dev-develop',
             'version' => 'dev-develop',
             'reference' => '7a66a51914e530c28fb93f7e6341784413430531',
+=======
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => '44084b4f1dd8d0484f8aa2ce87feab87ffbcbde8',
+>>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

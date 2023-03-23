@@ -596,12 +596,19 @@ class Customer extends Model
                     $this->emails()->saveMany($new_emails);
                 }
             }
-            // Create customers for deleted emails
+
             foreach ($deleted_emails as $email) {
-                $customer = new self();
-                $customer->save();
-                $email->customer()->associate($customer);
-                $email->save();
+                if (Conversation::where('customer_email', $email->email)->exists()) {
+                    // Create customers for deleted emails
+                    // if there is a conversation with 'customer_email'.
+                    $customer = new self();
+                    $customer->save();
+                    $email->customer()->associate($customer);
+                    $email->save();
+                } else {
+                    // Simply delete an email.
+                    $email->delete();
+                }
             }
         }
     }
@@ -1276,7 +1283,7 @@ class Customer extends Model
 
         $dest_dir = pathinfo($dest_path, PATHINFO_DIRNAME);
         if (!file_exists($dest_dir)) {
-            \File::makeDirectory($dest_dir, 0755);
+            \File::makeDirectory($dest_dir, \Helper::DIR_PERMISSIONS);
         }
 
         // Remove current photo
@@ -1371,7 +1378,7 @@ class Customer extends Model
             return false;
         }
 
-        $temp_file = tempnam(sys_get_temp_dir(), 'photo');
+        $temp_file = \Helper::getTempFileName();
 
         \File::put($temp_file, $image_data);
 

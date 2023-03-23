@@ -39,6 +39,8 @@ class Mail
     const MAIL_ENCRYPTION_TLS = 'tls';
 
     const FETCH_SCHEDULE_EVERY_MINUTE = 1;
+    const FETCH_SCHEDULE_EVERY_TWO_MINUTES = 2;
+    const FETCH_SCHEDULE_EVERY_THREE_MINUTES = 3;
     const FETCH_SCHEDULE_EVERY_FIVE_MINUTES = 5;
     const FETCH_SCHEDULE_EVERY_TEN_MINUTES = 10;
     const FETCH_SCHEDULE_EVERY_FIFTEEN_MINUTES = 15;
@@ -572,7 +574,10 @@ class Mail
      */
     public static function getMailboxClient($mailbox)
     {
-        if (!$mailbox->oauthEnabled()) {
+        $oauth = $mailbox->oauthEnabled();
+        $new_library = config('app.new_fetching_library');
+
+        if (!$oauth && !$new_library) {
             return new \Webklex\IMAP\Client([
                 'host'          => $mailbox->in_server,
                 'port'          => $mailbox->in_port,
@@ -584,16 +589,32 @@ class Mail
             ]);
         } else {
 
-            \Config::set('imap.accounts.default', [
-                'host'          => $mailbox->in_server,
-                'port'          => $mailbox->in_port,
-                'encryption'    => $mailbox->getInEncryptionName(),
-                'validate_cert' => $mailbox->in_validate_cert,
-                'username'      => $mailbox->email,
-                'password'      => $mailbox->oauthGetParam('a_token'),
-                'protocol'      => $mailbox->getInProtocolName(),
-                'authentication' => 'oauth',
-            ]);
+            if ($oauth) {
+                \Config::set('imap.accounts.default', [
+                    'host'          => $mailbox->in_server,
+                    'port'          => $mailbox->in_port,
+                    'encryption'    => $mailbox->getInEncryptionName(),
+                    'validate_cert' => $mailbox->in_validate_cert,
+                    'username'      => $mailbox->email,
+                    'password'      => $mailbox->oauthGetParam('a_token'),
+                    'protocol'      => $mailbox->getInProtocolName(),
+                    'authentication' => 'oauth',
+                ]);
+            } else {
+                \Config::set('imap.accounts.default', [
+                    'host'          => $mailbox->in_server,
+                    'port'          => $mailbox->in_port,
+                    'encryption'    => $mailbox->getInEncryptionName(),
+                    'validate_cert' => $mailbox->in_validate_cert,
+                    // 'username'      => $mailbox->email,
+                    // 'password'      => $mailbox->oauthGetParam('a_token'),
+                    // 'protocol'      => $mailbox->getInProtocolName(),
+                    // 'authentication' => 'oauth',
+                    'username'      => $mailbox->in_username,
+                    'password'      => $mailbox->in_password,
+                    'protocol'      => $mailbox->getInProtocolName(),
+                ]);
+            }
             // To enable debug: /vendor/webklex/php-imap/src/Connection/Protocols
             // Debug in console
             if (app()->runningInConsole()) {
@@ -603,24 +624,26 @@ class Mail
             $cm = new \Webklex\PHPIMAP\ClientManager(config('imap'));
 
             // Refresh Access Token.
-            if ((strtotime($mailbox->oauthGetParam('issued_on')) + (int)$mailbox->oauthGetParam('expires_in')) < time()) {
-                // Try to get an access token (using the authorization code grant)
-                $token_data = \MailHelper::oauthGetAccessToken(\MailHelper::OAUTH_PROVIDER_MICROSOFT, [
-                    'client_id' => $mailbox->in_username,
-                    'client_secret' => $mailbox->in_password,
-                    'refresh_token' => $mailbox->oauthGetParam('r_token'),
-                ]);
-
-                if (!empty($token_data['a_token'])) {
-                    $mailbox->setMetaParam('oauth', $token_data, true);
-                } elseif (!empty($token_data['error'])) {
-                    $error_message = 'Error occurred refreshing oAuth Access Token: '.$token_data['error'];
-                    \Helper::log(\App\ActivityLog::NAME_EMAILS_FETCHING, 
-                        \App\ActivityLog::DESCRIPTION_EMAILS_FETCHING_ERROR, [
-                        'error'   => $error_message,
-                        'mailbox' => $mailbox->name,
+            if ($oauth) {
+                if ((strtotime($mailbox->oauthGetParam('issued_on')) + (int)$mailbox->oauthGetParam('expires_in')) < time()) {
+                    // Try to get an access token (using the authorization code grant)
+                    $token_data = \MailHelper::oauthGetAccessToken(\MailHelper::OAUTH_PROVIDER_MICROSOFT, [
+                        'client_id' => $mailbox->in_username,
+                        'client_secret' => $mailbox->in_password,
+                        'refresh_token' => $mailbox->oauthGetParam('r_token'),
                     ]);
-                    throw new \Exception($error_message, 1);
+
+                    if (!empty($token_data['a_token'])) {
+                        $mailbox->setMetaParam('oauth', $token_data, true);
+                    } elseif (!empty($token_data['error'])) {
+                        $error_message = 'Error occurred refreshing oAuth Access Token: '.$token_data['error'];
+                        \Helper::log(\App\ActivityLog::NAME_EMAILS_FETCHING, 
+                            \App\ActivityLog::DESCRIPTION_EMAILS_FETCHING_ERROR, [
+                            'error'   => $error_message,
+                            'mailbox' => $mailbox->name,
+                        ]);
+                        throw new \Exception($error_message, 1);
+                    }
                 }
             }
 
@@ -647,7 +670,7 @@ class Mail
     /**
      * Fetch IMAP message by Message-ID.
      */
-    public static function fetchMessage($mailbox, $message_id)
+    public static function fetchMessage($mailbox, $message_id, $message_date = null)
     {
         $no_charset = false;
 
@@ -667,9 +690,19 @@ class Mail
 
         foreach ($imap_folders as $folder_name) {
             try {
-                $folder = $client->getFolder($folder_name);
+                $folder = self::getImapFolder($client, $folder_name);
                 // Message-ID: <123@123.com>
-                $query = $folder->query()->text('<'.$message_id.'>')->leaveUnread()->limit(1);
+                $query = $folder->query()
+                    ->text('<'.$message_id.'>')
+                    ->leaveUnread()
+                    ->limit(1);
+
+                // Limit using date to speed up the search.
+                if ($message_date) {
+                   $query->since($message_date->subDays(7));
+                   // Here we should add 14 days, as previous line subtracts 7 days.
+                   $query->before($message_date->addDays(14));
+                }
 
                 if ($no_charset) {
                     $query->setCharset(null);
@@ -685,7 +718,12 @@ class Mail
                 if ($last_error && stristr($last_error, 'The specified charset is not supported')) {
                     // Solution for MS mailboxes.
                     // https://github.com/freescout-helpdesk/freescout/issues/176
-                    $messages = $folder->query()->text('<'.$message_id.'>')->leaveUnread()->limit(1)->setCharset(null)->get();
+                    $query = $folder->query()->text('<'.$message_id.'>')->leaveUnread()->limit(1)->setCharset(null);
+                    if ($message_date) {
+                       $query->since($message_date->subDays(7));
+                       $query->before($message_date->addDays(7));
+                    }
+                    $messages = $query->get();
                     $no_charset = true;
                 }
 
@@ -758,6 +796,7 @@ class Mail
                 //curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $post_params);
                 curl_setopt($curl, CURLOPT_HTTPHEADER, array("application/x-www-form-urlencoded"));
+                curl_setopt($curl, CURLOPT_TIMEOUT, 180);
                 curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
@@ -830,6 +869,15 @@ class Mail
             }
             return $swiftmessage;
         });
+    }
+
+    public static function getImapFolder($client, $folder_name)
+    {
+        if (method_exists($client, 'getFolderByPath')) {
+            return $client->getFolderByPath($folder_name);
+        } else {
+            return $client->getFolder($folder_name);
+        }
     }
 
     // public static function oauthGetProvider($provider_code, $params)

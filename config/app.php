@@ -18,7 +18,11 @@ return [
     | or any other location as required by the application or its packages.
     */
 
+<<<<<<< HEAD
     'version' => '2.0.0',
+=======
+    'version' => '1.8.67',
+>>>>>>> 1059a9332442f5355d12784481f75ecdc6d78b1d
 
     /*
     |--------------------------------------------------------------------------
@@ -101,7 +105,7 @@ return [
     */
 
     'locale'          => env('APP_LOCALE', 'en'),
-    'locales'         => ['en', 'hr', 'cs', 'da', 'nl', 'fr', 'de', 'it', 'ja', 'ko', 'fa', 'pl', 'pt-PT', 'pt-BR', 'ru', 'es', 'sk', 'sv'],
+    'locales'         => ['en', 'hr', 'cs', 'da', 'nl', 'fi', 'fr', 'de', 'it', 'ja', 'ko', 'fa', 'pl', 'pt-PT', 'pt-BR', 'ru', 'es', 'sk', 'sv'],
     'locales_rtl'     => ['fa'],
     'default_locale'  => 'en',
 
@@ -191,12 +195,13 @@ return [
     | Checks for new jobs every --sleep seconds.
     | If --tries is set and job fails it is being processed right away without any delay.
     | --delay parameter does not work to set delays between retry attempts.
+    | --timeout parameter sets job timeout and is used to avoid queue:work stucking.
     |
     | Jobs sending emails are retried manually in handle().
     | Number of retries is set in each job class.
     |-------------------------------------------------------------------------
     */
-    'queue_work_params' => ['--queue' => 'emails,default', '--sleep' => '5', '--tries' => '1'],
+    'queue_work_params' => ['--queue' => 'emails,default', '--sleep' => '5', '--tries' => '1', '--timeout' => '1800'],
 
     /*
     |--------------------------------------------------------------------------
@@ -277,6 +282,8 @@ return [
     |-------------------------------------------------------------------------
     */
     'viewable_attachments'    => env('APP_VIEWABLE_ATTACHMENTS', ['jpg', 'jpeg', 'jfif', 'pjpeg', 'pjp', 'apng', 'bmp', 'gif', 'ico', 'cur', 'png', 'tif', 'tiff', 'webp', 'pdf', 'txt', 'mp3', 'wav', 'ogg', 'wma']),
+    // Regular expremissions (#...#)
+    'viewable_mime_types'    => env('APP_VIEWABLE_MIME_TYPES', ['image/.*', 'application/pdf', 'text/plain', 'audio/.*']),
 
     /*
     |--------------------------------------------------------------------------
@@ -353,7 +360,7 @@ return [
     | Disable update checker
     |--------------------------------------------------------------------------
     */
-    'disable_updating'    => env('APP_DISABLE_UPDATING', false),
+    'disable_updating'    => env('APP_DISABLE_UPDATING', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -377,6 +384,20 @@ return [
     |--------------------------------------------------------------------------
     */
     'custom_mail_headers' => env('APP_CUSTOM_MAIL_HEADERS', ''),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Library used to fetch emails: webklex/laravel-imap, webklex/php-imap
+    |-------------------------------------------------------------------------
+    */
+    'new_fetching_library'    => env('APP_NEW_FETCHING_LIBRARY', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Timeout for curl and GuzzleHttp.
+    |-------------------------------------------------------------------------
+    */
+    'curl_timeout'    => env('APP_CURL_TIMEOUT', 40),
 
     /*
     |--------------------------------------------------------------------------
