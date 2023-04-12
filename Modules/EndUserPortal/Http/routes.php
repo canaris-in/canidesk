@@ -21,6 +21,8 @@ Route::group(['middleware' => [\App\Http\Middleware\EncryptCookies::class, \Illu
     Route::get('/help/{mailbox_id}', 'EndUserPortalController@submit')->name('enduserportal.submit');
     Route::post('/help/{mailbox_id}', 'EndUserPortalController@submitProcess');
     Route::get('/help/{mailbox_id}/ajax-html/{action}', 'EndUserPortalController@ajaxHtml')->name('enduserportal.ajax_html');
+    Route::get('/help/{mailbox_id}/reset-password', 'EndUserPortalController@show')->name('enduserportal.reset_password');
+    Route::post('/help/{mailbox_id}/reset-password', 'EndUserPortalController@saveResetPassword');
 });
 
 

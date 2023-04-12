@@ -1,6 +1,6 @@
 @extends('enduserportal::layouts.portal')
 
-@section('title', __('Log In'))
+@section('title', __('Reset Password'))
 
 @section('content')
 
@@ -12,7 +12,7 @@
                 <div class="panel-body">
 
                 	<div class="wizard-header padding-top-0">
-						<h1>{{ __('Log In') }}</h1>
+						<h1>{{ __('Reset Password') }}</h1>
 					</div>
 
 					@if (!empty($result) && $result['result'] == 'error' && $result['message'])
@@ -24,6 +24,7 @@
 					@if (!empty($result) && $result['result'] == 'success' && $result['message'])
 						<div class="alert alert-success">
 							{!! $result['message'] !!}
+                            <a href="{{ route('enduserportal.tickets', ['mailbox_id' => EndUserPortal::encodeMailboxId($mailbox->id)])  }}">({{ __('My Tickets') }})</a>
 						</div>
 					@else
 	                    <form class="margin-top" method="POST" action="">
@@ -31,7 +32,7 @@
 
 	                        <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
 
-	                            <input id="email" type="email" class="form-control input-md" name="email" value="{{ old('email') }}" placeholder="{{ __('Email Address') }}" required autofocus>
+	                            <input id="email" type="email" class="form-control input-md" name="email" value="{{ $customer->getMainEmail() }}" placeholder="{{ __('Email Address') }}" required autofocus disabled>
 
 	                            @if ($errors->has('email'))
 	                                <span class="help-block">
@@ -44,21 +45,25 @@
 
 	                            <input id="password" type="password" class="form-control input-md" name="password" value="" placeholder="{{ __('Password') }}" required autofocus>
 
-	                            @if ($errors->has('password'))
-	                                <span class="help-block">
-	                                    <strong>{{ $errors->first('password') }}</strong>
-	                                </span>
-	                            @endif
+							</div>
+							<div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
+
+	                            <input id="password_confirmation" type="password" class="form-control input-md" name="password_confirmation" value="" placeholder="{{ __('Confirm Password') }}" required>
 
 							</div>
+                            @if ($errors->has('password'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('password') }}</strong>
+                                    </span>
+                                @endif
+
 							<input type="hidden" name="mailbox_id" value="{{$mailbox->id}}"/>
 
 	                        <div class="form-group">
 
 	                                <button type="submit" class="btn btn-primary btn-block btn-lg">
-	                                    {{ __('Login') }}
+	                                    {{ __('Reset Password') }}
 	                                </button>
-
 	                        </div>
 	                    </form>
 	                @endif

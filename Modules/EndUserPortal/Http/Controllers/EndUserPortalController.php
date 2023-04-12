@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Validator;
+use Illuminate\Support\Facades\Hash;
 
 class EndUserPortalController extends Controller
 {
@@ -23,7 +24,7 @@ class EndUserPortalController extends Controller
     public function settings($mailbox_id)
     {
         $mailbox = Mailbox::findOrFail($mailbox_id);
-        
+
         $meta_settings = $mailbox->meta['eup'] ?? [];
 
         $default_settings = \EndUserPortal::getDefaultPortalSettings();
@@ -66,7 +67,7 @@ class EndUserPortalController extends Controller
     public function settingsSave(Request $request, $mailbox_id)
     {
         $mailbox = Mailbox::findOrFail($mailbox_id);
-        
+
         if (!empty($request->eup_action) && $request->eup_action == 'save_settings') {
             $settings = $request->settings;
             if ($settings['text_submit'] == \EndUserPortal::getDefaultPortalSettings('text_submit')) {
@@ -87,7 +88,7 @@ class EndUserPortalController extends Controller
             if (array_key_exists('locale', $settings) && !$settings['locale']) {
                 unset($settings['locale']);
             }
-            
+
             // if (empty($settings['title'])) {
             //     $settings['title'] = __('Contact us');
             // }
@@ -131,14 +132,14 @@ class EndUserPortalController extends Controller
      */
     public function loginProcess(Request $request, $mailbox_id = null)
     {
-        
+
         $result = [
             'result' => 'success',
             'message' => '',
         ];
-        
+
         $mailbox = $this->processMailboxLogin($request->mailbox_id);
-        
+
         if (!$mailbox) {
             abort(404);
         }
@@ -196,8 +197,10 @@ class EndUserPortalController extends Controller
         //         $result['message'] = __('Error occured sending email to <strong>:email</strong>', ['email' => htmlspecialchars($request->email)]);
         //     }
         // }
-        
+
         $customer = $customer = Customer::getByEmail($email);
+        // $customer->last_login= now();
+        // $customer->save();
         if(!$customer || !\Hash::check($request->password, $customer->password)){
             $result['result'] = 'error';
             $result['message'] = __('Email or password is incorrect', ['email' => htmlspecialchars($request->email)]);
@@ -207,7 +210,7 @@ class EndUserPortalController extends Controller
             ]);
         }
         $auth_result = \EndUserPortal::authenticate($customer->id, $request->mailbox_id);
-        
+
         if ($auth_result) {
             return $auth_result;
         }
@@ -299,9 +302,9 @@ class EndUserPortalController extends Controller
             $threads = Thread::whereIn('conversation_id', $conversation_ids)
                 ->whereIn('type', [Thread::TYPE_MESSAGE, Thread::TYPE_CUSTOMER])
                 ->get();
-            
+
             $threads = $threads->sortByDesc('id');
-            
+
             $send_later_active = \Module::isActive('sendlater');
 
             if ($threads) {
@@ -311,13 +314,13 @@ class EndUserPortalController extends Controller
                         if ($ticket->id == $thread->conversation_id) {
 
                             // Skip scheduled.
-                            if ($send_later_active 
+                            if ($send_later_active
                                 && $ticket->scheduled
                                 && $thread->getMeta(\SendLater::META_NAME) !== null
                             ) {
                                 continue;
                             }
-                            
+
                             // Update preview as preview in DB contains previews of notes too.
                             $tickets[$i]->preview = \Helper::textPreview($thread->body, Conversation::PREVIEW_MAXLENGTH);
 
@@ -373,7 +376,7 @@ class EndUserPortalController extends Controller
 
         foreach ($threads as $i => $thread) {
             // Skip scheduled.
-            if ($send_later_active 
+            if ($send_later_active
                 && $conversation->scheduled
                 && $thread->getMeta(\SendLater::META_NAME) !== null
             ) {
@@ -758,7 +761,7 @@ class EndUserPortalController extends Controller
      * Widget form.
      */
     public function widgetForm(Request $request, $mailbox_id = null)
-    {        
+    {
         // Set locale if needed.
         if (!empty($request->locale)) {
             app()->setLocale($request->locale);
@@ -829,11 +832,11 @@ class EndUserPortalController extends Controller
     public function ajaxHtml(Request $request)
     {
         //$user = auth()->user();
-        
+
         switch ($request->action) {
 
             case 'privacy_policy':
- 
+
                 $mailbox = $this->processMailboxId($request->mailbox_id, \EndUserPortal::WIDGET_SALT);
 
                 if (!$mailbox) {
@@ -841,11 +844,36 @@ class EndUserPortalController extends Controller
                 }
 
                 $html = \EndUserPortal::getMailboxParam($mailbox, 'privacy');
-                
+
                 return $html;
                 break;
         }
 
         abort(404);
+    }
+
+    public function show(Request $request, $mailbox_id = null) {
+        $mailbox = $this->processMailboxid($mailbox_id);
+        $customer = \EndUserPortal::authCustomer();
+        return view('enduserportal::resetpassword', compact('mailbox','customer'));
+    }
+
+    public function saveResetPassword(Request $request, $mailbox_id) {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|string|confirmed|min:8'
+        ]);
+        if ($validator->fails()) {
+            return redirect()->route('enduserportal.reset_password', ['mailbox_id' => $mailbox_id])
+                        ->withErrors($validator)
+                        ->withInput();
+        }
+        $mailbox = $this->processMailboxid($mailbox_id);
+        $customer = \EndUserPortal::authCustomer();
+        $request_data = $request->all();
+        $customer->password = Hash::make($request->password);
+        $customer->save();
+        $result['result'] = 'success';
+        $result['message'] = 'Password has been updated successfully';
+        return view('enduserportal::resetpassword', compact('mailbox', 'customer', 'result'));
     }
 }

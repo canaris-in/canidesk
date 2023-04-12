@@ -126,7 +126,7 @@ class EndUserPortalServiceProvider extends ServiceProvider
     public static function getMailboxParam($mailbox, $param)
     {
         return $mailbox->meta['eup'][$param] ?? \EndUserPortal::getDefaultPortalSettings()[$param] ?? '';
-    }    
+    }
 
     public static function isEup()
     {
@@ -141,7 +141,7 @@ class EndUserPortalServiceProvider extends ServiceProvider
     public static function saveWidgetSettings($mailbox_id, $settings)
     {
         return \Option::set(EUP_MODULE.'.widget_settings_'.$mailbox_id, $settings);
-    }    
+    }
 
     // public static function saveWidgetScript($mailbox_id, $settings)
     // {
@@ -167,7 +167,7 @@ class EndUserPortalServiceProvider extends ServiceProvider
     // {
     //     return 'eup_widget_'.self::encodeMailboxId($mailbox_id, self::WIDGET_SALT).'.js';
     // }
-    
+
     public static function getWidgetScriptUrl($mailbox_id, $include_version = false)
     {
         $url = config('app.url').\Module::getPublicPath(EUP_MODULE).'/js/widget.js';
@@ -245,8 +245,24 @@ class EndUserPortalServiceProvider extends ServiceProvider
         $customer = Customer::find($customer_id);
         if ($customer) {
             $cookie = cookie('enduserportal_auth', encrypt($customer_id), self::AUTH_PERIOD);
+
+            /**
+             * 1. Make migration to add last_login column to customer table, default
+             * type should be nullable use column type same as created_at [ datetime() ]
+             * 2. Run the migration
+             * 3. On successful login check if last_login is null, if yes, make last login as
+             * current date time and redirect to reset password
+             * If not null redirect to my tickets page
+             */
+            if($customer->last_login=='NULL'){
+                $customer->last_login = date('Y-m-d H:i:s');
+                $customer->save();
+                $cookie = cookie('enduserportal_auth', encrypt($customer_id), self::AUTH_PERIOD);
+                return redirect()->route('enduserportal.reset-password');
+            }else{
             return redirect()->route('enduserportal.tickets', ['mailbox_id' => \EndUserPortal::encodeMailboxId($mailbox_id)])
                 ->withCookie($cookie);
+            }
         } else {
             return false;
         }
@@ -310,7 +326,7 @@ class EndUserPortalServiceProvider extends ServiceProvider
 
     public static function getStatusName($conversation)
     {
-        if (in_array($conversation->status, [Conversation::STATUS_ACTIVE, Conversation::STATUS_PENDING]) && 
+        if (in_array($conversation->status, [Conversation::STATUS_ACTIVE, Conversation::STATUS_PENDING]) &&
             $conversation->state != Conversation::STATE_DELETED
         ) {
             return __('Open');
