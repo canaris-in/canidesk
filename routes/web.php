@@ -128,3 +128,5 @@ Route::post('/uploads/upload', ['uses' => 'SecureController@upload', 'laroute' =
 
 // Dashboard
 Route::get('/reports/dashboard', 'DashboardController@index')->name('dashboard');
+// SLA-REPORT
+Route::get('/reports/sla', 'SlaReportController@slaReport');
