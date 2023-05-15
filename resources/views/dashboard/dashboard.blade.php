@@ -7,24 +7,24 @@
             <div class="col-md-4">
                 <div class="card h-150 w-300" style="height: 150px; width: 300px;">
                     <div class="card-body text-center">
-                        <p class="card-text">Incidents Opened Today</p>
-                        <h2 class="card-title text-danger" style="font-size: 80px;">{{$openedTodayCount}}</h2>
+                        <p class="card-text">Total Tickets</p>
+                        <h2 class="card-title text-danger" style="font-size: 80px;">0</h2>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card h-150 w-300" style="height: 150px; width: 300px;">
                     <div class="card-body text-center">
-                        <p class="card-text">Unassigned Incidents</p>
-                        <h2 class="card-title" style="font-size: 80px;">{{$unassignedCount}}</h2>
+                        <p class="card-text">Unassigned Tickets</p>
+                        <h2 class="card-title" style="font-size: 80px;">15</h2>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card h-150 w-300" style="height: 150px; width: 300px;">
                     <div class="card-body text-center">
-                        <p class="card-text">Overdue Incidents</p>
-                        <h2 class="card-title text-danger" style="font-size: 80px;">{{$overdueCount}}</h2>
+                        <p class="card-text">Overdue Tickets</p>
+                        <h2 class="card-title text-danger" style="font-size: 80px;">0</h2>
                     </div>
                 </div>
             </div>
@@ -33,24 +33,24 @@
             <div class="col-md-4">
                 <div class="card h-150 w-300" style="height: 150px; width: 300px;">
                     <div class="card-body text-center">
-                        <p class="card-text">Open Incidents</p>
-                        <h2 class="card-title" style="font-size: 80px;">{{$unclosedCount}}</h2>
+                        <p class="card-text">Open Tickets</p>
+                        <h2 class="card-title" style="font-size: 80px;">40</h2>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card h-150 w-300" style="height: 150px; width: 300px;">
                     <div class="card-body text-center">
-                        <p class="card-text">Incidents Not Updated for 7 days</p>
-                        <h2 class="card-title" style="font-size: 80px;">{{$unclosedReplied7DaysAgoCount}}</h2>
+                        <p class="card-text">Close Tickets</p>
+                        <h2 class="card-title" style="font-size: 80px;">33</h2>
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card h-150 w-300" style="height: 150px; width: 300px;">
                     <div class="card-body text-center">
-                        <p class="card-text">Open Incidents older than 30 Days</p>
-                        <h2 class="card-title" style="font-size: 80px;">{{$unclosedCreated30DaysAgoCount}}</h2>
+                        <p class="card-text">Hold Tickets</p>
+                        <h2 class="card-title" style="font-size: 80px;">40</h2>
                     </div>
                 </div>
             </div>
