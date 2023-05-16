@@ -200,6 +200,7 @@ populateUl();
 </ul>
 <ul class="bars">
     <h2 class="header">Weekly Tickets</h2>
+<<<<<<< HEAD
 <li><div class="bar" data-percentage="{{$tickets['Sunday']}}"></div><span>S</span></li>
 <li><div class="bar" data-percentage="{{$tickets['Monday']}}"></div><span>M</span></li>
 <li><div class="bar" data-percentage="{{$tickets['Tuesday']}}"></div><span>T</span></li>
@@ -207,6 +208,15 @@ populateUl();
 <li><div class="bar" data-percentage="{{$tickets['Thursday']}}"></div><span>T</span></li>
 <li><div class="bar" data-percentage="{{$tickets['Friday']}}"></div><span>F</span></li>
 <li><div class="bar" data-percentage="{{$tickets['Saturday']}}"></div><span>S</span></li>
+=======
+<li><div class="bar" data-percentage="30"></div><span>S</span></li>
+<li><div class="bar" data-percentage="50"></div><span>M</span></li>
+<li><div class="bar" data-percentage="40"></div><span>T</span></li>
+<li><div class="bar" data-percentage="50"></div><span>W</span></li>
+<li><div class="bar" data-percentage="80"></div><span>T</span></li>
+<li><div class="bar" data-percentage="20"></div><span>F</span></li>
+<li><div class="bar" data-percentage="30"></div><span>S</span></li>
+>>>>>>> a1a35c27 (Canidesk-30)
 <h2 class="head">Average resolved tickets</h2>
 </ul>
 </div>
