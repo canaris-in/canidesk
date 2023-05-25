@@ -1,184 +1,251 @@
 @extends('layouts.app')
 @section('content')
-<div class="container">
-  <div class="row vh-100">
-    <div class="col-md-9"> <!-- 80% width for larger screens -->
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card h-150 w-300" style="height: 150px; width: 300px;">
-                    <div class="card-body text-center">
-                        <p class="card-text">Total Tickets</p>
-                        <h2 class="card-title text-danger" style="font-size: 80px;">0</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-150 w-300" style="height: 150px; width: 300px;">
-                    <div class="card-body text-center">
-                        <p class="card-text">Unassigned Tickets</p>
-                        <h2 class="card-title" style="font-size: 80px;">15</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-150 w-300" style="height: 150px; width: 300px;">
-                    <div class="card-body text-center">
-                        <p class="card-text">Overdue Tickets</p>
-                        <h2 class="card-title text-danger" style="font-size: 80px;">0</h2>
-                    </div>
-                </div>
-            </div>
+<div class="container-fluid color" style="padding: 0 60px;margin-bottom: 3em;">
+    <div style="border: 2px solid #eee; padding: 2rem; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <label for="ticket">Ticket Category</label>
+            <select name="ticket" id="" ticket style="background-color: transparent; border-radius: 4px; margin-left: 4px; color:#1D1C24;">
+                <option value="none"></option>
+                @foreach($categoryValues as $category)
+                    <option value="{{$category}}">{{$category}}</option>
+                @endforeach
+            </select>
         </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card h-150 w-300" style="height: 150px; width: 300px;">
-                    <div class="card-body text-center">
-                        <p class="card-text">Open Tickets</p>
-                        <h2 class="card-title" style="font-size: 80px;">40</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-150 w-300" style="height: 150px; width: 300px;">
-                    <div class="card-body text-center">
-                        <p class="card-text">Close Tickets</p>
-                        <h2 class="card-title" style="font-size: 80px;">33</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card h-150 w-300" style="height: 150px; width: 300px;">
-                    <div class="card-body text-center">
-                        <p class="card-text">Hold Tickets</p>
-                        <h2 class="card-title" style="font-size: 80px;">40</h2>
-                    </div>
-                </div>
-            </div>
+        <div>
+            <label for="ticket">Product</label>
+            <select name="ticket" id="" ticket style="background-color: transparent; border-radius: 4px; margin-left: 4px; color:#1D1C24;">
+                <option value="none"></option>
+                <option value="open">Product 1</option>
+                <option value="hold">Product 2</option>
+                <option value="closed">Product 3</option>
+            </select>
         </div>
-        
-        <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <h2 class="chart-heading">Popular Programming Languages</h2>
-    <div class="programming-stats">
-      <div class="chart-container">
-        <canvas class="my-chart"></canvas>
-      </div>
-
-      <div class="details">
-        <ul></ul>
-      </div>
+        <div>
+            <label for="ticket">Type</label>
+            <select name="ticket" id="" ticket style="background-color: transparent; border-radius: 4px; margin-left: 4px; color:#1D1C24;">
+                <option value="none"></option>
+                <option value="open">Type 1</option>
+                <option value="hold">Type 2</option>
+                <option value="closed">Type 3</option>
+            </select>
+        </div>
+        <div>
+            <label for="ticket">Mailbox</label>
+            <select name="ticket" id="" ticket style="background-color: transparent; border-radius: 4px; margin-left: 4px; color:#1D1C24;">
+                <option value="none"></option>
+                <option value="open">Mailbox 1</option>
+                <option value="hold">Mailbox 2</option>
+                <option value="closed">Mailbox 3</option>
+            </select>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <label for="date">Date</label>
+            <input type="date" class="form-control" id="date" style="margin-left: 10px; margin-bottom: 2px; border-radius: 4px; color:snow;">
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-   
-  </body>
-</html>
+    <div class="row text-center" style="margin-top: 6rem;">
+        <div class="col-md-4">
+            <p class="stat-options">Total Tickets</p>
+            <h1 class="stat-values">{{$totalCount}}</h1>
+        </div>
+        <div class="col-md-4">
+            <p class="stat-options">Unassigned Tickets</p>
+            <h1 class="stat-values">{{$unassignedCount}}</h1>
+        </div>
+        <div class="col-md-4">
+            <p class="stat-options">Overdue Tickets</p>
+            <h1 class="stat-values">{{$overdueCount}}</h1>
+        </div>
+    </div>
+
+    <div class="row text-center" style="margin-top: 4rem;">
+        <div class="col-md-4">
+            <p class="stat-options">Open Tickets</p>
+            <h1 class="stat-values">{{$unclosedCount}}</h1>
+        </div>
+        <div class="col-md-4">
+            <p class="stat-options">Close Tickets</p>
+            <h1 class="stat-values">{{$closedCount}}</h1>
+        </div>
+        <div class="col-md-4">
+            <p class="stat-options">Hold Tickets</p>
+            <h1 class="stat-values">{{$unclosedCreated30DaysAgoCount}}</h1>
+        </div>
+    </div>
+
+
+
+    <div class="donut-container">
+        <div style="display: flex; flex:1; align-items:center; gap: 5rem; background: #1D1C24;padding: 4px; border-radius: 4px; height:350px">
+            <div>
+                <canvas id="donutChart" height="230px"></canvas>
+            </div>
+            <div>
+                <div style="display: flex;flex:1; align-items:center; gap: 5px;">
+                    <div style="background-color: plum; height: 20px; width: 20px; border-radius: 4px;"></div>
+                    <div>
+                        <p>Number Of Tickets</p>
+                        <p>{{$totalCount}}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p>Open tickets</p>
+                        <p>{{$unclosedCount}}</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p>Close tickets</p>
+                        <p>{{$closedCount}}</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p>Hold tickets</p>
+                        <p>{{$unclosedCreated30DaysAgoCount}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+          <div style="display: flex; flex:1; align-items:center; gap: 7rem; background: #1D1C24;padding: 4px; border-radius: 4px; height:350px">
+            <canvas id="horizontalChart" ></canvas>
+          </div>
+    </div>
+
+    <div class="bar-container">
+        <div style="display: flex; flex:1; align-items:center; gap: 7rem; background: #1D1C24;padding: 4px; border-radius: 4px; height:350px; justify-content:center;">
+                <canvas id="barChart"></canvas>
+        </div>
+        <div style="display: flex; flex:1; align-items:center; gap: 7rem; background: #1D1C24;padding: 4px; border-radius: 4px; height:350px">
+            <canvas id="lineChart" ></canvas>
+          </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get the canvas element
+    var ctx = document.getElementById('donutChart').getContext('2d');
 
-const chartData = {
-  labels: ["Python", "Java", "JavaScript", "C#", "Others"],
-  data: [30, 17, 10, 7, 36],
-};
+    // Set chart data
+    var data = {
+        datasets: [{
+            data: ["{{ $unclosedCount}}", "{{$closedCount}}", "{{$unclosedCreated30DaysAgoCount}}"],
+            backgroundColor: ['#89F81B', '#7831F9', '#173292'],
+            borderColor: 'transparent',
+        }]
+    };
 
-const myChart = document.querySelector(".my-chart");
-const ul = document.querySelector(".programming-stats .details ul");
+    // Set chart options
+    var options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutoutPercentage: 70
+    };
 
-new Chart(myChart, {
-  type: "doughnut",
-  data: {
-    labels: chartData.labels,
-    datasets: [
-      {
-        label: "Language Popularity",
-        data: chartData.data,
-      },
-    ],
-  },
-  options: {
-    borderWidth: 10,
-    borderRadius: 2,
-    hoverBorderWidth: 0,
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-  },
+    // Create the donut chart
+    var donutChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: data,
+        options: options
+    });
+
+     // Linechart
+
+     // Get the canvas element
+      var ctxLine = document.getElementById('lineChart').getContext('2d');
+
+    // Define the chart data
+    var chartData = {
+      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      datasets: [{
+        label: 'Average Time Taken To Close Within SLA',
+        data: [10, 20, 15, 25, 30, 10, 20],
+        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+        borderColor: 'rgba(0, 123, 255, 1)',
+        borderWidth: 1
+      }]
+    };
+
+    // Create the chart
+    var lineChart = new Chart(ctxLine, {
+      type: 'line',
+      data: chartData,
+    });
+
+    // Bar Chart
+
+    var ctxBar = document.getElementById('barChart').getContext('2d');
+        // Set chart data
+        var data = {
+            labels: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+            datasets: [{
+                label: 'Average resolved tickets',
+                data: ["{{$tickets['Sunday']}}", "{{$tickets['Monday']}}", "{{$tickets['Tuesday']}}", "{{$tickets['Wednesday']}}", "{{$tickets['Thursday']}}", "{{$tickets['Friday']}}", "{{$tickets['Saturday']}}"],
+                backgroundColor: '#2EA5FB', // Bar color
+                borderColor: 'rgba(54, 162, 235, 1)', // Border color
+                borderWidth: 1 // Border width
+            }]
+        };
+
+        // Set chart options
+        var options = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    stepSize: 4,
+                }
+            }
+        };
+
+        // Create the bar chart
+        var barChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: data,
+            options: options
+        });
+
+        // Horizontal Bar Data
+
+        var ctxHorizontal = document.getElementById('horizontalChart').getContext('2d');
+        // Set chart data
+        let cValues = @json($categoryValues);
+        var data = {
+            labels: [...cValues],
+            datasets: [{
+                label: 'Average resolved tickets',
+                data: ["{{$tickets['Sunday']}}", "{{$tickets['Monday']}}", "{{$tickets['Tuesday']}}", "{{$tickets['Wednesday']}}", "{{$tickets['Thursday']}}", "{{$tickets['Friday']}}", "{{$tickets['Saturday']}}"],
+                backgroundColor: '#2EA5FB', // Bar color
+                borderColor: 'rgba(54, 162, 235, 1)', // Border color
+                borderWidth: 1 // Border width
+            }]
+        };
+
+        // Set chart options
+        var options = {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    stepSize: 4,
+                }
+            }
+        };
+
+        // Create the bar chart
+        var barChart = new Chart(ctxHorizontal, {
+            type: 'bar',
+            data: data,
+            options: options
+        });
+
 });
-
-const populateUl = () => {
-  chartData.labels.forEach((l, i) => {
-    let li = document.createElement("li");
-    li.innerHTML = `${l}: <span class='percentage'>${chartData.data[i]}%</span>`;
-    ul.appendChild(li);
-  });
-};
-
-populateUl();
-</script>
-
-<script>
-.chart-heading {
-  font-family: "Rubik", sans-serif;
-  color: #023047;
-  text-transform: uppercase;
-  font-size: 24px;
-  text-align: center;
-}
-
-.chart-container {
-     
-  width: 50px;
-}
-
-.programming-stats {
-  font-family: "Rubik", sans-serif;
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  margin: 0 auto;
-  width: fit-content;
-  box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.3);
-  border-radius: 20px;
-  padding: 8px 32px;
-  color: #023047;
-  transition: all 400ms ease;
-}
-
-.programming-stats:hover {
-  transform: scale(1.02);
-  box-shadow: 0 4px 16px -7px rgba(0, 0, 0, 0.3);
-}
-
-.programming-stats .details ul {
-  list-style: none;
-  padding: 0;
-}
-
-.programming-stats .details ul li {
-  font-size: 16px;
-  margin: 12px 0;
-  text-transform: uppercase;
-}
-
-.programming-stats .details .percentage {
-  font-weight: 700;
-  color: #e63946;
-}
-
 </script>
 
 @endsection
