@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="container report-container">
+    <p style="font-weight: bold;width: 20%;float: left;">SLA REPORT</p>
     <table class="table datatable table-borderless slatable" >
         <thead>
             <tr>
@@ -22,6 +23,8 @@
             @foreach($tickets as $ticket)
             @php
                 $dataArray = json_decode($ticket->conversationCustomField, true);
+                $ticketPriorityArray =json_decode($ticket->conversationPriority, true);
+                $ticketCategoryArray =json_decode($ticket->conversationCategory, true);
                 $status = $ticket['status'] == 1 ? 'ACTIVE' : ($ticket['status'] == 2 ? 'PENDING' : ($ticket['status'] == 3 ? 'CLOSED' : 'SPAM'));
                 $createdAt = \Carbon\Carbon::parse($ticket['created_at']);
                 $lastReplyAt = \Carbon\Carbon::parse($ticket['last_reply_at']);
@@ -31,9 +34,9 @@
                 @php
                     $customField = $item['custom_field'];
                     $options = $customField['options'];
+                    $name = $customField['name'];
                     $value = $item['value'];
                     $optionValue = null;
-
                     foreach ($options as $key => $option) {
                         if ($key == $value) {
                             $optionValue = $option;
@@ -41,9 +44,37 @@
                         }
                     }
                 @endphp
-
-                <p style="font-weight: bold;width: 20%;float: left;">SLA REPORT</p>
             @endforeach
+
+            @foreach ($ticketCategoryArray as $item)
+            @php
+
+                $options = $item['options'];
+                $ticketCategory = null;
+                foreach ($options as $key => $option) {
+                    if ($key == $value) {
+                        $ticketCategory = $option;
+                        break;
+                    }
+                }
+            @endphp
+
+        @endforeach
+
+            @foreach ($ticketPriorityArray as $item)
+            @php
+
+                $options = $item['options'];
+                $ticketPriority = null;
+                foreach ($options as $key => $option) {
+                    if ($key == $value) {
+                        $ticketPriority = $option;
+                        break;
+                    }
+                }
+            @endphp
+
+        @endforeach
             <tr>
                 <td class="custom-cell">
                     <div class="form-check">
@@ -54,9 +85,9 @@
                 </td>
                 <td class="custom-cell">#{{$ticket->number}}</td>
                 <td class="custom-cell"><span class="tag tag-{{ $status }}">{{$status}}</span></td>
-                <td class="custom-cell">{{isset($optionValue) ? $optionValue : '-'}}</td>
+                <td class="custom-cell">{{isset($ticketPriority) ? $ticketPriority : '-'}}</td>
                 <td class="custom-cell">{{$ticket->user ? $ticket->user->first_name . ' ' . $ticket->user->last_name : "-"}}</td>
-                <td class="custom-cell">network</td>
+                <td class="custom-cell">{{isset($ticketCategory) ? $ticketCategory : '-'}}</td>
                 <td class="custom-cell">{{$ticket->subject}}</td>
                 <td class="custom-cell">{{$duration->format('%h HRS')}}</td>
             </tr>

@@ -1,51 +1,65 @@
 @extends('layouts.app')
 @section('content')
-<div class="container-fluid color" style="padding: 0 60px;margin-bottom: 3em;">
-    <div style="border: 2px solid #eee; padding: 2rem; border-radius: 4px; display: flex; justify-content: space-between; align-items: center;">
-        <div>
-            <label for="ticket">Ticket Category</label>
-            <select name="ticket" id="" ticket style="background-color: transparent; border-radius: 4px; margin-left: 4px; color:#1D1C24;">
-                <option value="none"></option>
-                @foreach($categoryValues as $category)
-                    <option value="{{$category}}">{{$category}}</option>
-                @endforeach
-            </select>
-        </div>
-        <div>
-            <label for="ticket">Product</label>
-            <select name="ticket" id="" ticket style="background-color: transparent; border-radius: 4px; margin-left: 4px; color:#1D1C24;">
-                <option value="none"></option>
-                <option value="open">Product 1</option>
-                <option value="hold">Product 2</option>
-                <option value="closed">Product 3</option>
-            </select>
-        </div>
-        <div>
-            <label for="ticket">Type</label>
-            <select name="ticket" id="" ticket style="background-color: transparent; border-radius: 4px; margin-left: 4px; color:#1D1C24;">
-                <option value="none"></option>
-                <option value="open">Type 1</option>
-                <option value="hold">Type 2</option>
-                <option value="closed">Type 3</option>
-            </select>
-        </div>
-        <div>
-            <label for="ticket">Mailbox</label>
-            <select name="ticket" id="" ticket style="background-color: transparent; border-radius: 4px; margin-left: 4px; color:#1D1C24;">
-                <option value="none"></option>
-                <option value="open">Mailbox 1</option>
-                <option value="hold">Mailbox 2</option>
-                <option value="closed">Mailbox 3</option>
-            </select>
-        </div>
-        <div style="display: flex; align-items: center;">
-            <label for="date">Date</label>
-            <input type="date" class="form-control" id="date" style="margin-left: 10px; margin-bottom: 2px; border-radius: 4px; color:snow;">
-        </div>
-    </div>
+<form action="{{ route('filter') }}" method="GET" class="top-form">
+        <div class="rpt-filters">
 
+            {{-- <div class="rpt-views-trigger">
+                @include('reports::partials/views')
+            </div> --}}
+
+            <div class="rpt-filter">
+                {{ __('Tickets Category') }}
+                <select class="form-control" name="ticket" >
+                    <option value=""></option>
+                    @foreach ($categoryValues as $category)
+                        <option value="{{$category}}">{{$category}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="rpt-filter">
+                {{ __('Product') }}
+                <select class="form-control" name="product">
+                    <option value=""></option>
+                    @foreach ($productValues as $product)
+                        <option value="{{$product}}">{{$product}}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="rpt-filter">
+                {{ __('Type') }}
+                <select class="form-control" name="type">
+                    <option value=""></option>
+                    <option value="{{ App\Conversation::TYPE_EMAIL }}">{{ __('Email') }}</option>
+                    <option value="{{ App\Conversation::TYPE_CHAT }}">{{ __('Chat') }}</option>
+                    <option value="{{ App\Conversation::TYPE_PHONE }}">{{ __('Phone') }}</option>
+                </select>
+            </div>
+            <div class="rpt-filter">
+                {{ __('Mailbox') }}
+                <select class="form-control" name="mailbox">
+                    <option value=""></option>
+                    @foreach (Auth::user()->mailboxesCanView(true) as $mailbox)
+                        <option value="{{ $mailbox->id }}">{{ $mailbox->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="rpt-filter">
+                <nobr><input type="date" name="from" class="form-control rpt-filter-date" value="{{ $filters['from'] }}" />-<input type="date" name="to" class="form-control rpt-filter-date" value="{{ $filters['to'] }}" /></nobr>
+                {{-- <button class="btn btn-primary" name="period">Oct 1, 2017 - Nov 1, 2017 <span class="caret"></span></button> --}}
+            </div>
+
+            <div class="rpt-filter" data-toggle="tooltip" title="{{ __('Refresh') }}">
+                <button class="btn btn-primary" id="rpt-btn-loader" onclick="refreshPage()" type="submit"><i class="glyphicon glyphicon-refresh"></i></button>
+            </div>
+
+        </div>
+
+</form>
+<div class="container-fluid color" style="padding: 0 20px;margin-bottom: 3em;">
     <div class="row text-center" style="margin-top: 6rem;">
-        <div class="col-md-4">
+       <div class="row-text-center1">
+       <div class="col-md-4">
             <p class="stat-options">Total Tickets</p>
             <h1 class="stat-values">{{$totalCount}}</h1>
         </div>
@@ -57,10 +71,12 @@
             <p class="stat-options">Overdue Tickets</p>
             <h1 class="stat-values">{{$overdueCount}}</h1>
         </div>
+       </div>
     </div>
 
-    <div class="row text-center" style="margin-top: 4rem;">
-        <div class="col-md-4">
+    <div class="row text-center" style="margin-top: 0rem;">
+       <div class="row-text-center1">
+       <div class="col-md-4">
             <p class="stat-options">Open Tickets</p>
             <h1 class="stat-values">{{$unclosedCount}}</h1>
         </div>
@@ -72,56 +88,300 @@
             <p class="stat-options">Hold Tickets</p>
             <h1 class="stat-values">{{$unclosedCreated30DaysAgoCount}}</h1>
         </div>
+       </div>
     </div>
 
 
 
     <div class="donut-container">
-        <div style="display: flex; flex:1; align-items:center; gap: 5rem; background: #1D1C24;padding: 4px; border-radius: 4px; height:350px">
+        <div class="donut-chart" >
             <div>
-                <canvas id="donutChart" height="230px"></canvas>
+                <canvas id="donutChart" height="230px" width="100%"></canvas>
             </div>
             <div>
-                <div style="display: flex;flex:1; align-items:center; gap: 5px;">
-                    <div style="background-color: plum; height: 20px; width: 20px; border-radius: 4px;"></div>
+                <div class="donut-chart-lable">
+                    <div  class="donut-chart-box"></div>
                     <div>
-                        <p>Number Of Tickets</p>
-                        <p>{{$totalCount}}</p>
+                        <p class="donutp">Number Of Tickets</p>
+                        <p class="donutp">{{$totalCount}}</p>
                     </div>
                 </div>
                 <hr>
                 <div class="row">
                     <div class="col-sm-6">
-                        <p>Open tickets</p>
-                        <p>{{$unclosedCount}}</p>
+                        <span class="circle circle-green"></span>
+                        <p class="donutp">Open tickets</p>
+                        <p class="donutp">{{$unclosedCount}}</p>
                     </div>
                     <div class="col-sm-6">
-                        <p>Close tickets</p>
-                        <p>{{$closedCount}}</p>
+                        <span class="circle circle-red"></span>
+                        <p class="donutp">Close tickets</p>
+                        <p class="donutp">{{$closedCount}}</p>
                     </div>
                     <div class="col-sm-6">
-                        <p>Hold tickets</p>
-                        <p>{{$unclosedCreated30DaysAgoCount}}</p>
+                        <span class="circle circle-blue"></span>
+                        <p class="donutp">Hold tickets</p>
+                        <p class="donutp">{{$unclosedCreated30DaysAgoCount}}</p>
                     </div>
                 </div>
             </div>
         </div>
 
-          <div style="display: flex; flex:1; align-items:center; gap: 7rem; background: #1D1C24;padding: 4px; border-radius: 4px; height:350px">
+          <div class="horizontalChart">
             <canvas id="horizontalChart" ></canvas>
           </div>
     </div>
 
     <div class="bar-container">
-        <div style="display: flex; flex:1; align-items:center; gap: 7rem; background: #1D1C24;padding: 4px; border-radius: 4px; height:350px; justify-content:center;">
+        <div class="barChart">
                 <canvas id="barChart"></canvas>
         </div>
-        <div style="display: flex; flex:1; align-items:center; gap: 7rem; background: #1D1C24;padding: 4px; border-radius: 4px; height:350px">
+        <div class="lineChart">
             <canvas id="lineChart" ></canvas>
           </div>
     </div>
 </div>
+<style>
+.content{
+    margin-top: 0;
+}
+.top-form{
+    display: flex;
+    height: 4em;
+    align-items: center;
+    justify-content: space-evenly;
+    background: #deecf9;
+}
 
+.dm .top-form{
+    background: #005eb4;
+}
+.circle {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 5px;
+      position: relative;
+    top: 22px;
+    left: -15px;
+    }
+    .circle-green {
+      background-color: #89F81B;
+    }
+
+    .circle-red {
+      background-color: red;
+    }
+
+    .circle-blue {
+      background-color: #173292;
+    }
+
+.stat-options{
+      /* color: hotpink; */
+}
+.dm .form-control {
+    display: inline ;
+    width: 140px;
+    min-inline-size: max-content;
+}
+
+.form-control {
+    display: inline ;
+    width: 140px;
+    min-inline-size: max-content;
+}
+
+    .dm hr{
+        border: 1px solid #eee;
+    }
+     hr{
+        border: 1px solid black;
+    }
+    .dm .donut-container .donut-chart{
+        display: flex;
+        flex:1;
+        align-items:center;
+         gap: 5rem;
+         background: #1D1C24;
+         padding: 4px;
+         border-radius: 4px;
+          height:350px;
+          width: 100%;
+    }
+    .donut-container .donut-chart{
+        display: flex;
+        flex:1;
+        align-items:center;
+         gap: 5rem;
+         background:#eeeeee;
+         padding: 4px;
+         border-radius: 4px;
+          height:350px;
+          width: 100%;
+    }
+    .donut-container .donut-chart .donut-chart-lable{
+        display: flex;
+        flex:1;
+        align-items:center;
+        gap: 5px;
+    }
+    .donut-container .donut-chart .donut-chart-box{
+        background-color: plum;
+        height: 40px;
+        width: 40px;
+        border-radius: 4px;
+
+    }
+    .donutp{
+        display: table-header-group;
+    }
+    .dm .horizontalChart{
+        display: flex;
+        flex:1;
+        align-items:center;
+        gap: 7rem;
+        background: #1D1C24;
+        padding: 4px;
+        border-radius: 4px;
+        height:350px;
+        width: 100%;
+    }
+    .horizontalChart{
+        display: flex;
+        flex:1;
+        align-items:center;
+        gap: 7rem;
+        background: #eeeeee;
+        padding: 4px;
+        border-radius: 4px;
+        height:350px;
+        width: 100%;
+    }
+    .dm .bar-container .barChart{
+        display: flex;
+        flex:1;
+        align-items:center;
+        gap: 7rem;
+        background: #1D1C24;
+        padding: 4px;
+        border-radius: 4px;
+        height:350px;
+        justify-content:center;
+        width: 100%;
+    }
+    .bar-container .barChart{
+        display: flex;
+        flex:1;
+        align-items:center;
+        gap: 7rem;
+        background: #eeeeee;
+        padding: 4px;
+        border-radius: 4px;
+        height:350px;
+        justify-content:center;
+        width: 100%;
+    }
+    .dm .bar-container .lineChart{
+        display: flex;
+        flex:1;
+        align-items:center;
+        gap: 7rem;
+        background: #1D1C24;
+        padding: 4px;
+        border-radius: 4px;
+        height:350px;
+        width: 100%;
+    }
+    .bar-container .lineChart{
+        display: flex;
+        flex:1;
+        align-items:center;
+        gap: 7rem;
+        background: #eeeeee;
+        padding: 4px;
+        border-radius: 4px;
+        height:350px;
+        width: 100%;
+    }
+    input, button, select, textarea{
+        color: #1D1C24
+    }
+
+
+    /* its my code for external coonent*/
+    .dm .donut-container{
+        max-width:100%;
+        display: flex;
+        flex:50%;
+
+    }
+    .donut-container{
+        max-width:100%;
+        display: flex;
+        flex:50%;
+    }
+
+
+    .dm .bar-container{
+        max-width:100%;
+        display: flex;
+        flex:50%;
+    }
+    .bar-container{
+        display: flex;
+        flex:50%;
+        max-width:100%;
+    }
+
+     /* its my code for external coonent*/
+
+    @media (max-width: 600px) {
+        .dm .donut-container{
+        display: flex;
+        flex-direction:column;
+    }
+    .donut-container{
+        display: flex;
+        flex-direction:column;
+        
+    }
+
+
+    .dm .bar-container{
+        display: flex;
+        flex-direction:column;
+    }
+    .bar-container{
+        display: flex;
+        flex-direction:column;
+    }
+    
+
+    .row-text-center1{
+        display:flex;
+        flex-direction:row;
+        margin-left:0px;
+    }
+
+
+    .stat-options {
+        font-size: 15px;
+        max-width: 100%;
+        margin-top:20px;
+    }
+    .stat-values{
+        font-size: 15px;
+        max-width: 100%;
+    }
+
+    .donut-container{
+        margin-top: 3rem;
+    }
+   
+}
+</style>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -133,7 +393,8 @@
     var data = {
         datasets: [{
             data: ["{{ $unclosedCount}}", "{{$closedCount}}", "{{$unclosedCreated30DaysAgoCount}}"],
-            backgroundColor: ['#89F81B', '#7831F9', '#173292'],
+            backgroundColor: ['#89F81B', 'red', '#173292'],
+            // backgroundColor: ['red', 'blue', 'yellow'],
             borderColor: 'transparent',
         }]
     };
@@ -158,8 +419,19 @@
       var ctxLine = document.getElementById('lineChart').getContext('2d');
 
     // Define the chart data
+    const currentDate = new Date();
+    const weekNames = [];
+
+        for (let i = 6; i >= 0; i--) {
+            const day = new Date(currentDate);
+            day.setDate(day.getDate() - i);
+            const options = { weekday: 'long' }; // Specify the format of the weekday
+            const weekName = new Intl.DateTimeFormat('en-US', options).format(day);
+            weekNames.push(weekName);
+        }
+
     var chartData = {
-      labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      labels: weekNames,
       datasets: [{
         label: 'Average Time Taken To Close Within SLA',
         data: [10, 20, 15, 25, 30, 10, 20],
@@ -179,11 +451,21 @@
 
     var ctxBar = document.getElementById('barChart').getContext('2d');
         // Set chart data
+        const weeklyBarChart = ["{{$tickets['Sunday']}}", "{{$tickets['Monday']}}", "{{$tickets['Tuesday']}}", "{{$tickets['Wednesday']}}", "{{$tickets['Thursday']}}", "{{$tickets['Friday']}}", "{{$tickets['Saturday']}}"];
+
+        for (let i = 6; i >= 0; i--) {
+            const day = new Date(currentDate);
+            day.setDate(day.getDate() - i);
+            const options = { weekday: 'long' }; // Specify the format of the weekday
+            const weekName = new Intl.DateTimeFormat('en-US', options).format(day);
+            weekNames.push(weekName);
+        }
+
         var data = {
-            labels: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+            labels: weekNames,
             datasets: [{
                 label: 'Average resolved tickets',
-                data: ["{{$tickets['Sunday']}}", "{{$tickets['Monday']}}", "{{$tickets['Tuesday']}}", "{{$tickets['Wednesday']}}", "{{$tickets['Thursday']}}", "{{$tickets['Friday']}}", "{{$tickets['Saturday']}}"],
+                data: weeklyBarChart,
                 backgroundColor: '#2EA5FB', // Bar color
                 borderColor: 'rgba(54, 162, 235, 1)', // Border color
                 borderWidth: 1 // Border width
@@ -246,6 +528,9 @@
         });
 
 });
+function refreshPage() {
+    location.reload();
+}
 </script>
 
 @endsection
