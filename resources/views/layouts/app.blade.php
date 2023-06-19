@@ -45,6 +45,7 @@
     @endphp
 
     @yield('stylesheets')
+    @stack('styles')
 </head>
 <body class="locale-{{ app()->getLocale() }} @if (Helper::isLocaleRtl()) rtl @endif @if (!Auth::user()) user-is-guest @endif @if (Auth::user() && Auth::user()->isAdmin()) user-is-admin @endif @yield('body_class') @action('body.class')" @yield('body_attrs') @if (Auth::user()) data-auth_user_id="{{ Auth::user()->id }}" @endif>
 <div id="app">
@@ -301,6 +302,7 @@
         }
     @endphp
     @yield('javascripts')
+    @stack('vendor_libraries')
     <script type="text/javascript">
         @if (\Helper::isInApp())
             @if (Auth::user())
@@ -312,5 +314,6 @@
         @yield('javascript')
         @action('javascript', $__env->yieldContent('javascripts'))
     </script>
+    @stack('scripts')
 </body>
 </html>

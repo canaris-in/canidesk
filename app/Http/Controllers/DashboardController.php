@@ -4,13 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Conversation;
 use App\Mailbox;
+use App\QueryFilters\Dashboard\ConversationTypeFilter;
+use App\QueryFilters\Dashboard\DateRangeFilter;
+use App\QueryFilters\Dashboard\MailboxQueryFilter;
+use App\Support\DashboardQueryConfiguration;
+use App\Support\DashboardStatisticsConfiguration;
+use App\View\DashboardWidgets\TotalTicketsCount;
 use Carbon\Carbon;
 use Exception;
 use App\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\DB;
 use Modules\Reports\Http\Controllers\ReportsController;
-
 
 
 class DashboardController extends Controller
@@ -37,11 +44,12 @@ class DashboardController extends Controller
             'to' => $request->input('to')
         ];
 
+
         //Filter accourding timezon
-        if($request->has('from') && $request->has('to')){
+        if ($request->has('from') && $request->has('to')) {
             $from = $request->input('from');
-            $to =  $request->input('to');
-        }else{
+            $to = $request->input('to');
+        } else {
             $from = Carbon::today()->subDays(7);
             $to = Carbon::today();
             $filters['from'] = $from->format('Y-m-d');
@@ -99,7 +107,7 @@ class DashboardController extends Controller
         $categoryIndex = '';
         $productIndex = '';
 
-        if ( $filters['ticket'] === '0' || $filters['ticket'] === null) {
+        if ($filters['ticket'] === '0' || $filters['ticket'] === null) {
             $categoryIndex = 0;
         } else {
             $categoryIndex = array_search($filters['ticket'], $categoryValues) + 1;
@@ -112,8 +120,10 @@ class DashboardController extends Controller
 
 
         // Make empty query
+        /**
+         * Starting with base query. Not sure if this is the correct base query
+         */
         $query = Conversation::query();
-
 
         if (!empty($categoryIndex) || !empty($productIndex)) {
             $query = $query->join('conversation_custom_field', 'conversations.id', '=', 'conversation_custom_field.conversation_id')
@@ -124,29 +134,55 @@ class DashboardController extends Controller
                 ->where('conversation_custom_field.value', $productIndex)
                 ->select('conversations.*');
         }
-        // Filtering based on Mailbox selected
-        if (!empty($filters['mailbox'])) {
-            $query = $query->where('conversations.mailbox_id', $filters['mailbox']);
-        }
-        if (!empty($filters['type'])) {
-            $query = $query->where('conversations.type', $filters['type']);
-        }
 
-        if (!empty($from) || !empty($to)) {
-            $query->whereBetween($date_field, [$from, $to]);
-        }
+        $queryConfiguration = DashboardQueryConfiguration::make();
+
+        $queryConfiguration = $queryConfiguration->setQuery($query)->setFilter($filters);
+
+        // Create Pipeline
+        $query = app(Pipeline::class)
+            ->send($queryConfiguration)
+            ->via('parseFilter')
+            ->through([
+                MailboxQueryFilter::class,
+                ConversationTypeFilter::class,
+                DateRangeFilter::class
+            ])
+            ->then(function (DashboardQueryConfiguration $queryConfiguration) {
+                return $queryConfiguration->getQuery();
+            });
+
+        // Filtering based on Mailbox selected
+//        if (!empty($filters['mailbox'])) {
+//            $query = $query->where('conversations.mailbox_id', $filters['mailbox']);
+//        }
+//        if (!empty($filters['type'])) {
+//            $query = $query->where('conversations.type', $filters['type']);
+//        }
+
+//        if (!empty($from)) {
+//            $query->where($date_field, '>=', Carbon::parse($from)->startOfDay()->format('Y-m-d H:i:s'));
+//        }
+//        if (!empty($to)) {
+//            $query->where($date_field_to, '<=', Carbon::parse($to)->endOfDay()->format('Y-m-d H:i:s'));
+//        }
+
+        $dashboardStatisticsConfiguration = DashboardStatisticsConfiguration::make()
+            ->setQuery($query);
+
+        $query = app(Pipeline::class)
+            ->send($dashboardStatisticsConfiguration)
+            ->via('resolveStatistics')
+            ->through([
+                TotalTicketsCount::class
+            ])
+            ->then(function (DashboardStatisticsConfiguration $dashboardStatisticsConfiguration) {
+                $query = $dashboardStatisticsConfiguration->getQuery();
+                return $query->select($dashboardStatisticsConfiguration->getQueryStatistics());
+            });
 
         // Extract the data
-        $results = $query->select(
-            DB::raw('COUNT(*) as total_count'),
-            DB::raw('COUNT(CASE WHEN user_id IS NULL THEN 1 END) as unassigned_count'),
-            // DB::raw('COUNT(CASE WHEN closed_at IS NULL THEN 1 END) as overdue_count'),
-            // DB::raw('COUNT(CASE WHEN created_at < ? AND closed_at IS NULL THEN 1 END) as overdue_count'),
-            DB::raw('COUNT(CASE WHEN closed_at IS NULL THEN 1 END) as unclosed_count'),
-            DB::raw('COUNT(CASE WHEN closed_at IS NOT NULL THEN 1 END) as closed_tickets_count'),
-            DB::raw('COUNT(CASE WHEN closed_at IS NULL THEN 1 END) as unclosed_created_30_days_ago_count')
-        )
-            ->first();
+        $results = $query->first();
 
 
         $totalCount = $results->total_count;
