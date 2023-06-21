@@ -108,7 +108,7 @@ class MailboxesController extends Controller
             $accessible_route = '';
 
             $mailbox_settings = $user->mailboxSettings($mailbox->id);
-            
+
             if (!is_array($mailbox_settings->access)) {
                 $access_permissions = json_decode($mailbox_settings->access ?? '');
             } else {
@@ -158,7 +158,7 @@ class MailboxesController extends Controller
         $mailbox = Mailbox::findOrFail($id);
 
         $user = auth()->user();
-        
+
         if (!$user->can('updateSettings', $mailbox) && !$user->can('updateEmailSignature', $mailbox)) {
             \Helper::denyAccess();
         }
@@ -750,8 +750,8 @@ class MailboxesController extends Controller
 
                     // Remove threads and conversations.
                     $conversation_ids = $mailbox->conversations()->pluck('id')->toArray();
-                    
-                    for ($i=0; $i < ceil(count($conversation_ids) / \Helper::IN_LIMIT); $i++) { 
+
+                    for ($i=0; $i < ceil(count($conversation_ids) / \Helper::IN_LIMIT); $i++) {
                         $slice_ids = array_slice($conversation_ids, $i*\Helper::IN_LIMIT, \Helper::IN_LIMIT);
                         Thread::whereIn('conversation_id', $slice_ids)->delete();
                     }
@@ -808,7 +808,7 @@ class MailboxesController extends Controller
     {
         $mailbox_id = $request->id ?? '';
         $provider = $request->provider ?? '';
-        
+
         $state_data = [];
         if (!empty($request->state)) {
             $state_data = json_decode($request->state, true);
@@ -871,7 +871,7 @@ class MailboxesController extends Controller
 
         // Check given state against previously stored one to mitigate CSRF attack
         } elseif (empty($request->state) || ($state_data['state'] ?? '') !== ($session_data['state'] ?? '')) {
-            
+
             \Session::forget('mailbox_oauth_'.$provider.'_'.$mailbox_id);
             return 'Invalid oAuth state';
 
@@ -901,9 +901,10 @@ class MailboxesController extends Controller
 
         $mailbox = Mailbox::findOrFail($mailbox_id);
         $this->authorize('admin', $mailbox);
-        
+
         // oAuth Disconnect.
         $mailbox->removeMetaParam('oauth', true);
         return \MailHelper::oauthDisconnect($provider, route('mailboxes.connection.incoming', ['id' => $mailbox_id]));
     }
+
 }

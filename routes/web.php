@@ -140,3 +140,4 @@ Route::get('/reports/settings','ReportSettingsController@index')->name('reports.
 Route::post('/reports/settings','ReportSettingsController@addDataSettings');
 
 Route::post('/reports/sla/', 'SlaReportController@slaReport')->name('slafilter');
+
