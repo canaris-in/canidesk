@@ -4,7 +4,7 @@
 		@include('reports::partials/views')
 	</div> -->
 
-	<div class="rpt-filter">
+	<div class="rpt-filter" style="margin-left: 10px;">
 		{{ __('Type') }}
 		<select class="form-control" name="type">
 			<option value="">All</option>
