@@ -2438,6 +2438,14 @@ button.conv-checkbox-clear {
 .dm .input-group-btn:last-child > .btn{
     margin-left: 0px;
 }
+.alert-danger {
+    background-color: #ebccd1;
+  }
+  .dm .alert-danger {
+    color: #d9534f;
+    background-color: #1D1C24;
+    border-color: #ebccd1;
+  }
 .conv-new-form .form-group {
     margin-bottom: 10px;
 }
