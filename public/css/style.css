@@ -2446,6 +2446,9 @@ button.conv-checkbox-clear {
     background-color: #1D1C24;
     border-color: #ebccd1;
   }
+  #laravel-logs .btn {
+    color: #000;
+  }
 .conv-new-form .form-group {
     margin-bottom: 10px;
 }
