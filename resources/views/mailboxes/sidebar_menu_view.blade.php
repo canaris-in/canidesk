@@ -21,7 +21,6 @@
             </div>
         @endif
         <a class="btn btn-trans" href="{{ route('conversations.create', ['mailbox_id' => $mailbox->id]) }}" aria-label="{{ __("New Conversations") }}" data-toggle="tooltip" title="{{ __("New Tickets") }}" role="button"><i class="glyphicon glyphicon-envelope"></i></a>
-        <a class="btn btn-trans" href="{{route('mailboxes.fetchMail')}}" data-toggle="tooltip" title="{{ __("Fetch Tickets") }}" role="button"><i class="glyphicon glyphicon-refresh"></i></a>
     </div>
 @endif
 @action('mailbox.after_sidebar_buttons')

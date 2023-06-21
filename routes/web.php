@@ -141,4 +141,3 @@ Route::post('/reports/settings','ReportSettingsController@addDataSettings');
 
 Route::post('/reports/sla/', 'SlaReportController@slaReport')->name('slafilter');
 
-Route::get('/mailbox', 'MailboxesController@fetchMail')->name('mailboxes.fetchMail');

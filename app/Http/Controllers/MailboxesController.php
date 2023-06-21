@@ -906,10 +906,5 @@ class MailboxesController extends Controller
         $mailbox->removeMetaParam('oauth', true);
         return \MailHelper::oauthDisconnect($provider, route('mailboxes.connection.incoming', ['id' => $mailbox_id]));
     }
-    public function fetchMail(Request $request)
-    {
 
-       \Artisan::call('freescout:fetch-emails');
-         return redirect()->back();
-    }
 }
