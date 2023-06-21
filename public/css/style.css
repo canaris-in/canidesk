@@ -2435,6 +2435,9 @@ button.conv-checkbox-clear {
     padding-top: 15px;
     padding-bottom: 150px;
 }
+.dm .input-group-btn:last-child > .btn{
+    margin-left: 0px;
+}
 .conv-new-form .form-group {
     margin-bottom: 10px;
 }

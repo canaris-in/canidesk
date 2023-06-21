@@ -5161,9 +5161,14 @@ a.thumbnail.active {
 }
 .alert-danger {
   color: #d9534f;
-  background-color: #1D1C24;
+  background-color: #ebccd1;
   border-color: #ebccd1;
 }
+.dm .alert-danger {
+    color: #d9534f;
+    background-color: #1D1C24;
+    border-color: #ebccd1;
+  }
 .alert-danger hr {
   border-top-color: #e4b9c0;
 }
