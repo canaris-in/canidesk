@@ -137,13 +137,13 @@ class MailboxesController extends Controller
 
         $user = auth()->user();
         $mailbox_user = $user->mailboxesWithSettings()->where('mailbox_id', $id)->first();
-        if (!$mailbox_user && $user->isAdmin()) {
+        if (!$mailbox_user && $user->isAdmin() || $user->isITHead()) {
             // Admin may not be connected to the mailbox yet
             $user->mailboxes()->attach($id);
             $mailbox_user = $user->mailboxesWithSettings()->where('mailbox_id', $id)->first();
         }
 
-        //$mailboxes = Mailbox::all()->except($id);
+        // $mailboxes = Mailbox::all()->except($id);
 
         return view('mailboxes/update', ['mailbox' => $mailbox, 'mailbox_user' => $mailbox_user, 'flashes' => $this->mailboxActiveWarning($mailbox)]);
     }
@@ -449,7 +449,7 @@ class MailboxesController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->isAdmin()) {
+        if ($user->isAdmin() || $user->isITHead()) {
             $mailbox = Mailbox::findOrFailWithSettings($id, $user->id);
         } else {
             $mailbox = Mailbox::findOrFail($id);

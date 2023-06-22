@@ -97,7 +97,7 @@
                                     </ul>
                                 </li>
                             @endif
-                            @if (Auth::user()->isAdmin()
+                            @if (Auth::user()->isAdmin()||Auth::user()->isITHead()
                                 || Auth::user()->hasPermission(App\User::PERM_EDIT_USERS)
                                 || Auth::user()->can('viewMailboxMenu', Auth::user())
                                 || Eventy::filter('menu.manage.can_view', false)
@@ -122,6 +122,15 @@
                                             <li class="{{ \App\Misc\Helper::menuSelectedHtml('modules') }}"><a href="{{ route('modules') }}">{{ __('Modules') }}</a></li>
                                             <li class="{{ \App\Misc\Helper::menuSelectedHtml('logs') }}"><a href="{{ route('logs') }}">{{ __('Logs') }}</a></li>
                                             <li class="{{ \App\Misc\Helper::menuSelectedHtml('system') }}"><a href="{{ route('system') }}">{{ __('System') }}</a></li>
+                                        @endif
+                                        @if (Auth::user()->isITHead())
+                                            <li class="{{ \App\Misc\Helper::menuSelectedHtml('logs') }}"><a href="{{ route('logs') }}">{{ __('Logs') }}</a></li>
+                                        @endif
+                                        @if (Auth::user()->isTC())
+                                            <li class="{{ \App\Misc\Helper::menuSelectedHtml('logs') }}"><a href="{{ route('logs') }}">{{ __('Logs') }}</a></li>
+                                        @endif
+                                         @if (Auth::user()->isTEngg())
+                                            <li class="{{ \App\Misc\Helper::menuSelectedHtml('logs') }}"><a href="{{ route('logs') }}">{{ __('Logs') }}</a></li>
                                         @endif
                                         @action('menu.manage.append')
                                     </ul>
