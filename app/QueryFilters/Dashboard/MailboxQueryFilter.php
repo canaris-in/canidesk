@@ -2,6 +2,8 @@
 
 namespace App\QueryFilters\Dashboard;
 
+use App\Support\Contracts\AbstractQueryFilter;
+use App\Support\Dashboard\DashboardFiltersBag;
 use Illuminate\Database\Eloquent\Builder;
 
 class MailboxQueryFilter extends AbstractQueryFilter
@@ -15,5 +17,12 @@ class MailboxQueryFilter extends AbstractQueryFilter
     public static function getFilterName(): string
     {
        return 'mailbox';
+    }
+
+    public function resolveFilterValue(DashboardFiltersBag $filtersBag): DashboardFiltersBag
+    {
+        $filtersBag->setFilterValue(static::getFilterName(), $this->request->input('mailbox'));
+
+        return $filtersBag;
     }
 }

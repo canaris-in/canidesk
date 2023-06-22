@@ -1,15 +1,9 @@
+<?php
+
+?>
 <div class="lineChart dashboard-widgets dashboard-widgets--average-time-sla">
     <canvas id="lineChart"></canvas>
 </div>
-
-@push('styles')
-    <style>
-        /*.dashboard-widgets.dashboard-widgets--average-time-sla > canvas {*/
-        /*    width: 100% !important;*/
-        /*}*/
-    </style>
-@endpush
-
 
 @push('scripts')
     <script>
@@ -36,10 +30,11 @@
                 "{{ $tickets['Friday'] }}", "{{ $tickets['Saturday'] }}"
             ];
 
+
             var chartData = {
                 labels: weekNames,
                 datasets: [{
-                    label: 'Average Time Taken To Close Within SLA',
+                    label: "{{ __('Average Time Taken To Close Within SLA') }}",
                     data: data,
                     backgroundColor: 'rgba(0, 123, 255, 0.2)',
                     borderColor: 'rgba(0, 123, 255, 1)',
@@ -52,8 +47,14 @@
                 type: 'line',
                 data: chartData,
                 options: {
+                    indexAxis: 'x',
                     responsive: true,
-                    maintainAspectRatio: false
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
                 }
             });
 

@@ -38,7 +38,8 @@
         "tormjens/eventy": "0.5.4",
         "watson/rememberable": "2.0.4",
         "webklex/laravel-imap": "1.2.7",
-        "webklex/php-imap": "4.1.1"
+        "webklex/php-imap": "4.1.1",
+        "ext-json": "*"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "v3.2.0",

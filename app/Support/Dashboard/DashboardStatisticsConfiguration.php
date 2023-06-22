@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Support;
+namespace App\Support\Dashboard;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
