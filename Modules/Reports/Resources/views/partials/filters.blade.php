@@ -4,19 +4,19 @@
 		@include('reports::partials/views')
 	</div> -->
 
-	<div class="rpt-filter">
-		{{ __('Type') }} 
+	<div class="rpt-filter" style="margin-left: 10px;">
+		{{ __('Type') }}
 		<select class="form-control" name="type">
-			<option value=""></option>
+			<option value="">All</option>
 			<option value="{{ App\Conversation::TYPE_EMAIL }}">{{ __('Email') }}</option>
 			<option value="{{ App\Conversation::TYPE_CHAT }}">{{ __('Chat') }}</option>
 			<option value="{{ App\Conversation::TYPE_PHONE }}">{{ __('Phone') }}</option>
 		</select>
 	</div>
 	<div class="rpt-filter">
-		{{ __('Mailbox') }} 
+		{{ __('Mailbox') }}
 		<select class="form-control" name="mailbox">
-			<option value=""></option>
+			<option value="">All</option>
 			@foreach (Auth::user()->mailboxesCanView(true) as $mailbox)
 				<option value="{{ $mailbox->id }}">{{ $mailbox->name }}</option>
 			@endforeach
@@ -24,9 +24,9 @@
 	</div>
 	@if (\Module::isActive('tags'))
 		<div class="rpt-filter">
-    		{{ __('Tag') }} 
+    		{{ __('Tag') }}
     		<select class="form-control" name="tag">
-    			<option value=""></option>
+    			<option value="">All</option>
     			@foreach (Modules\Tags\Entities\Tag::orderBy('name')->get() as $tag)
     				<option value="{{ $tag->id }}">{{ $tag->name }}</option>
     			@endforeach
@@ -51,7 +51,7 @@
 
 @php
 	$custom_fields = Reports::getCustomFieldFilters();
-	
+
 @endphp
 @if (count($custom_fields))
     <div class="rpt-filters">
@@ -61,7 +61,7 @@
 
                 @if ($custom_field->type == CustomField::TYPE_DROPDOWN)
                     <select name="custom_field[{{ $custom_field->id }}]" class="form-control">
-                        <option value=""></option>
+                        <option value="">All</option>
                         @if (is_array($custom_field->options))
                             @foreach ($custom_field->options as $option_id => $option_name)
                                 <option value="{{ $option_id }}">{{ $option_name }}</option>
