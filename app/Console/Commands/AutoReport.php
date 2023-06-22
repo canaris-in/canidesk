@@ -56,7 +56,8 @@ class AutoReport extends Command
         $prev = false;
         $date_field = 'conversations.created_at';
         $date_field_to = '';
-
+        $startOfDate=0;
+        $endOfDate=0;
         $settings=SLASetting::orderBy('id', 'desc')->first();
         if($settings->auto_data == 1){ // Start generating email report if auto reporting is turned on 
             $emails=explode(',', $settings->to_email);
@@ -65,14 +66,20 @@ class AutoReport extends Command
            
             if(!empty($settings->frequency) && $settings->frequency === 'Monthly' && $settings->schedule === Carbon::now()->format('d') && $settings->time === Carbon::now()->format('H:i:00') ){
                 $tickets = $tickets->whereBetween('created_at',[Carbon::now()->subDays(30)->startOfMonth()->startOfDay(),Carbon::now()->subDays(30)->endOfMonth()->endOfDay()]);
-
+                $startOfDate=Carbon::now()->subDays(30)->startOfMonth()->startOfDay();
+                $endOfDate=Carbon::now()->subDays(30)->endOfMonth()->endOfDay();
+              
             }
             else if(!empty($settings->frequency) && $settings->frequency === 'Weekly'&& $settings->schedule === Carbon::now()->format('l') && $settings->time === Carbon::now()->format('H:i:00')){
                 $tickets = $tickets->whereBetween('created_at',[Carbon::now()->subDays(7)->startOfWeek()->startOfDay(),Carbon::now()->subDays(7)->endOfWeek()->endOfDay()]);
-                
+                $startOfDate=Carbon::now()->subDays(7)->startOfWeek()->startOfDay();
+                $endOfDate=Carbon::now()->subDays(7)->endOfWeek()->endOfDay();
+               
             }
             else if(!empty($settings->frequency) && $settings->frequency === 'Daily' && $settings->time === Carbon::now()->format('H:i:00')){
                 $tickets = $tickets->whereBetween('created_at',[Carbon::now()->subDays(1)->startOfDay(),Carbon::now()->subDays(1)->endOfDay()]);
+                $startOfDate=Carbon::now()->subDays(1)->startOfDay();
+                $endOfDate=Carbon::now()->subDays(1)->endOfDay();
 
             }
             
@@ -85,18 +92,19 @@ class AutoReport extends Command
             $dompdf->load_html($html);
             $dompdf->render();
             $output = $dompdf->output();
-            file_put_contents('storage/slaReport/report.pdf', $output);
-            $data = array('name'=>"Example");
+            file_put_contents("storage/slaReport/Report_{{$settings->frequency}}_{{$startOfDate}}_{{$endOfDate}}.pdf", $output);
 
-            if($settings->frequency === 'Daily' && $settings->time === Carbon::now()->format('H:i:00') || $settings->frequency === 'Weekly'&& $settings->schedule === Carbon::now()->format('l') && $settings->time === Carbon::now()->format('H:i:00') || $settings->frequency === 'Monthly' && $settings->schedule === Carbon::now()->format('d') && $settings->time === Carbon::now()->format('H:i:00') ){
+            if($settings->frequency === 'Daily' && $settings->time === Carbon::now()->format('H:i:00') || $settings->frequency === 'Weekly'&& $settings->schedule === Carbon::now()->format('l') && $settings->time === Carbon::now()->format('H:i:00')|| $settings->frequency === 'Monthly' && $settings->schedule === Carbon::now()->format('d') && $settings->time === Carbon::now()->format('H:i:00')){
+                $data = array('name'=>"Canidesk");
                 foreach($emails as $email){
-                $mail = Mail::send('mail', $data, function($message) use ($email, $settings){
-                $message->to($email, 'Canidesk User')->subject
-                    ($settings->frequency.' Report')->attach('storage/slaReport/report.pdf');
-                $message->from('rajeshcanaris@gmail.com','[ Canidesk Report ]');
-                
-                });
-            }
+                    $mail = Mail::send('mail', $data, function($message) use ($email, $settings, $startOfDate, $endOfDate){
+                    $message->to($email, 'Canidesk User')->subject
+                    ($settings->frequency.' Report')->attach("storage/slaReport/Report_{{$settings->frequency}}_{{$startOfDate}}_{{$endOfDate}}.pdf");
+                    $message->from('support@canaris.in','[ Canidesk Report ]');
+                    
+                    });
+                }
+               
             }
         }
        
