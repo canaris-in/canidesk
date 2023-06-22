@@ -84,7 +84,7 @@
 <style>
   .layout-2col-settings{
     margin-top: -19px;
-  }  
+  }
 </style>
 <script >
   var stateList=[
@@ -94,7 +94,7 @@
     {Frequency:'Weekly',schedule:'Thursday'},
     {Frequency:'Weekly',schedule:'Friday'},
     {Frequency:'Weekly',schedule:'Saturday'},
-    {Frequency:'Weekly',schedule:'Sunday'},  
+    {Frequency:'Weekly',schedule:'Sunday'},
   ];
 
    $(document).ready(function (){

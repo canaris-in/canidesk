@@ -3016,7 +3016,7 @@ ul.sidebar-block-list {
     text-decoration: underline;
 }
 .alert-floating.alert-success .glyphicon {
-    color: #53b961;
+    color: #53b961 !important;
 }
 .alert-floating.alert-danger .glyphicon {
     color: #d43f3a;
@@ -3024,9 +3024,14 @@ ul.sidebar-block-list {
 .alert-floating.alert-success {
     background-color: #deffde;
     /*color: #3c763d;*/
-    color: #6ac27b;
+    color: #6ac27b !important;
     /*border: 1px solid #6ac27b;*/
 }
+.alert-success {
+    color: #6ac27b !important;
+    background-color: #deffde;
+    border-color: #6ac27b;
+  }
 /*.alert-floating.alert-danger {
     border: 1px solid #a94442;
 }*/
