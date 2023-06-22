@@ -473,6 +473,7 @@ class EndUserPortalController extends Controller
             $rules = [
                 'email' => 'required|email',
                 'message'  => 'required|string',
+                'subject' => 'required|string'
             ];
         } else {
             $rules = [
@@ -573,7 +574,7 @@ class EndUserPortalController extends Controller
                 $customer = Customer::create($customer_email, $customer_data);
             }
 
-            $subject = implode(' ', array_slice(explode(' ', $request->message), 0, 10));
+            $subject = $request->subject;
 
             // New conversation.
             $conversation = new Conversation();
