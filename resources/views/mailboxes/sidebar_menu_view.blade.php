@@ -21,6 +21,35 @@
             </div>
         @endif
         <a class="btn btn-trans" href="{{ route('conversations.create', ['mailbox_id' => $mailbox->id]) }}" aria-label="{{ __("New Conversations") }}" data-toggle="tooltip" title="{{ __("New Tickets") }}" role="button"><i class="glyphicon glyphicon-envelope"></i></a>
+        <a class="btn btn-trans" href="javascript:void(0)" data-url="{{route('mailboxes.fetchMail', ['mailbox_id' => $mailbox->id])}}" data-toggle="tooltip" title="{{ __("Fetch Tickets") }}" role="button" name="action" value="fetchEmail"><i class="glyphicon glyphicon-refresh " id="fetchEmail"></i></a>
     </div>
 @endif
 @action('mailbox.after_sidebar_buttons')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+$(document).ready(function() {
+      $('a[name="action"]').on('click', function(e) {
+        e.preventDefault();
+        var $button = $(this);
+        var url = $button.data('url');
+        $button.find('.glyphicon').addClass('glyphicon-spin');
+
+        $.ajax({
+          url: url,
+          method: 'GET',
+          dataType: 'json',
+          success: function(response) {
+            console.log(response);
+            // Update the UI or perform any necessary actions with the fetched tickets
+            $button.find('.glyphicon').removeClass('glyphicon-spin');
+          },
+          error: function(xhr, status, error) {
+            console.error(error);
+            // Display an error message or handle the error in an appropriate way
+            $button.find('.glyphicon').removeClass('glyphicon-spin');
+          }
+        });
+      });
+    });
+</script>
