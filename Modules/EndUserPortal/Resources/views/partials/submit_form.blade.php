@@ -120,7 +120,9 @@
                     @endforeach
                 @endif
             @endif
-
+            <div style="padding-bottom:10px; ">
+                <input type="text" name="subject" value='subject' class="form-control eup-remember input-md" placeholder="{{ __('Subject') }}*">
+            </div>
             <div class="form-group{{ $errors->has('message') ? ' has-error' : '' }}">
 
                 <textarea class="form-control eup-remember" name="message" rows="13" placeholder="{{ __('Message') }}*" @if (!empty($values['message'])) data-prefilled="1" @endif required autofocus>{{ old('message', $values['message'] ?? '') }}</textarea>
