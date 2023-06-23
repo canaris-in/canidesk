@@ -26,7 +26,6 @@
 					                        <div class="col-sm-6">
 					                        	<div class="flexy">
 						                            <select id="role" type="text" class="form-control input-sized" name="role" required autofocus>
-						                                <option value="{{ App\User::ROLE_USER }}" @if (old('role') == App\User::ROLE_USER)selected="selected"@endif>{{ __('User') }}</option>
 						                                <option value="{{ App\User::ROLE_ADMIN }}" @if (old('role') == App\User::ROLE_ADMIN)selected="selected"@endif>{{ __('Administrator') }}</option>
                                                         <option value="{{ App\User::ROLE_TICKETCOORDINATOR }}" @if (old('role') == App\User::ROLE_TICKETCOORDINATOR)selected="selected"@endif>{{ __('Ticket Coordinator') }}</option>
 						                                <option value="{{ App\User::ROLE_TICKETENGINEER }}" @if (old('role') == App\User::ROLE_TICKETENGINEER)selected="selected"@endif>{{ __('Ticket Engineer') }}</option>
