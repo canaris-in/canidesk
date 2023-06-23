@@ -29,7 +29,7 @@ class SecureController extends Controller
     public function dashboard()
     {
         $user = auth()->user();
-        if (!$user->isAdmin()) {
+        if (!$user->isAdmin()||!$user->isITHead()) {
             $mailboxes = $user->mailboxesCanView();
         } else {
             $mailboxes = $user->mailboxesCanViewWithSettings();

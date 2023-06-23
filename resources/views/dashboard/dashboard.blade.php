@@ -1,4 +1,5 @@
 @extends('layouts.app')
+
 @section('content')
     <i class="glyphicon glyphicon-filter filter-trigger"></i>
     <div class="rpt-header">
@@ -63,8 +64,9 @@
                 <div class="rpt-filter">
                     <label class="mobile-label">{{ __('Date Range') }}</label>
                     <nobr><input type="date" name="from" class="form-control rpt-filter-date"
-                            value="{{ $filters['from'] }}" />-<input type="date" name="to"
-                            class="form-control rpt-filter-date" value="{{ $filters['to'] }}" /></nobr>
+                                 value="{{ $filters['from'] }}"/>-<input type="date" name="to"
+                                                                         class="form-control rpt-filter-date"
+                                                                         value="{{ $filters['to'] }}"/></nobr>
                 </div>
 
                 <div class="rpt-filter" data-toggle="tooltip" title="{{ __('Refresh') }}">
@@ -112,55 +114,19 @@
         </div>
 
 
-
         <div class="donut-container">
-            <div class="donut-chart">
-                <div class="col-md-6">
-                    <canvas id="donutChart" height="230px" width="100%"></canvas>
-                </div>
-                <div>
-                    <div class="donut-chart-lable">
-                        <div class="donut-chart-box"></div>
-                        <div>
-                            <p class="donutp">Number Of Tickets</p>
-                            <p class="donutp">{{ $totalCount }}</p>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <span class="circle circle-green"></span>
-                            <p class="donutp">Open tickets</p>
-                            <p class="donutp">{{ $unclosedCount }}</p>
-                        </div>
-                        <div class="col-sm-6">
-                            <span class="circle circle-red"></span>
-                            <p class="donutp">Close tickets</p>
-                            <p class="donutp">{{ $closedCount }}</p>
-                        </div>
-                        <div class="col-sm-6">
-                            <span class="circle circle-blue"></span>
-                            <p class="donutp">Hold tickets</p>
-                            <p class="donutp">{{ $unclosedCreated30DaysAgoCount }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="horizontalChart">
-                <canvas id="horizontalChart"></canvas>
-            </div>
+            @include('dashboard.widgets.donut_chart')
+            @include('dashboard.widgets.average_resolved_tickets')
         </div>
-
         <div class="bar-container">
-            <div class="barChart">
-                <canvas id="barChart"></canvas>
-            </div>
-            <div class="lineChart">
-                <canvas id="lineChart"></canvas>
-            </div>
+            @include('dashboard.widgets.weekly_resolved_tickets')
+            @include('dashboard.widgets.average_time_tickets_sla')
         </div>
     </div>
+
+@endsection
+
+@push('styles')
     <style>
         .content {
             margin-top: 0;
@@ -494,164 +460,16 @@
 
         }
     </style>
+@endpush
 
+@push('vendor_libraries')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+@endpush
+
+@push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get the canvas element
-            var ctx = document.getElementById('donutChart').getContext('2d');
-
-            // Set chart data
-            var data = {
-                datasets: [{
-                    data: ["{{ $unclosedCount }}", "{{ $closedCount }}",
-                        "{{ $unclosedCreated30DaysAgoCount }}"
-                    ],
-                    backgroundColor: ['#89F81B', 'red', '#173292'],
-                    borderColor: 'transparent',
-                }]
-            };
-
-            // Set chart options
-            var options = {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutoutPercentage: 70
-            };
-
-            // Create the donut chart
-            var donutChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: data,
-                options: options
-            });
-
-            // Linechart
-
-            // Get the canvas element
-            var ctxLine = document.getElementById('lineChart').getContext('2d');
-
-            // Define the chart data
-            const currentDate = new Date();
-            const weekNames = [];
-
-            for (let i = 6; i >= 0; i--) {
-                const day = new Date(currentDate);
-                day.setDate(day.getDate() - i);
-                const options = {
-                    weekday: 'long'
-                }; // Specify the format of the weekday
-                const weekName = new Intl.DateTimeFormat('en-US', options).format(day);
-                weekNames.push(weekName);
-            }
-
-            var chartData = {
-                labels: weekNames,
-                datasets: [{
-                    label: 'Average Time Taken To Close Within SLA',
-                    data: [10, 20, 15, 25, 30, 10, 20],
-                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                    borderColor: 'rgba(0, 123, 255, 1)',
-                    borderWidth: 1
-                }]
-            };
-
-            // Create the chart
-            var lineChart = new Chart(ctxLine, {
-                type: 'line',
-                data: chartData,
-            });
-
-            // Bar Chart
-
-            var ctxBar = document.getElementById('barChart').getContext('2d');
-            // Set chart data
-            const weeklyBarChart = ["{{ $tickets['Sunday'] }}", "{{ $tickets['Monday'] }}",
-                "{{ $tickets['Tuesday'] }}", "{{ $tickets['Wednesday'] }}", "{{ $tickets['Thursday'] }}",
-                "{{ $tickets['Friday'] }}", "{{ $tickets['Saturday'] }}"
-            ];
-
-            for (let i = 6; i >= 0; i--) {
-                const day = new Date(currentDate);
-                day.setDate(day.getDate() - i);
-                const options = {
-                    weekday: 'long'
-                }; // Specify the format of the weekday
-                const weekName = new Intl.DateTimeFormat('en-US', options).format(day);
-                weekNames.push(weekName);
-            }
-
-            var data = {
-                labels: weekNames,
-                datasets: [{
-                    label: 'Average resolved tickets',
-                    data: weeklyBarChart,
-                    backgroundColor: '#2EA5FB', // Bar color
-                    borderColor: 'rgba(54, 162, 235, 1)', // Border color
-                    borderWidth: 1 // Border width
-                }]
-            };
-
-            // Set chart options
-            var options = {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        stepSize: 4,
-                    }
-                }
-            };
-
-            // Create the bar chart
-            var barChart = new Chart(ctxBar, {
-                type: 'bar',
-                data: data,
-                options: options
-            });
-
-            // Horizontal Bar Data
-
-            var ctxHorizontal = document.getElementById('horizontalChart').getContext('2d');
-            // Set chart data
-            let cValues = @json($categoryValues);
-            var data = {
-                labels: [...cValues],
-                datasets: [{
-                    label: 'Average resolved tickets',
-                    data: ["{{ $tickets['Sunday'] }}", "{{ $tickets['Monday'] }}",
-                        "{{ $tickets['Tuesday'] }}", "{{ $tickets['Wednesday'] }}",
-                        "{{ $tickets['Thursday'] }}", "{{ $tickets['Friday'] }}",
-                        "{{ $tickets['Saturday'] }}"
-                    ],
-                    backgroundColor: '#2EA5FB', // Bar color
-                    borderColor: 'rgba(54, 162, 235, 1)', // Border color
-                    borderWidth: 1 // Border width
-                }]
-            };
-
-            // Set chart options
-            var options = {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        stepSize: 4,
-                    }
-                }
-            };
-
-            // Create the bar chart
-            var barChart = new Chart(ctxHorizontal, {
-                type: 'bar',
-                data: data,
-                options: options
-            });
-
-            $(document).on('click', '.filter-trigger', function() {
+        document.addEventListener('DOMContentLoaded', function () {
+            $(document).on('click', '.filter-trigger', function () {
                 $('.rpt-header').toggleClass('opn-menu');
                 $('.filter-trigger').toggleClass('opn-filter');
                 if ($('.filter-trigger').hasClass('glyphicon-remove')) {
@@ -669,4 +487,4 @@
             location.reload();
         }
     </script>
-@endsection
+@endpush

@@ -45,6 +45,7 @@
     @endphp
 
     @yield('stylesheets')
+    @stack('styles')
 </head>
 <body class="locale-{{ app()->getLocale() }} @if (Helper::isLocaleRtl()) rtl @endif @if (!Auth::user()) user-is-guest @endif @if (Auth::user() && Auth::user()->isAdmin()) user-is-admin @endif @yield('body_class') @action('body.class')" @yield('body_attrs') @if (Auth::user()) data-auth_user_id="{{ Auth::user()->id }}" @endif>
 <div id="app">
@@ -97,7 +98,7 @@
                                     </ul>
                                 </li>
                             @endif
-                            @if (Auth::user()->isAdmin()
+                            @if (Auth::user()->isAdmin()||Auth::user()->isITHead()
                                 || Auth::user()->hasPermission(App\User::PERM_EDIT_USERS)
                                 || Auth::user()->can('viewMailboxMenu', Auth::user())
                                 || Eventy::filter('menu.manage.can_view', false)
@@ -114,14 +115,25 @@
                                         @if (Auth::user()->can('viewMailboxMenu', Auth::user()))
                                             <li class="{{ \App\Misc\Helper::menuSelectedHtml('mailboxes') }}"><a href="{{ route('mailboxes') }}">{{ __('Mailboxes') }}</a></li>
                                         @endif
+                                        @if (Auth::user()->isAdmin() || Auth::user()->isITHead(App\User::PERM_EDIT_USERS))
                                         @action('menu.manage.after_mailboxes')
-                                        @if (Auth::user()->isAdmin() || Auth::user()->hasPermission(App\User::PERM_EDIT_USERS))
+                                        @endif
+                                        @if (Auth::user()->isAdmin() || Auth::user()->isITHead(App\User::PERM_EDIT_USERS))
                                             <li class="{{ \App\Misc\Helper::menuSelectedHtml('users') }}"><a href="{{ route('users') }}">{{ __('Users') }}</a></li>
                                         @endif
                                         @if (Auth::user()->isAdmin())
                                             <li class="{{ \App\Misc\Helper::menuSelectedHtml('modules') }}"><a href="{{ route('modules') }}">{{ __('Modules') }}</a></li>
                                             <li class="{{ \App\Misc\Helper::menuSelectedHtml('logs') }}"><a href="{{ route('logs') }}">{{ __('Logs') }}</a></li>
                                             <li class="{{ \App\Misc\Helper::menuSelectedHtml('system') }}"><a href="{{ route('system') }}">{{ __('System') }}</a></li>
+                                        @endif
+                                        @if (Auth::user()->isITHead())
+                                            <li class="{{ \App\Misc\Helper::menuSelectedHtml('logs') }}"><a href="{{ route('logs') }}">{{ __('Logs') }}</a></li>
+                                        @endif
+                                        @if (Auth::user()->isTC())
+                                            <li class="{{ \App\Misc\Helper::menuSelectedHtml('logs') }}"><a href="{{ route('logs') }}">{{ __('Logs') }}</a></li>
+                                        @endif
+                                         @if (Auth::user()->isTEngg())
+                                            <li class="{{ \App\Misc\Helper::menuSelectedHtml('logs') }}"><a href="{{ route('logs') }}">{{ __('Logs') }}</a></li>
                                         @endif
                                         @action('menu.manage.append')
                                     </ul>
@@ -301,6 +313,7 @@
         }
     @endphp
     @yield('javascripts')
+    @stack('vendor_libraries')
     <script type="text/javascript">
         @if (\Helper::isInApp())
             @if (Auth::user())
@@ -312,5 +325,6 @@
         @yield('javascript')
         @action('javascript', $__env->yieldContent('javascripts'))
     </script>
+    @stack('scripts')
 </body>
 </html>

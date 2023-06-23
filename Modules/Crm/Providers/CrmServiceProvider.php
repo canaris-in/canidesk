@@ -47,7 +47,7 @@ class CrmServiceProvider extends ServiceProvider
         //     $styles[] = \Module::getPublicPath(CRM_MODULE).'/css/module.css';
         //     return $styles;
         // });
-        
+
         // Add module's JS file to the application layout.
         \Eventy::addFilter('javascripts', function($javascripts) {
             $javascripts[] = \Module::getPublicPath(CRM_MODULE).'/js/laroute.js';
@@ -66,7 +66,7 @@ class CrmServiceProvider extends ServiceProvider
                 foreach ($customer_fields as $customer_field) {
                     $customer_vars['customer.'.$customer_field->getNameEncoded()] = $customer_field->name.' ('.$customer_field->getNameEncoded().')';
                 }
-                
+
                 echo 'crmInitVars('.json_encode($customer_vars).');';
             }
         });
@@ -80,11 +80,11 @@ class CrmServiceProvider extends ServiceProvider
 
         // Section settings
         \Eventy::addFilter('settings.section_settings', function($settings, $section) {
-           
+
             if ($section != 'customer-fields') {
                 return $settings;
             }
-           
+
             $settings['customer_fields'] = \CustomerField::getCustomerFields();
             $settings['crm.conv_fields'] = json_decode(config('crm.conv_fields'), true) ?? [];
 
@@ -93,7 +93,7 @@ class CrmServiceProvider extends ServiceProvider
 
         // Section parameters.
         \Eventy::addFilter('settings.section_params', function($params, $section) {
-           
+
             if ($section != 'customer-fields') {
                 return $params;
             }
@@ -155,7 +155,7 @@ class CrmServiceProvider extends ServiceProvider
 
         //     return $url;
         // }, 20, 2);
-        
+
         // Select main menu item.
         \Eventy::addFilter('menu.selected', function($menu) {
             if (self::isCrm()) {
@@ -171,7 +171,7 @@ class CrmServiceProvider extends ServiceProvider
             if (self::isCrm()) {
                 $html = __('Customers').' <a href="#" data-trigger="modal" data-modal-title="'.__('Add Customer').'" data-modal-size="lg" data-modal-no-footer="true" data-modal-body=\'<iframe src="'.route('crm.create_customer', ['x_embed' => 1]).'" frameborder="0" class="modal-iframe"></iframe>\' class="btn btn-bordered btn-xs" style="position:relative;top:-1px;margin-left:4px;"><i class="glyphicon glyphicon-plus" title="'.__('Add Customer').'" data-toggle="tooltip"></i></a>';
 
-                if (\Auth::user()->isAdmin()) {
+                if (\Auth::user()->isAdmin() || \Auth::user()->isITHead()) {
                     $html .= '<span class="dropdown">
                         <a href="javascript:void(0)" class="dropdown-toggle btn btn-xs" data-toggle="dropdown"><span class="caret"></span></a>
                         <ul class="dropdown-menu dropdown-menu-right">

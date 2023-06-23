@@ -27,7 +27,7 @@ class FetchEmails extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:fetch-emails {--days=3} {--unseen=1}';
+    protected $signature = 'freescout:fetch-emails {--days=3} {--unseen=1} {--mailbox_id=0}';
 
     /**
      * The console command description.
@@ -74,12 +74,59 @@ class FetchEmails extends Command
     {
         $now = time();
         $successfully = true;
+        $mailboxId = $this->option('mailbox_id');
         Option::set('fetch_emails_last_run', $now);
 
         $this->line('['.date('Y-m-d H:i:s').'] Fetching '.($this->option('unseen') ? 'UNREAD' : 'ALL').' emails for the last '.$this->option('days').' days.');
 
         $this->extra_import = [];
 
+        if($mailboxId != 0){
+            if (Mailbox::getInProtocols() === Mailbox::$in_protocols) {
+            $this->mailboxes = Mailbox::findOrFail($mailboxId);
+        } else {
+            // Get active mailboxes with the default in_protocols
+            $this->mailboxes = Mailbox::whereIn('in_protocol', array_keys(Mailbox::$in_protocols))->get();
+        }
+
+        $mailbox = $this->mailboxes;
+
+            $this->info('['.date('Y-m-d H:i:s').'] Mailbox: '.$mailbox->name);
+
+            $this->mailbox = $mailbox;
+
+            try {
+                $this->fetch($mailbox);
+            } catch (\Exception $e) {
+                $successfully = false;
+                $this->logError('Error: '.$e->getMessage().'; File: '.$e->getFile().' ('.$e->getLine().')').')';
+            }
+
+
+        // Import emails sent to several mailboxes at once.
+        if (count($this->extra_import)) {
+            $this->line('['.date('Y-m-d H:i:s').'] Importing emails sent to several mailboxes at once: '.count($this->extra_import));
+            foreach ($this->extra_import as $i => $extra_import) {
+                $this->line('['.date('Y-m-d H:i:s').'] '.($i+1).') '.$extra_import['message']->getSubject());
+                $this->processMessage($extra_import['message'], $extra_import['message_id'], $extra_import['mailbox'], [], true);
+            }
+        }
+
+        if ($successfully) {
+            Option::set('fetch_emails_last_successful_run', $now);
+        }
+
+        // Middleware Terminate handler is not launched for commands,
+        // so we need to run processing subscription events manually
+        Subscription::processEvents();
+
+        $this->info('['.date('Y-m-d H:i:s').'] Fetching finished');
+
+        $this->extra_import = [];
+        $this->mailbox = null;
+        $this->mailboxes = [];
+
+        }else{
         if (Mailbox::getInProtocols() === Mailbox::$in_protocols) {
             $this->mailboxes = Mailbox::get();
         } else {
@@ -126,6 +173,7 @@ class FetchEmails extends Command
         $this->mailbox = null;
         $this->mailboxes = [];
     }
+}
 
     public function fetch($mailbox)
     {
@@ -177,7 +225,7 @@ class FetchEmails extends Command
                 $last_error = '';
                 $messages = collect([]);
 
-                try {    
+                try {
                     $messages_query = $folder->query()->since(now()->subDays($this->option('days')))->leaveUnread();
                     if ($unseen) {
                         $messages_query->unseen();
@@ -428,8 +476,8 @@ class FetchEmails extends Command
 
                         // Customer replied to the email from user
                         preg_match('/^'.\MailHelper::MESSAGE_ID_PREFIX_REPLY_TO_CUSTOMER."\-(\d+)\-([^@]+)@/", $prev_message_id, $m);
-                        // Simply checking thread_id from message_id was causing an issue when 
-                        // customer was sending a message from FreeScout - the message was 
+                        // Simply checking thread_id from message_id was causing an issue when
+                        // customer was sending a message from FreeScout - the message was
                         // connected to the wrong conversation.
                         if (!empty($m[1]) && !empty($m[2])) {
                             $message_id_hash = $m[2];
@@ -524,19 +572,19 @@ class FetchEmails extends Command
                 // email looking things.
                 //&& ($fwd_body = $html_body ?: $message->getTextBody())
                 && $body
-                //&& preg_match("/^(".implode('|', \MailHelper::$fwd_prefixes)."):(.*)/i", $subject, $m) 
+                //&& preg_match("/^(".implode('|', \MailHelper::$fwd_prefixes)."):(.*)/i", $subject, $m)
                 // F:, FW:, FWD:, WG:, De:
-                && preg_match("/^[[:alpha:]]{1,3}:(.*)/i", $subject, $m) 
+                && preg_match("/^[[:alpha:]]{1,3}:(.*)/i", $subject, $m)
                 && !empty($m[1])
                 && !$user_id && !$is_reply && !$prev_thread
             ) {
                 // Try to get "From:" from body.
                 $original_sender = $this->getOriginalSenderFromFwd($body);
-                
+
                 if ($original_sender) {
                     // Check if sender is the existing user.
                     $sender_is_user = User::nonDeleted()->where('email', $from)->exists();
-                    
+
                     if ($sender_is_user) {
                         // Substitute sender.
                         $from = $original_sender;
@@ -557,7 +605,7 @@ class FetchEmails extends Command
 
             // Create customers
             $emails = array_merge(
-                $this->attrToArray($message->getFrom()), 
+                $this->attrToArray($message->getFrom()),
                 $this->attrToArray($message->getReplyTo()),
                 $this->attrToArray($message->getTo()),
                 $this->attrToArray($message->getCc()),
@@ -589,11 +637,11 @@ class FetchEmails extends Command
                     // Maybe this email need to be imported also into other mailbox.
 
                     $recipient_emails = array_unique($this->formatEmailList(array_merge(
-                        $this->attrToArray($message->getTo()), 
-                        $this->attrToArray($message->getCc()), 
+                        $this->attrToArray($message->getTo()),
+                        $this->attrToArray($message->getCc()),
                         $this->attrToArray($message->getBcc())
                     )));
-                    
+
                     if (count($mailboxes) && count($recipient_emails) > 1) {
                         foreach ($mailboxes as $check_mailbox) {
                             if ($check_mailbox->id == $mailbox->id) {
@@ -760,7 +808,7 @@ class FetchEmails extends Command
             $conversation = $prev_thread->conversation;
 
             // If reply came from another customer: change customer, add original as CC.
-            // If FreeScout will not change the customer, the reply will be shown 
+            // If FreeScout will not change the customer, the reply will be shown
             // as coming from the original customer (not the real sender) and cause confusion.
             if ($conversation->customer_id != $customer->id) {
                 $prev_customer_id = $conversation->customer_id;
@@ -1095,7 +1143,7 @@ class FetchEmails extends Command
             // [name] => 2.png
             // [disposition] => inline
             // [img_src] => ...
-            // 
+            //
             // php-imap:
             // [content] => ...
             // [type] => text

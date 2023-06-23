@@ -15,7 +15,7 @@
         $mailbox_id = \Helper::getGlobalEntity('mailbox')->id;
     }
 @endphp
-
+@if (Auth::user()->isAdmin()|| Auth::user()->isITHead())
 <li class="dropdown {{ \App\Misc\Helper::menuSelectedHtml('knowledgebase') }}">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre>
         {{ __('Knowledge Base') }} <span class="caret"></span>
@@ -27,3 +27,4 @@
         <li class="{{ \App\Misc\Helper::menuSelectedHtml('mailboxes.knowledgebase.articles') }}"><a href="@if (!count($mailboxes) || !$mailbox_id){{ route('mailboxes.create') }}@else{{ route('mailboxes.knowledgebase.articles', ['mailbox_id'=>$mailbox_id]) }}@endif">{{ __('Articles') }}</a></li>
     </ul>
 </li>
+@endif

@@ -39,10 +39,10 @@ Route::get('/storage/attachment/{dir_1}/{dir_2}/{dir_3}/{file_name}', 'OpenContr
 // 	Route::get('/', config('app.home_controller'));
 // }
 // Route::get('/'.config('app.dashboard_path'), 'DashboardController@index')->name('dashboard');
-Route::get('/'.config('app.dashboard_path'), ['uses' => 'DashboardController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('dashboard');
-Route::get('/app-logs/app', ['uses' => '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.app');
-Route::get('/app-logs/{name?}', ['uses' => 'SecureController@logs', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs');
-Route::post('/app-logs/{name?}', ['uses' => 'SecureController@logsSubmit', 'middleware' => ['auth', 'roles'], 'roles' => ['admin']])->name('logs.action');
+Route::get('/'.config('app.dashboard_path'), ['uses' => 'DashboardController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead','ticketEngineer','ticketCoordinator']])->name('dashboard');
+Route::get('/app-logs/app', ['uses' => '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead','ticketEngineer','ticketCoordinator']])->name('logs.app');
+Route::get('/app-logs/{name?}', ['uses' => 'SecureController@logs', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead','ticketEngineer','ticketCoordinator']])->name('logs');
+Route::post('/app-logs/{name?}', ['uses' => 'SecureController@logsSubmit', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead','ticketEngineer','ticketCoordinator']])->name('logs.action');
 
 // Settings
 Route::post('/app-settings/ajax', ['uses' => 'SettingsController@ajax', 'middleware' => ['auth', 'roles'], 'roles' => ['admin'], 'laroute' => true])->name('settings.ajax');
@@ -51,7 +51,7 @@ Route::post('/app-settings/{section?}', ['uses' => 'SettingsController@save', 'm
 
 // Users
 Route::get('/users', ['uses' => 'UsersController@users', 'laroute' => true])->name('users');
-Route::get('/users/wizard', 'UsersController@create')->name('users.create');
+Route::get('/users/wizard', ['uses' =>'UsersController@create', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead']])->name('users.create');
 Route::post('/users/wizard', 'UsersController@createSave');
 Route::get('/users/profile/{id}', 'UsersController@profile')->name('users.profile');
 Route::post('/users/profile/{id}', 'UsersController@profileSave')->name('users.profile.save');
@@ -140,3 +140,5 @@ Route::get('/reports/settings','ReportSettingsController@index')->name('reports.
 Route::post('/reports/settings','ReportSettingsController@addDataSettings');
 
 Route::post('/reports/sla/', 'SlaReportController@slaReport')->name('slafilter');
+
+Route::get('/fetch-mailbox/{id}', 'MailboxesController@fetchMail')->name('mailboxes.fetchMail');

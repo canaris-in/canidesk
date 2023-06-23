@@ -128,7 +128,7 @@ class User extends Authenticatable
     protected $casts = [
         'permissions' => 'array',
     ];
-    
+
     /**
      * For array_unique function.
      *
@@ -212,6 +212,33 @@ class User extends Authenticatable
     {
         return $this->role == self::ROLE_ADMIN;
     }
+    /**
+     * Check if user is IT head.
+     *
+     * @return bool
+     */
+    public function isITHead()
+    {
+        return $this->role == self::ROLE_ITHEAD;
+    }
+    /**
+     * Check if user is IT head.
+     *
+     * @return bool
+     */
+    public function isTC()
+    {
+        return $this->role == self::ROLE_TICKETCOORDINATOR;
+    }
+    /**
+     * Check if user is IT head.
+     *
+     * @return bool
+     */
+    public function isTEngg()
+    {
+        return $this->role == self::ROLE_TICKETENGINEER;
+    }
 
     /**
      * Get user full name.
@@ -238,13 +265,13 @@ class User extends Authenticatable
      */
     public function mailboxesCanView($cache = false)
     {
-        if ($this->isAdmin()) {
+        if ($this->isAdmin() || $this->isITHead()) {
             if ($cache) {
                 $mailboxes = Mailbox::rememberForever()->get();
             } else {
                 $mailboxes = Mailbox::all();
             }
-        } else {
+        }else {
             if ($cache) {
                 $mailboxes = $this->mailboxes_cached;
             } else {
@@ -262,7 +289,7 @@ class User extends Authenticatable
     {
         $user = $this;
 
-        if ($this->isAdmin()) {
+        if ($this->isAdmin()||$this->isITHead()) {
             $query = Mailbox::select(['mailboxes.*', 'mailbox_user.hide', 'mailbox_user.mute', 'mailbox_user.access'])
                         ->leftJoin('mailbox_user', function ($join) use ($user) {
                             $join->on('mailbox_user.mailbox_id', '=', 'mailboxes.id');
@@ -310,7 +337,7 @@ class User extends Authenticatable
      */
     public function mailboxesIdsCanView()
     {
-        if ($this->isAdmin()) {
+        if ($this->isAdmin()|| $this->isITHead()) {
             return Mailbox::pluck('id')->toArray();
         } else {
             return $this->mailboxes()->pluck('mailboxes.id')->toArray();
@@ -327,10 +354,10 @@ class User extends Authenticatable
      * Check to see if the user can manage any mailboxes
      */
     public function hasManageMailboxAccess() {
-        if ($this->isAdmin()) {
+        if ($this->isAdmin()|| $this->isITHead() ) {
             return true;
         } else {
-            //$mailboxes = $this->mailboxesCanViewWithSettings(true);
+            $mailboxes = $this->mailboxesCanViewWithSettings(true);
             $mailboxes = $this->mailboxesSettings();
             foreach ($mailboxes as $mailbox) {
                 if (!empty($mailbox->access) && !empty(json_decode($mailbox->access))) {
@@ -345,10 +372,10 @@ class User extends Authenticatable
      */
     public function canManageMailbox($mailbox_id)
     {
-        if ($this->isAdmin()) {
+        if ($this->isAdmin() || $this->isITHead() || $this->isTC()|| $this->isTEngg()) {
             return true;
         } else {
-            //$mailbox = $this->mailboxesCanViewWithSettings(true)->where('id', $mailbox_id)->first();
+            $mailbox = $this->mailboxesCanViewWithSettings(true)->where('id', $mailbox_id)->first();
             $mailbox = $this->mailboxesSettings()->where('mailbox_id', $mailbox_id)->first();
             if ($mailbox && !empty(json_decode($mailbox->access ?? ''))) {
                 return true;
@@ -357,10 +384,10 @@ class User extends Authenticatable
     }
 
     public function hasManageMailboxPermission($mailbox_id, $perm) {
-        if ($this->isAdmin()) {
+        if ($this->isAdmin()|| $this->isITHead() || $this->isTC()|| $this->isTEngg()) {
             return true;
         } else {
-            //$mailbox = $this->mailboxesCanViewWithSettings(true)->where('id', $mailbox_id)->first();
+            $mailbox = $this->mailboxesCanViewWithSettings(true)->where('id', $mailbox_id)->first();
             $mailbox = $this->mailboxesSettings()->where('mailbox_id', $mailbox_id)->first();
             if ($mailbox && !empty($mailbox->access) && in_array($perm, json_decode($mailbox->access))) {
                 return true;
@@ -425,7 +452,7 @@ class User extends Authenticatable
      */
     public function syncPersonalFolders($mailboxes)
     {
-        if ($this->isAdmin()) {
+        if ($this->isAdmin()||$this->isITHead()) {
             // For admin we get all mailboxes
             $mailbox_ids = Mailbox::pluck('mailboxes.id');
         } else {
@@ -1028,7 +1055,7 @@ class User extends Authenticatable
      */
     public function whichUsersCanView($mailboxes = null, $sort = true)
     {
-        if ($this->isAdmin()) {
+        if ($this->isAdmin()||$this->isITHead()) {
             $users = User::nonDeleted()->get();
         } else {
             // Get user mailboxes.
@@ -1106,7 +1133,7 @@ class User extends Authenticatable
             return true;
         }
         $alt_emails = explode(',', $this->emails ?? '');
-        
+
         foreach ($alt_emails as $alt_email) {
             if (Email::sanitizeEmail($alt_email) == $email) {
                 return true;

@@ -2435,6 +2435,20 @@ button.conv-checkbox-clear {
     padding-top: 15px;
     padding-bottom: 150px;
 }
+.dm .input-group-btn:last-child > .btn{
+    margin-left: 0px;
+}
+.alert-danger {
+    background-color: #ebccd1;
+  }
+  .dm .alert-danger {
+    color: #d9534f;
+    background-color: #1D1C24;
+    border-color: #ebccd1;
+  }
+  #laravel-logs .btn {
+    color: #000;
+  }
 .conv-new-form .form-group {
     margin-bottom: 10px;
 }
@@ -3002,7 +3016,7 @@ ul.sidebar-block-list {
     text-decoration: underline;
 }
 .alert-floating.alert-success .glyphicon {
-    color: #53b961;
+    color: #53b961 !important;
 }
 .alert-floating.alert-danger .glyphicon {
     color: #d43f3a;
@@ -3010,9 +3024,14 @@ ul.sidebar-block-list {
 .alert-floating.alert-success {
     background-color: #deffde;
     /*color: #3c763d;*/
-    color: #6ac27b;
+    color: #6ac27b !important;
     /*border: 1px solid #6ac27b;*/
 }
+.alert-success {
+    color: #6ac27b !important;
+    background-color: #deffde;
+    border-color: #6ac27b;
+  }
 /*.alert-floating.alert-danger {
     border: 1px solid #a94442;
 }*/
