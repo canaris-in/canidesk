@@ -878,7 +878,7 @@ EOHTML
         }
         $this->lastDepth = $depth;
 
-        $this->line = htmlentities($this->line);
+//        $this->line = htmlentities($this->line);
 
         if (-1 === $depth) {
             AbstractDumper::dumpLine(0);
