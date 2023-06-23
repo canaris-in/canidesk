@@ -51,7 +51,7 @@ Route::post('/app-settings/{section?}', ['uses' => 'SettingsController@save', 'm
 
 // Users
 Route::get('/users', ['uses' => 'UsersController@users', 'laroute' => true])->name('users');
-Route::get('/users/wizard', 'UsersController@create')->name('users.create');
+Route::get('/users/wizard', ['uses' =>'UsersController@create', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead']])->name('users.create');
 Route::post('/users/wizard', 'UsersController@createSave');
 Route::get('/users/profile/{id}', 'UsersController@profile')->name('users.profile');
 Route::post('/users/profile/{id}', 'UsersController@profileSave')->name('users.profile.save');
