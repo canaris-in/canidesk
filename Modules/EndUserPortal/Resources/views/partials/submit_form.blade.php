@@ -121,7 +121,7 @@
                 @endif
             @endif
             <div style="padding-bottom:10px; ">
-                <input type="text" name="subject" value='' class="form-control eup-remember input-md" placeholder="{{ __('Subject') }}*">
+                <input type="text"  name="subject"  class="form-control eup-remember input-md" placeholder="{{ __('Subject') }}*">
             </div>
             <div class="form-group{{ $errors->has('message') ? ' has-error' : '' }}">
 
