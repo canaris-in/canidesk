@@ -35,7 +35,7 @@
                 <div class="setting_form_labe form-group">
                     <label for="" class="col-sm-2 control-label">To Email</label>
                    <div class="col-sm-6">
-                    <input class="setting_form_labe_input_email form-control input-sized" placeholder="" type="text" name="to_email" value="{{$settings && $settings->to_email ? $settings->to_email : ''}}">
+                    <input class="setting_form_labe_input_email form-control input-sized" placeholder="" type="text" name="to_email" value="{{$settings && $settings->to_email ? $settings->to_email : ''}}" required>
                    </div>
                 </div>
                 <div class="setting_form_labe form-group">
@@ -70,7 +70,7 @@
                 <div class="setting_form_labe form-group">
                     <label for="" class="col-sm-2 control-label">Time</label>
                     <div class="col-sm-6">
-                      <input class="setting_form_labe_input_time form-control input-sized" type="time" name="time"  value="{{$settings && $settings->time ? $settings->time : ''}}">
+                      <input class="setting_form_labe_input_time form-control input-sized" type="time" name="time"  value="{{$settings && $settings->time ? $settings->time : ''}}" required>
                     </div>
                 </div>
                 <div class="col-sm-6 col-sm-offset-2">
