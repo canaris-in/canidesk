@@ -137,7 +137,7 @@ class MailboxesController extends Controller
 
         $user = auth()->user();
         $mailbox_user = $user->mailboxesWithSettings()->where('mailbox_id', $id)->first();
-        if (!$mailbox_user && $user->isAdmin() || $user->isITHead()) {
+        if (!$mailbox_user && ($user->isAdmin() || $user->isITHead() || $user->isTC() || $user->isTEngg())) {
             // Admin may not be connected to the mailbox yet
             $user->mailboxes()->attach($id);
             $mailbox_user = $user->mailboxesWithSettings()->where('mailbox_id', $id)->first();

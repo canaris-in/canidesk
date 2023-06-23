@@ -1,6 +1,6 @@
 <?php
 
-Route::group(['middleware' => ['web', 'auth', 'roles'], 'roles' => ['user', 'admin'], 'prefix' => \Helper::getSubdirectory(), 'namespace' => 'Modules\Crm\Http\Controllers'], function()
+Route::group(['middleware' => ['web', 'auth', 'roles'], 'roles' => ['user', 'admin','ithead','ticketEngineer','ticketCoordinator'], 'prefix' => \Helper::getSubdirectory(), 'namespace' => 'Modules\Crm\Http\Controllers'], function()
 {
     Route::get('/customers/new', 'CrmController@createCustomer')->name('crm.create_customer');
     Route::post('/customers/new', 'CrmController@createCustomerSave');
@@ -9,7 +9,7 @@ Route::group(['middleware' => ['web', 'auth', 'roles'], 'roles' => ['user', 'adm
     Route::post('/crm/ajax', ['uses' => 'CrmController@ajax', 'laroute' => true])->name('crm.ajax');
 });
 
-Route::group(['middleware' => ['web', 'auth', 'roles'], 'roles' => ['admin'], 'prefix' => \Helper::getSubdirectory(), 'namespace' => 'Modules\Crm\Http\Controllers'], function()
+Route::group(['middleware' => ['web', 'auth', 'roles'], 'roles' => ['admin','ithead','ticketEngineer','ticketCoordinator'], 'prefix' => \Helper::getSubdirectory(), 'namespace' => 'Modules\Crm\Http\Controllers'], function()
 {
     Route::post('/customers/export', ['uses' => 'CrmController@export'])->name('crm.export');
     Route::post('/crm/ajax-admin', ['uses' => 'CrmController@ajaxAdmin', 'laroute' => true])->name('crm.ajax_admin');

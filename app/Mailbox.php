@@ -537,7 +537,7 @@ class Mailbox extends Model
         $filter = \Eventy::filter('mailbox.user_has_access', -1, $this, $user);
         if ($filter != -1) {
             return (bool)$filter;
-        } elseif ($user && $user->isAdmin()|| $user->isITHead()) {
+        } elseif ($user && ($user->isAdmin()|| $user->isITHead() || $user->isTC()|| $user->isTEngg() )) {
             return true;
         } else {
             return (bool) $this->users()->where('users.id', $user_id)->count();
