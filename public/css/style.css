@@ -1342,7 +1342,7 @@ a h4 {
     padding-left: 0;
 }
 .table.table-conversations th.conv-subject {
-    padding-left: 3px;
+    padding-left: 5px;
 }
 .table-conversations .conv-cb {
     padding: 4px 0;
@@ -1484,7 +1484,7 @@ table.table-conversations td.conv-attachment {
     color: #93a1af;
 }
 .table-conversations .conv-attachment {
-    width: 20px;
+    width: 120px;
 }
 .table-conversations .conv-attachment .conv-star {
     font-size: 15px;

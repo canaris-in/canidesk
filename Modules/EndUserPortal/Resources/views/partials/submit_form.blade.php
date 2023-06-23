@@ -18,9 +18,9 @@
 @else
     @if (request()->get('success') && !empty($conversation->id))
         <div class="alert alert-success text-center">
-            <strong>{{ __('Your call has been successfully registered. Engineer will be assigned shortly.!') }}</strong>
+            <strong>{{ __('Your message has been send') }}</strong>
         </div>
-    @endif
+    @endif    
     <form class="" method="POST" action="{{ $form_action ?? '' }}" id="eup-ticket-form">
         <div id="eup-submit-form-main-area">
             {{ csrf_field() }}
