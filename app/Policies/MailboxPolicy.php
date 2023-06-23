@@ -19,7 +19,7 @@ class MailboxPolicy
      */
     public function create(User $user)
     {
-        if ($user->isAdmin()) {
+        if ($user->isAdmin()||$user->isITHead()) {
             return true;
         } else {
             return false;
@@ -35,7 +35,7 @@ class MailboxPolicy
      */
     public function view(User $user, Mailbox $mailbox)
     {
-        if ($user->isAdmin()) {
+        if ($user->isAdmin()||$user->isITHead()) {
             return true;
         } else {
             if ($mailbox->users->contains($user)) {
@@ -55,7 +55,7 @@ class MailboxPolicy
      */
     public function viewCached(User $user, Mailbox $mailbox)
     {
-        if ($user->isAdmin()) {
+        if ($user->isAdmin()||$user->isITHead()) {
             return true;
         } else {
             // Use cached users for Realtime events
@@ -90,7 +90,7 @@ class MailboxPolicy
      */
     public function update(User $user, Mailbox $mailbox)
     {
-        if ($user->isAdmin() || $user->canManageMailbox($mailbox->id)) {
+        if ($user->isAdmin()||$user->isITHead() || $user->canManageMailbox($mailbox->id)) {
             return true;
         } else {
             return false;
@@ -124,7 +124,7 @@ class MailboxPolicy
      */
     public function updatePermissions(User $user, Mailbox $mailbox)
     {
-        if ($user->isAdmin() || $user->hasManageMailboxPermission($mailbox->id, 'perm')) {
+        if ($user->isAdmin()||$user->isITHead() || $user->hasManageMailboxPermission($mailbox->id, 'perm')) {
             return true;
         } else {
             return false;
@@ -141,7 +141,7 @@ class MailboxPolicy
      */
     public function updateSettings(User $user, Mailbox $mailbox)
     {
-        if ($user->isAdmin() || $user->hasManageMailboxPermission($mailbox->id, 'edit')) {
+        if ($user->isAdmin()||$user->isITHead() || $user->hasManageMailboxPermission($mailbox->id, 'edit')) {
             return true;
         } else {
             return false;
@@ -158,7 +158,7 @@ class MailboxPolicy
      */
     public function updateEmailSignature(User $user, Mailbox $mailbox)
     {
-        if ($user->isAdmin() || $user->hasManageMailboxPermission($mailbox->id, 'sig')) {
+        if ($user->isAdmin()||$user->isITHead() || $user->hasManageMailboxPermission($mailbox->id, 'sig')) {
             return true;
         } else {
             return false;
@@ -175,7 +175,7 @@ class MailboxPolicy
      */
     public function delete(User $user, Mailbox $mailbox)
     {
-        if ($user->isAdmin()) {
+        if ($user->isAdmin()||$user->isITHead()) {
             return true;
         } else {
             return false;

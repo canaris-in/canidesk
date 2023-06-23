@@ -137,13 +137,13 @@ class MailboxesController extends Controller
 
         $user = auth()->user();
         $mailbox_user = $user->mailboxesWithSettings()->where('mailbox_id', $id)->first();
-        if (!$mailbox_user && $user->isAdmin()) {
+        if (!$mailbox_user && $user->isAdmin() || $user->isITHead()) {
             // Admin may not be connected to the mailbox yet
             $user->mailboxes()->attach($id);
             $mailbox_user = $user->mailboxesWithSettings()->where('mailbox_id', $id)->first();
         }
 
-        //$mailboxes = Mailbox::all()->except($id);
+        // $mailboxes = Mailbox::all()->except($id);
 
         return view('mailboxes/update', ['mailbox' => $mailbox, 'mailbox_user' => $mailbox_user, 'flashes' => $this->mailboxActiveWarning($mailbox)]);
     }
@@ -168,7 +168,7 @@ class MailboxesController extends Controller
         if ($user->can('updateSettings', $mailbox)) {
 
             // if not admin, the text only fields don't pass so spike them into the request.
-            if (!auth()->user()->isAdmin()) {
+            if (!auth()->user()->isAdmin()||!auth()->user()->isITHead()) {
                 $request->merge([
                     'name' => $mailbox->name,
                     'email' => $mailbox->email
@@ -293,7 +293,7 @@ class MailboxesController extends Controller
                 }
             }
 
-            if ($user->id == $mailbox_user->id && !$user->isAdmin()) {
+            if ($user->id == $mailbox_user->id && !$user->isAdmin()||!$user->isITHead()) {
                 // User with Permission priv's can't edit their own additional priv's.
             } else {
                 $mailbox_with_settings->settings->access = json_encode($access);
@@ -449,7 +449,7 @@ class MailboxesController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->isAdmin()) {
+        if ($user->isAdmin() || $user->isITHead()) {
             $mailbox = Mailbox::findOrFailWithSettings($id, $user->id);
         } else {
             $mailbox = Mailbox::findOrFail($id);

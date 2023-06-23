@@ -64,7 +64,7 @@ class CustomFieldsServiceProvider extends ServiceProvider
 
         // Add item to the mailbox menu
         \Eventy::addAction('mailboxes.settings.menu', function($mailbox) {
-            if (auth()->user()->isAdmin()) {
+            if (auth()->user()->isAdmin() || auth()->user()->isITHead()) {
                 echo \View::make('customfields::partials/settings_menu', ['mailbox' => $mailbox])->render();
             }
         }, 15);
@@ -84,7 +84,7 @@ class CustomFieldsServiceProvider extends ServiceProvider
 
         // Show on conversation creation
         \Eventy::addAction('conversation.create_form.after_subject', function($conversation, $mailbox) {
-            
+
             $custom_fields = CustomField::getCustomFieldsWithValues($mailbox->id, $conversation->id);
 
             if (!$custom_fields) {
@@ -149,9 +149,9 @@ class CustomFieldsServiceProvider extends ServiceProvider
         }, 20, 3);
 
         // Workflows.
-        
+
         \Eventy::addFilter('workflows.conditions_config', function($conditions, $mailbox_id = null) {
-            
+
             if (!$mailbox_id) {
                 return $conditions;
             }
@@ -183,7 +183,7 @@ class CustomFieldsServiceProvider extends ServiceProvider
                                 ]
                             ];
                             break;
-                        
+
                         case CustomField::TYPE_SINGLE_LINE:
                             $config = [
                                 'title' => $field->name,
@@ -273,10 +273,10 @@ class CustomFieldsServiceProvider extends ServiceProvider
                                     'custom_field.value_updated'
                                 ],
                                 'values_visible_if' => [
-                                    'next_days', 
+                                    'next_days',
                                     'last_days',
-                                    'not_next_days', 
-                                    'not_last_days', 
+                                    'not_next_days',
+                                    'not_last_days',
                                 ]
                             ];
                             break;
@@ -323,7 +323,7 @@ class CustomFieldsServiceProvider extends ServiceProvider
                 case CustomField::TYPE_MULTISELECT:
                     return \Workflow::compareText($custom_field_value, $value, $operator);
                     break;
-                
+
                 case CustomField::TYPE_NUMBER:
                     if ($operator == 'greater') {
                         return is_numeric($value) && (int)$custom_field_value > (int)$value;
@@ -331,7 +331,7 @@ class CustomFieldsServiceProvider extends ServiceProvider
                         return is_numeric($value) && (int)$custom_field_value < (int)$value;
                     } else {
                         return \Workflow::compareText($custom_field_value, $value, $operator);
-                    }                   
+                    }
                     break;
 
                 case CustomField::TYPE_DATE:
@@ -459,7 +459,7 @@ class CustomFieldsServiceProvider extends ServiceProvider
             }
 
             $custom_field_id = $action['operator'];
-        
+
             if (CustomField::find($custom_field_id)) {
                 return false;
             } else {
@@ -519,7 +519,7 @@ class CustomFieldsServiceProvider extends ServiceProvider
                 foreach ($custom_fields as $custom_field) {
                     $cf_vars['conversation.'.$custom_field->getNameEncoded()] = $custom_field->name.' ('.$custom_field->getNameEncoded().')';
                 }
-                
+
                 echo 'cfInitVars('.json_encode($cf_vars).');';
             }
         }, 20, 1);
@@ -565,7 +565,7 @@ class CustomFieldsServiceProvider extends ServiceProvider
                     }
                 }
             }
-            
+
         }, 20, 2);
 
     }

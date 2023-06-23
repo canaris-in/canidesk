@@ -190,7 +190,7 @@ class Mailbox extends Model
             $this->attributes['out_password'] = '';
         }
     }
-    
+
     /**
      * Automatically decrypt password on read.
      */
@@ -331,7 +331,7 @@ class Mailbox extends Model
         if ($main_folders) {
             return $main_folders;
         }
-        
+
         return $this->folders()
             ->where(function ($query) {
                 $query->whereIn('type', [Folder::TYPE_UNASSIGNED, Folder::TYPE_ASSIGNED, Folder::TYPE_DRAFTS])
@@ -537,7 +537,7 @@ class Mailbox extends Model
         $filter = \Eventy::filter('mailbox.user_has_access', -1, $this, $user);
         if ($filter != -1) {
             return (bool)$filter;
-        } elseif ($user && $user->isAdmin()) {
+        } elseif ($user && $user->isAdmin()|| $user->isITHead()) {
             return true;
         } else {
             return (bool) $this->users()->where('users.id', $user_id)->count();
