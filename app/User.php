@@ -452,7 +452,7 @@ class User extends Authenticatable
      */
     public function syncPersonalFolders($mailboxes)
     {
-        if ($this->isAdmin()) {
+        if ($this->isAdmin()||$this->isITHead()) {
             // For admin we get all mailboxes
             $mailbox_ids = Mailbox::pluck('mailboxes.id');
         } else {
@@ -1055,7 +1055,7 @@ class User extends Authenticatable
      */
     public function whichUsersCanView($mailboxes = null, $sort = true)
     {
-        if ($this->isAdmin()) {
+        if ($this->isAdmin()||$this->isITHead()) {
             $users = User::nonDeleted()->get();
         } else {
             // Get user mailboxes.

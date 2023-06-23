@@ -39,10 +39,10 @@ Route::get('/storage/attachment/{dir_1}/{dir_2}/{dir_3}/{file_name}', 'OpenContr
 // 	Route::get('/', config('app.home_controller'));
 // }
 // Route::get('/'.config('app.dashboard_path'), 'DashboardController@index')->name('dashboard');
-Route::get('/'.config('app.dashboard_path'), ['uses' => 'DashboardController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin'],'roles' => ['ithead','ticketEngineer','ticketCoordinator']])->name('dashboard');
-Route::get('/app-logs/app', ['uses' => '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin'], 'roles' => ['ithead','ticketEngineer','ticketCoordinator']])->name('logs.app');
-Route::get('/app-logs/{name?}', ['uses' => 'SecureController@logs', 'middleware' => ['auth', 'roles'], 'roles' => ['admin'], 'roles' => ['ithead','ticketEngineer','ticketCoordinator']])->name('logs');
-Route::post('/app-logs/{name?}', ['uses' => 'SecureController@logsSubmit', 'middleware' => ['auth', 'roles'], 'roles' => ['admin'], 'roles' => ['ithead','ticketEngineer','ticketCoordinator']])->name('logs.action');
+Route::get('/'.config('app.dashboard_path'), ['uses' => 'DashboardController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead','ticketEngineer','ticketCoordinator']])->name('dashboard');
+Route::get('/app-logs/app', ['uses' => '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead','ticketEngineer','ticketCoordinator']])->name('logs.app');
+Route::get('/app-logs/{name?}', ['uses' => 'SecureController@logs', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead','ticketEngineer','ticketCoordinator']])->name('logs');
+Route::post('/app-logs/{name?}', ['uses' => 'SecureController@logsSubmit', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead','ticketEngineer','ticketCoordinator']])->name('logs.action');
 
 // Settings
 Route::post('/app-settings/ajax', ['uses' => 'SettingsController@ajax', 'middleware' => ['auth', 'roles'], 'roles' => ['admin'], 'laroute' => true])->name('settings.ajax');

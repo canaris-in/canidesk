@@ -21,7 +21,7 @@ class ConversationPolicy
      */
     public function view(User $user, Conversation $conversation)
     {
-        if ($user->isAdmin()) {
+        if ($user->isAdmin()||$user->isITHead()) {
             return true;
         } else {
             if ($conversation->mailbox->users->contains($user)) {
@@ -34,14 +34,14 @@ class ConversationPolicy
 
     /**
      * Cached version.
-     * 
+     *
      * @param  User         $user         [description]
      * @param  Conversation $conversation [description]
      * @return [type]                     [description]
      */
     public function viewCached(User $user, Conversation $conversation)
     {
-        if ($user->isAdmin()) {
+        if ($user->isAdmin()||$user->isITHead()) {
             return true;
         } else {
             if ($conversation->mailbox->users_cached->contains($user)) {
@@ -62,7 +62,7 @@ class ConversationPolicy
      */
     public function update(User $user, Conversation $conversation)
     {
-        if ($user->isAdmin()) {
+        if ($user->isAdmin()||$user->isITHead()) {
             return true;
         } else {
             if ($conversation->mailbox->users->contains($user)) {
@@ -78,7 +78,7 @@ class ConversationPolicy
      */
     public function delete(User $user, Conversation $conversation)
     {
-        if ($user->isAdmin()) {
+        if ($user->isAdmin()||$user->isITHead()) {
             return true;
         } else {
             return $user->hasPermission(User::PERM_DELETE_CONVERSATIONS);

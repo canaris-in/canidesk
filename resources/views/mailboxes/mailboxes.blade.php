@@ -8,11 +8,11 @@
         <div class="flexy-item">
             <span class="heading">{{ __('Mailboxes') }}</span>
         </div>
-        {{-- @if (Auth::user()->isAdmin()||Auth::user()->isITHead()) --}}
+        @if (Auth::user()->isAdmin()||Auth::user()->isITHead())
             <div class="flexy-item margin-left">
                 <a href="{{ route('mailboxes.create') }}" class="btn btn-bordered">{{ __('New Mailbox') }}</a>
             </div>
-        {{-- @endif --}}
+        @endif
         <div class="flexy-block"></div>
     </div>
 

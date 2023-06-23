@@ -168,7 +168,7 @@ class MailboxesController extends Controller
         if ($user->can('updateSettings', $mailbox)) {
 
             // if not admin, the text only fields don't pass so spike them into the request.
-            if (!auth()->user()->isAdmin()) {
+            if (!auth()->user()->isAdmin()||!auth()->user()->isITHead()) {
                 $request->merge([
                     'name' => $mailbox->name,
                     'email' => $mailbox->email
@@ -293,7 +293,7 @@ class MailboxesController extends Controller
                 }
             }
 
-            if ($user->id == $mailbox_user->id && !$user->isAdmin()) {
+            if ($user->id == $mailbox_user->id && !$user->isAdmin()||!$user->isITHead()) {
                 // User with Permission priv's can't edit their own additional priv's.
             } else {
                 $mailbox_with_settings->settings->access = json_encode($access);
