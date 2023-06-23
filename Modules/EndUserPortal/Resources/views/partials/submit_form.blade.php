@@ -124,8 +124,6 @@
             <div style="padding-bottom:10px; ">
                 <input type="text"  name="subject"  class="form-control eup-remember input-md" placeholder="{{ __('Subject') }}*">
             </div>
-            @else
-                
             @endif
             <div class="form-group{{ $errors->has('message') ? ' has-error' : '' }}">
 
