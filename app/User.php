@@ -265,7 +265,7 @@ class User extends Authenticatable
      */
     public function mailboxesCanView($cache = false)
     {
-        if ($this->isAdmin() || $this->isITHead()) {
+        if ($this->isAdmin()) {
             if ($cache) {
                 $mailboxes = Mailbox::rememberForever()->get();
             } else {
@@ -289,7 +289,7 @@ class User extends Authenticatable
     {
         $user = $this;
 
-        if ($this->isAdmin()||$this->isITHead()) {
+        if ($this->isAdmin()) {
             $query = Mailbox::select(['mailboxes.*', 'mailbox_user.hide', 'mailbox_user.mute', 'mailbox_user.access'])
                         ->leftJoin('mailbox_user', function ($join) use ($user) {
                             $join->on('mailbox_user.mailbox_id', '=', 'mailboxes.id');
@@ -337,7 +337,7 @@ class User extends Authenticatable
      */
     public function mailboxesIdsCanView()
     {
-        if ($this->isAdmin()|| $this->isITHead()) {
+        if ($this->isAdmin()) {
             return Mailbox::pluck('id')->toArray();
         } else {
             return $this->mailboxes()->pluck('mailboxes.id')->toArray();
@@ -354,7 +354,7 @@ class User extends Authenticatable
      * Check to see if the user can manage any mailboxes
      */
     public function hasManageMailboxAccess() {
-        if ($this->isAdmin()|| $this->isITHead() ) {
+        if ($this->isAdmin() ) {
             return true;
         } else {
             $mailboxes = $this->mailboxesCanViewWithSettings(true);

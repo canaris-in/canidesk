@@ -253,7 +253,7 @@ class UsersController extends Controller
     public function permissions($id)
     {
         $user = auth()->user();
-        if (!$user->isAdmin()||!$user->isITHead()) {
+        if (!$user->isAdmin()) {
             abort(403);
         }
 
