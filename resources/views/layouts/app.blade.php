@@ -114,8 +114,10 @@
                                         @if (Auth::user()->can('viewMailboxMenu', Auth::user()))
                                             <li class="{{ \App\Misc\Helper::menuSelectedHtml('mailboxes') }}"><a href="{{ route('mailboxes') }}">{{ __('Mailboxes') }}</a></li>
                                         @endif
+                                        @if (Auth::user()->isAdmin() || Auth::user()->isITHead(App\User::PERM_EDIT_USERS))
                                         @action('menu.manage.after_mailboxes')
-                                        @if (Auth::user()->isAdmin() || Auth::user()->hasPermission(App\User::PERM_EDIT_USERS))
+                                        @endif
+                                        @if (Auth::user()->isAdmin() || Auth::user()->isITHead(App\User::PERM_EDIT_USERS))
                                             <li class="{{ \App\Misc\Helper::menuSelectedHtml('users') }}"><a href="{{ route('users') }}">{{ __('Users') }}</a></li>
                                         @endif
                                         @if (Auth::user()->isAdmin())

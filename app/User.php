@@ -354,7 +354,7 @@ class User extends Authenticatable
      * Check to see if the user can manage any mailboxes
      */
     public function hasManageMailboxAccess() {
-        if ($this->isAdmin()|| $this->isITHead()) {
+        if ($this->isAdmin()|| $this->isITHead() ) {
             return true;
         } else {
             $mailboxes = $this->mailboxesCanViewWithSettings(true);
@@ -372,7 +372,7 @@ class User extends Authenticatable
      */
     public function canManageMailbox($mailbox_id)
     {
-        if ($this->isAdmin() || $this->isITHead()) {
+        if ($this->isAdmin() || $this->isITHead() || $this->isTC()|| $this->isTEngg()) {
             return true;
         } else {
             $mailbox = $this->mailboxesCanViewWithSettings(true)->where('id', $mailbox_id)->first();
@@ -384,7 +384,7 @@ class User extends Authenticatable
     }
 
     public function hasManageMailboxPermission($mailbox_id, $perm) {
-        if ($this->isAdmin()|| $this->isITHead()) {
+        if ($this->isAdmin()|| $this->isITHead() || $this->isTC()|| $this->isTEngg()) {
             return true;
         } else {
             $mailbox = $this->mailboxesCanViewWithSettings(true)->where('id', $mailbox_id)->first();
