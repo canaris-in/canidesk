@@ -14,11 +14,11 @@
 			</p>
 
 			<div class="heading eup-ticket-header">{{ $conversation->getSubject() }}
-				<span class="pull-right label label-default">{{ \EndUserPortal::getStatusName($conversation) }}</span>
+				<span class=" label label-default">{{ \EndUserPortal::getStatusName($conversation) }}</span>
 				@if (\EndUserPortal::getStatusName($conversation) == 'Open')
 					<span class="pull-right label label-danger mr-3 conv-status"><a href="javascript:void(0)" class="span-link" data-status="{{ App\Conversation::STATUS_CLOSED_EUP }}" data-conv-id="{{$conversation->id}}">{{ App\Conversation::statusCodeToName(App\Conversation::STATUS_CLOSED_EUP) }}</a></span>
 					@else
-					<span class="pull-right label label-success mr-3 conv-status"><a href="javascript:void(0)" class="span-link" data-status="{{ App\Conversation::STATUS_ACTIVE }}" data-conv-id="{{$conversation->id}}">{{ App\Conversation::statusCodeToName(App\Conversation::STATUS_ACTIVE) }}</a></span>
+					<span class="pull-right label label-success mr-3 conv-status"><a href="javascript:void(0)" class="span-link" data-status="{{ App\Conversation::STATUS_ACTIVE }}" data-conv-id="{{$conversation->id}}"></a>Re-open</span>
 				@endif
 			</div>
 		</div>
