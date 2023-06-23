@@ -3,15 +3,15 @@
 // Backend
 Route::group(['middleware' => 'web', 'prefix' => \Helper::getSubdirectory(), 'namespace' => 'Modules\KnowledgeBase\Http\Controllers'], function()
 {
-    Route::get('/mailbox/{mailbox_id}/knowledge-base', ['uses' => 'KnowledgeBaseController@settings'])->name('mailboxes.knowledgebase.settings');
-    Route::post('/mailbox/{mailbox_id}/knowledge-base', ['uses' => 'KnowledgeBaseController@settingsSave']);
-    Route::get('/mailbox/{mailbox_id}/knowledge-base/categories', ['uses' => 'KnowledgeBaseController@categories'])->name('mailboxes.knowledgebase.categories');
-    Route::post('/mailbox/{mailbox_id}/knowledge-base/categories', ['uses' => 'KnowledgeBaseController@categoriesSave']);
-    Route::get('/mailbox/{mailbox_id}/knowledge-base/articles/{category_id?}', ['uses' => 'KnowledgeBaseController@articles'])->name('mailboxes.knowledgebase.articles');
-    Route::get('/mailbox/{mailbox_id}/knowledge-base/new-article/{category_id?}', ['uses' => 'KnowledgeBaseController@article'])->name('mailboxes.knowledgebase.new_article');
-    Route::post('/mailbox/{mailbox_id}/knowledge-base/new-article/{category_id?}', ['uses' => 'KnowledgeBaseController@articleCreate']);
-    Route::get('/mailbox/{mailbox_id}/knowledge-base/article/{article_id?}', ['uses' => 'KnowledgeBaseController@article'])->name('mailboxes.knowledgebase.article');
-    Route::post('/mailbox/{mailbox_id}/knowledge-base/article/{article_id}', ['uses' => 'KnowledgeBaseController@articleSave']);
+    Route::get('/mailbox/{mailbox_id}/knowledge-base', ['uses' => 'KnowledgeBaseController@settings', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead']])->name('mailboxes.knowledgebase.settings');
+    Route::post('/mailbox/{mailbox_id}/knowledge-base', ['uses' => 'KnowledgeBaseController@settingsSave', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead']]);
+    Route::get('/mailbox/{mailbox_id}/knowledge-base/categories', ['uses' => 'KnowledgeBaseController@categories', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead']])->name('mailboxes.knowledgebase.categories');
+    Route::post('/mailbox/{mailbox_id}/knowledge-base/categories', ['uses' => 'KnowledgeBaseController@categoriesSave', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead']]);
+    Route::get('/mailbox/{mailbox_id}/knowledge-base/articles/{category_id?}', ['uses' => 'KnowledgeBaseController@articles', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead']])->name('mailboxes.knowledgebase.articles');
+    Route::get('/mailbox/{mailbox_id}/knowledge-base/new-article/{category_id?}', ['uses' => 'KnowledgeBaseController@article', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead']])->name('mailboxes.knowledgebase.new_article');
+    Route::post('/mailbox/{mailbox_id}/knowledge-base/new-article/{category_id?}', ['uses' => 'KnowledgeBaseController@articleCreate', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead']]);
+    Route::get('/mailbox/{mailbox_id}/knowledge-base/article/{article_id?}', ['uses' => 'KnowledgeBaseController@article', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead']])->name('mailboxes.knowledgebase.article');
+    Route::post('/mailbox/{mailbox_id}/knowledge-base/article/{article_id}', ['uses' => 'KnowledgeBaseController@articleSave', 'middleware' => ['auth', 'roles'], 'roles' => ['admin','ithead']]);
     Route::post('/knowledge-base/ajax-admin', ['uses' => 'KnowledgeBaseController@ajaxAdmin', 'laroute' => true])->name('mailboxes.knowledgebase.ajax_admin');
 });
 
