@@ -369,7 +369,7 @@ class UsersController extends Controller
 
             // Both send and resend
             case 'send_invite':
-                if (!$auth_user->isAdmin()||!$auth_user->isITHead()) {
+                if (!$auth_user->isAdmin()) {
                     $response['msg'] = __('Not enough permissions');
                 }
                 if (empty($request->user_id)) {
