@@ -64,9 +64,8 @@
                 <div class="rpt-filter">
                     <label class="mobile-label">{{ __('Date Range') }}</label>
                     <nobr><input type="date" name="from" class="form-control rpt-filter-date"
-                                 value="{{ $filters['from'] }}"/>-<input type="date" name="to"
-                                                                         class="form-control rpt-filter-date"
-                                                                         value="{{ $filters['to'] }}"/></nobr>
+                            value="{{ $filters['from'] }}" />-<input type="date" name="to"
+                            class="form-control rpt-filter-date" value="{{ $filters['to'] }}" /></nobr>
                 </div>
 
                 <div class="rpt-filter" data-toggle="tooltip" title="{{ __('Refresh') }}">
@@ -123,11 +122,89 @@
             @include('dashboard.widgets.average_time_tickets_sla')
         </div>
     </div>
-
 @endsection
 
 @push('styles')
     <style>
+        .rpt-header {
+    background-color: #deecf9;
+    padding: 12px 18px;
+    line-height: 30px;
+    overflow: auto;
+    box-shadow: -3px 13px 19px -2px #00000057;
+}
+.dm .rpt-header {
+    background-color: transparent;
+}
+@media screen and (max-width: 600px) {
+    .dm .rpt-header {
+        background-color: #12131F !important;
+    }
+}
+.rpt-title {
+    color: #2a3b47;
+    font-size: 20px;
+    font-weight: 400;
+    display: inline-block;
+}
+.rpt-filters {
+    display: inline-block;
+    float: right;
+}
+#rpt-filters .rpt-filter .form-control {
+    display: inline-block;
+    width: auto;
+    max-width: 120px;
+    margin-left: 5px;
+}
+.rpt-views-trigger .btn {
+    padding-left: 8px!important;
+    padding-right: 8px!important;
+}
+.rpt-views-trigger .input-group {
+    margin: 6px 11px 3px 11px;
+    width: 200px;
+    line-height: 28px;
+}
+.rpt-views-trigger li {
+    position: relative;
+}
+.rpt-views-trigger li a {
+    margin-left: 27px;
+    padding-left: 3px;
+}
+.rpt-view-delete {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    font-size: 11px;
+    cursor: pointer;
+}
+.rpt-filter,
+.rpt-views-trigger {
+    display: inline-block;
+    margin-right: 15px;
+}
+.rpt-filter .glyphicon-refresh {
+    top: 3px;
+}
+.rpt-filter:last-child {
+    margin-right: 0;
+}
+.rpt-filter:nth-last-child(2) {
+    margin-right: 5px;
+}
+@media (max-width:1100px) {
+    #rpt-filters {
+        float: none;
+        margin-top: 2px;
+        margin-bottom: 7px;
+    }
+    .rpt-filter {
+        margin-top: 10px;
+    }
+}
+
         .content {
             margin-top: 0;
         }
@@ -149,6 +226,10 @@
         }
 
         .rpt-header {
+            background-color: #deecf9;
+            padding: 12px 18px;
+            line-height: 30px;
+            overflow: auto;
             box-shadow: -3px 13px 19px -2px #00000057;
         }
 
@@ -363,9 +444,9 @@
 
         /* its my code for external coonent*/
         /**
-         * Update: 06/06/23
-         * I am over-writing your code
-          */
+             * Update: 06/06/23
+             * I am over-writing your code
+              */
 
         @media (max-width: 600px) {
             .dm .donut-container {
@@ -468,8 +549,8 @@
 
 @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            $(document).on('click', '.filter-trigger', function () {
+        document.addEventListener('DOMContentLoaded', function() {
+            $(document).on('click', '.filter-trigger', function() {
                 $('.rpt-header').toggleClass('opn-menu');
                 $('.filter-trigger').toggleClass('opn-filter');
                 if ($('.filter-trigger').hasClass('glyphicon-remove')) {
