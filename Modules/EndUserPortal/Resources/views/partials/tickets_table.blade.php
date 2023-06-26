@@ -64,7 +64,7 @@
                             <input type="checkbox" class="conv-checkbox magic-checkbox" id="cb-{{ $conversation->id }}" name="cb_{{ $conversation->id }}" value="{{ $conversation->id }}"><label for="cb-{{ $conversation->id }}"></label>
                         </td>
                     @endif--}}
-                    <td>{{$conversation->id}}</td>
+                    <td style="padding-left: 1em;">{{$conversation->id}}</td>
                     <td class="conv-attachment">
                         @if ($conversation->has_attachments)
                             <i class="glyphicon glyphicon-paperclip"></i>
