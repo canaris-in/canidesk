@@ -3574,7 +3574,7 @@ ul.sidebar-block-list {
 }
 .customers-pager a.disabled {
     color: #93a1af;
-    opacity: 0.3;
+    opacity: 1.3;
 }
 .customers-pager a {
     color: #93a1af;
@@ -4060,6 +4060,9 @@ a.help-icon:hover {
     color: #8899aa;
     text-decoration: none;
 }
+.multi-item:first-child .multi-remove{
+    display:none;
+    }
 .text-truncate {
     overflow: hidden!important;
     text-overflow: ellipsis!important;

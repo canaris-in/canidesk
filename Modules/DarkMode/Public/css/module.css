@@ -84,6 +84,7 @@ border-color:#0078d7;
     border-left: 1px solid #303d71;
     border-right: 1px solid #303d71;
     border-bottom: 1px solid #303d71;
+    border-top: 1px solid #303d71;
 }
 
 .dm .dropdown-menu > li > a {
