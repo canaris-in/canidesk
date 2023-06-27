@@ -5,6 +5,10 @@
     <div class="sidebar-title">
       {{ __('Settings') }}
     </div>
+    <div class="sidebar-title reports-sidebar-title">
+      <span class="glyphicon glyphicon-file"></span>
+      {{ __('Reports') }}
+    </div>
   </div>
   <div class="content-2col">
     <div class="section-heading">
@@ -86,6 +90,9 @@
 <style>
   .layout-2col-settings{
     margin-top: -19px;
+  }
+  .reports-sidebar-title{
+    font-size: 15px;
   }
 </style>
 <script >
