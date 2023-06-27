@@ -725,12 +725,6 @@ class ConversationsController extends Controller
                     // Delete removed attachments.
                     $attachments_info = $this->processReplyAttachments($request);
 
-                    // Determine redirect.
-                    // Must be done before updating current conversation's status or assignee.
-                    if (!$new) {
-                        $response['redirect_url'] = $this->getRedirectUrl($request, $conversation, $user);
-                    }
-
                     // Conversation
                     $now = date('Y-m-d H:i:s');
                     $status_changed = false;
