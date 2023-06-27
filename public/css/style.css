@@ -3574,7 +3574,7 @@ ul.sidebar-block-list {
 }
 .customers-pager a.disabled {
     color: #93a1af;
-    opacity: 0.3;
+    opacity: 1.3;
 }
 .customers-pager a {
     color: #93a1af;
