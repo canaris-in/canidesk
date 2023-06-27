@@ -4060,6 +4060,9 @@ a.help-icon:hover {
     color: #8899aa;
     text-decoration: none;
 }
+.glyphicon-remove{
+    display: none;
+}
 .text-truncate {
     overflow: hidden!important;
     text-overflow: ellipsis!important;
