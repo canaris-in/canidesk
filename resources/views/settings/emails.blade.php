@@ -11,7 +11,7 @@
     </div>
 
     <div class="form-group{{ $errors->has('settings.mail_from') ? ' has-error' : '' }}">
-        <label for="mail_from" class="col-sm-2 control-label">{{ __('Mail From') }}</label>
+        <label for="mail_from" class="col-sm-2 control-label">{{ __("Mail From") }}</label>
 
         <div class="col-sm-6">
             <input id="mail_from" type="email" class="form-control input-sized" name="settings[mail_from]" value="{{ old('settings.mail_from', $settings['mail_from']) }}" required autofocus>

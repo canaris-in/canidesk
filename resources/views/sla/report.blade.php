@@ -78,7 +78,7 @@
         </form>
     </div>
     <div class="container report-container">
-        <p style="font-weight: bold;width: 20%;float: left;">SLA REPORT</p>
+        <p style="font-weight: bold;width: 20%;float: left;">{{ __('SLA REPORT') }}</p>
         <table class="table datatable table-borderless slatable">
             <thead>
                 <tr>
@@ -87,16 +87,16 @@
                             <input class="form-check-input" type="checkbox" value="" id="selectAll">
                         </div>
                     </th>
-                    <th class="custom-cell">TICKET NO</th>
-                    <th class="custom-cell">STATUS</th>
-                    <th class="custom-cell">Priority</th>
-                    <th class="custom-cell">ENGINEER</th>
-                    <th class="custom-cell">CATEGORY</th>
-                    <th class="custom-cell">SUBJECT</th>
-                    <th class="custom-cell">Mailbox</th>
-                    <th class="custom-cell">Escalated</th>
-                    <th class="custom-cell">Created date</th>
-                    <th class="custom-cell">RESOLUTION TIME</th>
+                    <th class="custom-cell">{{ __('TICKET NO') }}</th>
+                    <th class="custom-cell">{{ __('STATUS') }}</th>
+                    <th class="custom-cell">{{ __('Priority') }}</th>
+                    <th class="custom-cell">{{ __('ENGINEER') }}</th>
+                    <th class="custom-cell">{{ __('CATEGORY') }}</th>
+                    <th class="custom-cell">{{ __('SUBJECT') }}</th>
+                    <th class="custom-cell">{{ __('Mailbox') }}</th>
+                    <th class="custom-cell">{{ __('Escalated') }}</th>
+                    <th class="custom-cell">{{ __('Created date') }}</th>
+                    <th class="custom-cell">{{ __('RESOLUTION TIME') }}</th>
                 </tr>
             </thead>
             <tbody>
