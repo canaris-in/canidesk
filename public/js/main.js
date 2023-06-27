@@ -833,14 +833,8 @@ function multiInputInit()
 	    	clone.insertAfter($(this).parents('.multi-container:first').children('.multi-item:last'));
 
 	    	$(this).parents('.multi-container:first').children('.block-help:last').attr('data-max-i', index);
-            if ($(this).parents('.multi-container:first').children('.multi-item').length > 1) {
-	    		$(".glyphicon-remove").css("display", "block");
-	    	}
 		});
 		$('.multi-remove').click(function() {
-            if ($(this).parents('.multi-container:first').children('.multi-item').length === 2) {
-	    		$(".glyphicon-remove").css("display", "none");
-	    	}
 	    	if ($(this).parents('.multi-container:first').children('.multi-item').length > 1) {
 	    		$(this).parents('.multi-item:first').remove();
 	    	} else {
