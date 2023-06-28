@@ -5,9 +5,9 @@
 @section('body_attrs')@parent data-mailbox_id_encoded="{{ request()->mailbox_id }}"@endsection
 
 @section('content')
-	
+
     <form method="post" action="{{ $form_action ?? '' }}" id="kb-ticket-form" autocomplete="off" @if (!empty($contact_form_url)) class="kb-has-contact" @endif>
- 
+
         {{ csrf_field() }}
 
         <div class="form-group" style="background-color: {{ Request::get('color') }};" id="kb-search">
@@ -55,7 +55,7 @@
             @if (!empty($article))
                 <div id="kb-results">
                     <div class="kb-content">
-                        
+
                         @include('knowledgebase::partials/widget/categories_breadcrumbs')
 
                         <h3 class="kb-article-title">{{ $article->title }}</h3>
@@ -68,7 +68,7 @@
                 <div id="kb-results">
                     <div class="kb-content">
                         @include('knowledgebase::partials/widget/categories_breadcrumbs')
-                        
+
                         @if ($results)
                             <ul class="kb-articles">
                                 @foreach($results as $article)
@@ -101,7 +101,7 @@
                     <a href="{{ $contact_form_url }}" class="btn btn-block btn-primary btn-md kb-btn-ticket-submit" style="background-color: {{ Request::get('color') }}; border-color: {{ Request::get('color') }}">{{ __('Contact us') }}</a>
                 </div>
             @endif
-            <p id="kb-powered">@filter('knowledgebase.powered_by', 'Powered by <a href="https://freescout.net" target="_blank" title="Free open source helpdesk &amp; shared mailbox">FreeScout</a>')</p>
+            <p id="kb-powered">@filter('knowledgebase.powered_by', 'Powered by <a href="https://canaris.in" target="_blank" title="Free open source helpdesk &amp; shared mailbox">CaniDesk</a>')</p>
         </div>
 
     </form>
