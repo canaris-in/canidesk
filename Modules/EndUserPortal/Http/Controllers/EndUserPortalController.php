@@ -285,11 +285,11 @@ class EndUserPortalController extends Controller
 
         // Remove unneeded types.
         //TYPE_EMAIL
-        foreach ($tickets as $i => $ticket) {
-            if (!in_array($ticket->type, [Conversation::TYPE_EMAIL/*, Conversation::TYPE_CHAT*/])) {
-                unset($tickets[$i]);
-            }
-        }
+        // foreach ($tickets as $i => $ticket) {
+        //     if (!in_array($ticket->type, [Conversation::TYPE_EMAIL/*, Conversation::TYPE_CHAT*/])) {
+        //         unset($tickets[$i]);
+        //     }
+        // }
 
         // Load threads for conversations to determine unread threads
         // and sort tickets
