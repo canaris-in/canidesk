@@ -54,13 +54,32 @@
                             </div>
                         </div>
                     @endif
+                    @if (auth()->user()->isITHead())
+                    <div class="form-group{{ $errors->has('role') ? ' has-error' : '' }}">
+                        <label for="role" class="col-sm-2 control-label">{{ __('Role') }}</label>
 
-                    @if (auth()->user()->isAdmin() && $user->invite_state == App\User::INVITE_STATE_ACTIVATED)
+                        <div class="col-sm-6">
+                            <div class="flexy">
+                                <select id="role" type="text" class="form-control input-sized" name="role" required autofocus>
+                                    <option value="{{ App\User::ROLE_TICKETCOORDINATOR }}" @if (old('role') == App\User::ROLE_TICKETCOORDINATOR)@endif {{$user && $user->role == '3' ? 'selected': ''}}>{{ __('Ticket Coordinator') }}</option>
+                                    <option value="{{ App\User::ROLE_TICKETENGINEER }}" @if (old('role') == App\User::ROLE_TICKETENGINEER)@endif {{$user && $user->role == '4' ? 'selected': ''}}>{{ __('Ticket Engineer') }}</option>
+                                    <option value="{{ App\User::ROLE_ITHEAD }}" @if (old('role') == App\User::ROLE_ITHEAD)@endif {{$user && $user->role == '5' ? 'selected': ''}}>{{ __('It Head') }}</option>
+                                </select>
+
+                                <i class="glyphicon glyphicon-info-sign icon-info" data-toggle="popover" data-trigger="hover" data-html="true" data-placement="left" data-title="{{ __('Roles') }}" data-content="{{ __('<strong>Administrators</strong> can create new users and have access to all mailboxes and settings') }} <br><br>{{ __('<strong>Users</strong> have access to the mailbox(es) specified in their permissions') }}"></i>
+                            </div>
+
+                            @include('partials/field_error', ['field'=>'role'])
+                        </div>
+                    </div>
+                @endif
+
+                    @if ((auth()->user()->isAdmin()||auth()->user()->isITHead()) && $user->invite_state == App\User::INVITE_STATE_ACTIVATED)
                         <div class="form-group{{ $errors->has('disabled') ? ' has-error' : '' }}">
                             <label for="disabled" class="col-sm-2 control-label">{{ __('Disabled') }}</label>
 
                             <div class="col-sm-6">
-         
+
                                 <div class="controls">
                                     <label for="user_disabled" class="checkbox inline plain"><input type="checkbox" name="disabled" value="{{ App\User::STATUS_DISABLED }}" id="user_disabled" @if (old('disabled', $user->status) == App\User::STATUS_DISABLED)checked="checked"@endif> <span class="text-help">{{ __('Prevent user from logging in') }}</span></label>
                                 </div>
@@ -90,7 +109,7 @@
                             @include('partials/field_error', ['field'=>'last_name'])
                         </div>
                     </div>
-                    
+
                     @action('user.edit.before_email', $user)
 
                     <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
@@ -123,7 +142,7 @@
 
                             <div class="col-sm-6">
                                 <label class="control-label"><a href="{{ route('users.password', ['id' => $user->id]) }}">{{ __('Change your password') }}</a></label>
-                                
+
                             </div>
                         </div>
                     @endif
@@ -178,7 +197,7 @@
                         <label for="time_format" class="col-sm-2 control-label">{{ __('Time Format') }}</label>
 
                         <div class="col-sm-6">
-     
+
                             <div class="controls">
                                 <label for="12hour" class="radio inline plain"><input type="radio" name="time_format" value="{{ App\User::TIME_FORMAT_12 }}" id="12hour" @if (old('time_format', $user->time_format) == App\User::TIME_FORMAT_12)checked="checked"@endif> {{ __('12-hour clock (e.g. 2:13pm)') }}</label>
                                 <label for="24hour" class="radio inline"><input type="radio" name="time_format" value="{{ App\User::TIME_FORMAT_24 }}" id="24hour" @if (old('time_format', $user->time_format) == App\User::TIME_FORMAT_24 || !$user->time_format)checked="checked"@endif> {{ __('24-hour clock (e.g. 14:13)') }}</label>
@@ -213,8 +232,8 @@
                             <button type="submit" class="btn btn-primary">
                                 {{ __('Save Profile') }}
                             </button>
-                            
-                            @if (Auth::user()->isAdmin())
+
+                            @if (Auth::user()->isAdmin()||Auth::user()->isITHead())
                                 @if ($user->invite_state == App\User::INVITE_STATE_ACTIVATED)
                                     @if ($user->id != Auth::user()->id)
                                         <a href="#" class="btn btn-link reset-password-trigger" data-loading-text="{{ __('Resetting password') }}…">{{ __('Reset password') }}</a>
@@ -224,9 +243,9 @@
                                 @elseif ($user->invite_state == App\User::INVITE_STATE_NOT_INVITED)
                                     <a href="#" class="btn btn-link send-invite-trigger" data-loading-text="{{ __('Sending') }}…">{{ __('Send invite email') }}</a>
                                 @endif
-                            @endif 
-                            
-                            @if (Auth::user()->can('delete', $user))
+                            @endif
+
+                            @if (Auth::user()->can('delete', $user)||Auth::user()->isITHead('delete', $user))
                                 <a href="#" id="delete-user-trigger" class="btn btn-link text-danger">{{ __('Delete user') }}</a>
                             @endif
                         </div>
