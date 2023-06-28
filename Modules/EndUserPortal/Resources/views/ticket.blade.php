@@ -36,9 +36,9 @@
 					    <div class="thread-person">
 							<strong>
 								@if ($thread->type == App\Thread::TYPE_CUSTOMER)
-									{{ \EndUserPortal::authCustomer()->getMainEmail() }}
+									{{ \EndUserPortal::authCustomer()->getFullName() }}
 								@else
-									{{ __(':mailbox.name Support', ['mailbox.name' => $mailbox->name]) }}
+									{{ __(':mailbox.name', ['mailbox.name' => $mailbox->name]) }}
 								@endif
 							</strong>
 					    </div>
