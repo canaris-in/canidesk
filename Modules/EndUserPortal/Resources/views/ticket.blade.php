@@ -18,7 +18,7 @@
 				@if (\EndUserPortal::getStatusName($conversation) == 'Open')
 					<span class="pull-right label label-danger mr-3 conv-status btn-send-text"><a href="javascript:void(0)" class="span-link" data-status="{{ App\Conversation::STATUS_CLOSED_EUP }}" data-conv-id="{{$conversation->id}}">{{ App\Conversation::statusCodeToName(App\Conversation::STATUS_CLOSED_EUP) }}</a></span>
 					@else
-					<span class="pull-right label label-success mr-3 conv-status btn-send-text"><a href="javascript:void(0)" class="span-link" data-status="{{ App\Conversation::STATUS_ACTIVE }}" data-conv-id="{{$conversation->id}}">Re-open</a></span>
+					<span class="pull-right label label-success mr-3 conv-status btn-send-text"><a href="javascript:void(0)" class="span-link" data-status="{{ App\Conversation::STATUS_ACTIVE }}" data-conv-id="{{$conversation->id}}">{{ __('Re-open') }}</a></span>
 				@endif
 			</div>
 		</div>
