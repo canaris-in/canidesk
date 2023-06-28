@@ -12,7 +12,7 @@
                         {{ __('Tickets Category') }}
                     </label>
                     <select class="form-control" name="ticket">
-                        <option value="0">All</option>
+                        <option value="0">{{__('All')}}</option>
                         @foreach ($categoryValues as $category)
                             <option value="{{ $category }}" {{ $filters['ticket'] === $category ? 'selected' : '' }}>
                                 {{ $category }}</option>
@@ -24,7 +24,7 @@
                         {{ __('Product') }}
                     </label>
                     <select class="form-control" name="product">
-                        <option value="0">All</option>
+                        <option value="0">{{__('All')}}</option>
                         @foreach ($productValues as $product)
                             <option value="{{ $product }}" {{ $filters['product'] === $product ? 'selected' : '' }}>
                                 {{ $product }}</option>
@@ -36,7 +36,7 @@
                         {{ __('Type') }}
                     </label>
                     <select class="form-control" name="type">
-                        <option value="0">All</option>
+                        <option value="0">{{__('All')}}</option>
                         <option value="{{ App\Conversation::TYPE_EMAIL }}"
                             {{ $filters['type'] == App\Conversation::TYPE_EMAIL ? 'selected' : '' }}>{{ __('Email') }}
                         </option>
@@ -53,7 +53,7 @@
                         {{ __('Mailbox') }}
                     </label>
                     <select class="form-control" name="mailbox">
-                        <option value="0">All</option>
+                        <option value="0">{{__('All')}}</option>
                         @foreach (Auth::user()->mailboxesCanView(true) as $mailbox)
                             <option value="{{ $mailbox->id }}"
                                 {{ $filters['mailbox'] == $mailbox->id ? 'selected' : '' }}>{{ $mailbox->name }}</option>

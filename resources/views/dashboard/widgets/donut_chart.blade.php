@@ -8,7 +8,7 @@
             <div class="donut-chart-lable">
                 <div class="donut-chart-box"></div>
                 <div>
-                    <p class="donutp">Number Of Tickets</p>
+                    <p class="donutp">{{__('Number Of Tickets')}}</p>
                     <p class="donutp">{{ $totalCount }}</p>
                 </div>
             </div>
@@ -16,17 +16,17 @@
             <div class="row">
                 <div class="col-sm-6">
                     <span class="circle circle-green"></span>
-                    <p class="donutp">Open tickets</p>
+                    <p class="donutp">{{__('Open Tickets')}}</p>
                     <p class="donutp">{{ $unclosedCount }}</p>
                 </div>
                 <div class="col-sm-6">
                     <span class="circle circle-red"></span>
-                    <p class="donutp">Close tickets</p>
+                    <p class="donutp">{{__('Close Tickets')}}</p>
                     <p class="donutp">{{ $closedCount }}</p>
                 </div>
                 <div class="col-sm-6">
                     <span class="circle circle-blue"></span>
-                    <p class="donutp">Hold tickets</p>
+                    <p class="donutp">{{__('Hold Tickets')}}</p>
                     <p class="donutp">{{ $unclosedCreated30DaysAgoCount }}</p>
                 </div>
             </div>

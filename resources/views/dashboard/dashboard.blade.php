@@ -12,7 +12,7 @@
                         {{ __('Tickets Category') }}
                     </label>
                     <select class="form-control" name="ticket">
-                        <option value="0">All</option>
+                        <option value="0">{{__('All')}}</option>
                         @foreach ($categoryValues as $category)
                             <option value="{{ $category }}" {{ $filters['ticket'] === $category ? 'selected' : '' }}>
                                 {{ $category }}</option>
@@ -24,7 +24,7 @@
                         {{ __('Product') }}
                     </label>
                     <select class="form-control" name="product">
-                        <option value="0">All</option>
+                        <option value="0">{{__('All')}}</option>
                         @foreach ($productValues as $product)
                             <option value="{{ $product }}" {{ $filters['product'] === $product ? 'selected' : '' }}>
                                 {{ $product }}</option>
@@ -36,7 +36,7 @@
                         {{ __('Type') }}
                     </label>
                     <select class="form-control" name="type">
-                        <option value="0">All</option>
+                        <option value="0">{{__('All')}}</option>
                         <option value="{{ App\Conversation::TYPE_EMAIL }}"
                             {{ $filters['type'] == App\Conversation::TYPE_EMAIL ? 'selected' : '' }}>{{ __('Email') }}
                         </option>
@@ -53,7 +53,7 @@
                         {{ __('Mailbox') }}
                     </label>
                     <select class="form-control" name="mailbox">
-                        <option value="0">All</option>
+                        <option value="0">{{__('All')}}</option>
                         @foreach (Auth::user()->mailboxesCanView(true) as $mailbox)
                             <option value="{{ $mailbox->id }}"
                                 {{ $filters['mailbox'] == $mailbox->id ? 'selected' : '' }}>{{ $mailbox->name }}</option>
@@ -81,15 +81,15 @@
         <div class="row text-center" style="margin-top: 6rem;">
             <div class="row-text-center1">
                 <div class="col-md-4">
-                    <p class="stat-options">Total Tickets</p>
+                    <p class="stat-options">{{__('Total Tickets')}}</p>
                     <h1 class="stat-values">{{ $totalCount }}</h1>
                 </div>
                 <div class="col-md-4">
-                    <p class="stat-options">Unassigned Tickets</p>
+                    <p class="stat-options">{{__('Unassigned Tickets')}}</p>
                     <h1 class="stat-values">{{ $unassignedCount }}</h1>
                 </div>
                 <div class="col-md-4">
-                    <p class="stat-options">Overdue Tickets</p>
+                    <p class="stat-options">{{__('Overdue Tickets')}}</p>
                     <h1 class="stat-values">{{ $overdueCount }}</h1>
                 </div>
             </div>
@@ -98,15 +98,15 @@
         <div class="row text-center" style="margin-top: 0rem;">
             <div class="row-text-center1">
                 <div class="col-md-4">
-                    <p class="stat-options">Open Tickets</p>
+                    <p class="stat-options">{{__('Open Tickets')}}</p>
                     <h1 class="stat-values">{{ $unclosedCount }}</h1>
                 </div>
                 <div class="col-md-4">
-                    <p class="stat-options">Close Tickets</p>
+                    <p class="stat-options">{{__('Close Tickets')}}</p>
                     <h1 class="stat-values">{{ $closedCount }}</h1>
                 </div>
                 <div class="col-md-4">
-                    <p class="stat-options">Hold Tickets</p>
+                    <p class="stat-options">{{__('Hold Tickets')}}</p>
                     <h1 class="stat-values">{{ $unclosedCreated30DaysAgoCount }}</h1>
                 </div>
             </div>
