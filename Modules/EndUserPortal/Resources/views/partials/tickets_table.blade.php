@@ -79,9 +79,9 @@
                                 @if ($conversation->has_attachments)
                                     <i class="conv-attachment-mobile glyphicon glyphicon-paperclip"></i>
                                 @endif
-                                {{--@if ($conversation->isPhone())
+                                @if ($conversation->isPhone())
                                     <i class="glyphicon glyphicon-earphone"></i>
-                                @endif--}}
+                                @endif
                                 {{ $conversation->getSubject() }}
                             </p>
                             <p class="conv-preview">@if (!empty($params['show_mailbox']))[{{ $conversation->mailbox_cached->name }}]<br/>@endif{{ '' }}@if ($conversation->preview){{ $conversation->preview }}@else&nbsp;@endif</p>
