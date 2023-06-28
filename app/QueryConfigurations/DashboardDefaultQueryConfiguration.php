@@ -20,6 +20,9 @@ class DashboardDefaultQueryConfiguration extends AbstractQueryConfiguration
     {
         $query = Conversation::query();
 
+        $query = $query->where('state', '!=', Conversation::STATE_DRAFT)
+            ->where('threads_count', '>', 0);
+
         $data = $dashboardDataBag->get(['categoryIndex', 'productIndex'], ['categoryIndex' => '', 'productIndex' => '']);
 
         $categoryIndex = $data['categoryIndex'];

@@ -37,7 +37,6 @@ class ConversationsController extends Controller
     {
         // TODO: add customer auth like user till then removing auth
         // $this->middleware('auth');
-        return true;
     }
 
     /**

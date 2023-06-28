@@ -2,6 +2,7 @@
 
 namespace App\View\DashboardWidgets;
 
+use App\Conversation;
 use App\Support\Contracts\AbstractQueryConfiguration;
 use App\Support\Dashboard\DashboardDataBag;
 use App\Support\Dashboard\DashboardQueryManager;
@@ -15,7 +16,8 @@ class TicketsCountStatistics extends AbstractDashboardStatistics implements Uses
     {
         return $query->select([
             DB::raw('COUNT(*) as total_count'),
-            DB::raw('COUNT(CASE WHEN created_by_user_id IS NULL THEN 1 END) as unassigned_count'),
+//            DB::raw('COUNT(CASE WHEN created_by_user_id IS NULL THEN 1 END) as unassigned_count'),
+            DB::raw(sprintf("COUNT(CASE WHEN user_id IS NULL AND status <> %s THEN 1 END) as unassigned_count", Conversation::STATUS_CLOSED)),
             // DB::raw('COUNT(CASE WHEN closed_at IS NULL THEN 1 END) as overdue_count'),
             // DB::raw('COUNT(CASE WHEN created_at < ? AND closed_at IS NULL THEN 1 END) as overdue_count'),
             DB::raw('COUNT(CASE WHEN closed_at IS NULL THEN 1 END) as unclosed_count'),
