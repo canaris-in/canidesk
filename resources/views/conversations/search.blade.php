@@ -171,17 +171,6 @@
 		$(document).ready(function() {
 		  $('#searchButton').click(function() {
 			var searchTerm = $('#searchInput').val();
-			if (searchTerm !== '') {
-			  // Perform search operation with the searchTerm
-			  // Replace the code below with your search implementation
-		
-			  alert('Searching for: ' + searchTerm);
-			} else {
-			  // Clear the data or perform any other desired action when the search input is empty
-			  // Replace the code below with your implementation
-		
-			  alert('Please enter a search term');
-			}
 		  });
 		
 		  // Listen for changes in the search input field
