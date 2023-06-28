@@ -449,6 +449,7 @@ class MailboxesController extends Controller
     {
         $user = auth()->user();
 
+        /** @var Mailbox $mailbox */
         if ($user->isAdmin() || $user->isITHead()) {
             $mailbox = Mailbox::findOrFailWithSettings($id, $user->id);
         } else {
@@ -474,7 +475,9 @@ class MailboxesController extends Controller
         $this->authorize('view', $folder);
 
         $query_conversations = Conversation::getQueryByFolder($folder, $user->id);
-        $conversations = $folder->queryAddOrderBy($query_conversations)->paginate(Conversation::DEFAULT_LIST_SIZE);
+        $conversations = $folder->queryAddOrderBy($query_conversations);
+
+        $conversations = $conversations->paginate(Conversation::DEFAULT_LIST_SIZE);
 
         return view('mailboxes/view', [
             'mailbox'       => $mailbox,
