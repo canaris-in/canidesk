@@ -145,7 +145,7 @@
 		    </div>
 
 	        <div class="input-group input-group-lg1">
-	            <input type="text" class="form-control" name="q" value="{{ $q }}">
+	            <input type="text" class="form-control"id="searchInput" name="q" value="{{ $q }}">
 	            <span class="input-group-btn">
 	                <button class="btn btn-default" type="submit">{{ __('Search') }}</button>
 	            </span>
@@ -153,7 +153,7 @@
 	    </form>
 	</div>
 
-	<div class="search-results">
+	<div class="search-results" id="searchButton1">
 		<ul class="nav nav-tabs nav-tabs-main margin-top">
 			@if (Eventy::filter('search.is_tab_visible', true, App\Conversation::SEARCH_MODE_CONV))
 		    	<li @if ($mode == App\Conversation::SEARCH_MODE_CONV)class="active search-tab-conv"@endif><a href="{{ \Helper::fixProtocol(request()->fullUrlWithQuery(['mode' => App\Conversation::SEARCH_MODE_CONV])) }}">{{ __('Conversations') }} <b>({{ $conversations->total() }})</b>@action('search.conversations_tab_append', $filters, $conversations->total())</a></li>
@@ -166,6 +166,36 @@
 	    	@include('customers/partials/customers_table')
 	    @endif
 	</div>
+
+	<script>
+		$(document).ready(function() {
+		  $('#searchButton').click(function() {
+			var searchTerm = $('#searchInput').val();
+			if (searchTerm !== '') {
+			  // Perform search operation with the searchTerm
+			  // Replace the code below with your search implementation
+		
+			  alert('Searching for: ' + searchTerm);
+			} else {
+			  // Clear the data or perform any other desired action when the search input is empty
+			  // Replace the code below with your implementation
+		
+			  alert('Please enter a search term');
+			}
+		  });
+		
+		  // Listen for changes in the search input field
+		  $('#searchInput').on('input', function() {
+			var searchTerm = $(this).val();
+			if (searchTerm === '') {
+			  // Clear the data or perform any other desired action when the search input is cleared
+			  // Replace the code below with your implementation
+		         $('#searchButton1').hide();
+			  
+			}
+		  });
+		});
+		</script>
 @endsection
 
 @include('partials/include_datepicker')
