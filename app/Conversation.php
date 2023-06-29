@@ -387,7 +387,7 @@ class Conversation extends Model
     public function getReplies()
     {
         return $this->threads()
-            ->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])
+            // ->whereIn('type', [Thread::TYPE_CUSTOMER, Thread::TYPE_MESSAGE])
             ->where('state', Thread::STATE_PUBLISHED)
             ->orderBy('created_at', 'desc')
             ->get();
