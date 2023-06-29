@@ -147,7 +147,7 @@
 	        <div class="input-group input-group-lg1">
 	            <input type="text" class="form-control"id="searchInput" name="q" value="{{ $q }}">
 	            <span class="input-group-btn">
-	                <button class="btn btn-default" type="submit">{{ __('Search') }}</button>
+	                <button class="btn btn-default" id="searchInput2" type="submit">{{ __('Search') }}</button>
 	            </span>
 	        </div>
 	    </form>
@@ -177,10 +177,7 @@
 		  $('#searchInput').on('input', function() {
 			var searchTerm = $(this).val();
 			if (searchTerm === '') {
-			  // Clear the data or perform any other desired action when the search input is cleared
-			  // Replace the code below with your implementation
-		         $('#searchButton1').hide();
-			  
+		         $('#searchInput2').click();
 			}
 		  });
 		});
