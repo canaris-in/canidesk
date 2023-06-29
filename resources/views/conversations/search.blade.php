@@ -178,8 +178,6 @@
 			var searchTerm = $(this).val();
 			if (searchTerm === '') {
 		         $('#searchInput2').click();
-				/
-			  
 			}
 		  });
 		});
