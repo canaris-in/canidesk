@@ -1,7 +1,7 @@
 <div class="alert alert-danger  alert-floating errormsg" id="alert">
     <div class="glyphicon-msg">
         <i class="glyphicon glyphicon-exclamation-sign"></i>
-        <p id="errorMsg"></p>
+        {{-- <p id="errorMsg"></p> --}}
     </div>
 </div>
 <div class="dropdown sidebar-title sidebar-title-extra">
@@ -33,8 +33,8 @@
             role="button"><i class="glyphicon glyphicon-envelope"></i></a>
         <a class="btn btn-trans" href="javascript:void(0)"
             data-url="{{ route('mailboxes.fetchMail', ['mailbox_id' => $mailbox->id]) }}" data-toggle="tooltip"
-            title="{{ __('Fetch Tickets') }}" role="button" name="action" value="fetchEmail"><i
-                class="glyphicon glyphicon-refresh " id="fetchEmail" onclick="myFunction()"></i></a>
+            title="{{ __('Fetch Tickets') }}" role="button" name="action" value="fetchEmail" onclick="myFunction()"><i
+                class="glyphicon glyphicon-refresh " id="fetchEmail"></i></a>
     </div>
 @endif
 @action('mailbox.after_sidebar_buttons')
@@ -44,7 +44,6 @@
         display: none !important;
         border-radius: 3px;
     }
-
     .glyphicon-msg {
         display: flex;
     }
@@ -54,16 +53,13 @@
     }
 </style>
 <script>
-    function myFunction() {
-        document.getElementById("alert").style.display = "inline-block !important";
-    }
     $(document).ready(function() {
-        document.getElementById("alert").style.display = "flex";
         $('a[name="action"]').on('click', function(e) {
             e.preventDefault();
             var $button = $(this);
             var url = $button.data('url');
             $button.find('.glyphicon').addClass('glyphicon-spin');
+            $('.errormsg').css('display', 'inline-block !important')
 
             $.ajax({
                 url: url,
@@ -89,7 +85,6 @@
 
                     //popupbox
                     var popup = document.getElementById("alert");
-                    popup.style.display = "flex";
 
                     // Function to handle clicks outside the popup box
                     function handleClickOutside(event) {
