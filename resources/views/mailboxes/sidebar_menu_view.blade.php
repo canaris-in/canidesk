@@ -1,8 +1,4 @@
-<div class="alert alert-danger  alert-floating errormsg" id="alert">
-    <div class="glyphicon-msg">
-        <i class="glyphicon glyphicon-exclamation-sign"></i>
-        <p id="errorMsg"></p>
-    </div>
+<div class="alert alert-danger errormsg glyphicon glyphicon-exclamation-sign" id="errorMsg">
 </div>
 <div class="dropdown sidebar-title sidebar-title-extra">
     <span class="sidebar-title-extra-value active-count">{{ $folder->getTypeName() }}
@@ -41,26 +37,45 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
     .errormsg {
-        display: none !important;
+        display: none;
         border-radius: 3px;
-    }
-    .glyphicon-msg {
-        display: flex;
-    }
-
-    .glyphicon-exclamation-sign {
-        margin-top: 1px;
+        position: fixed;
+        font-size: 14px;
+        left: 50%;
+        /* display: flex; */
+        font-size: 15px;
+        position: fixed;
+        text-align: center;
+        top: 16px;
+        transform: translate(-50%, 0) translate(-1px, 0);
+        z-index: 1099;
+        max-width: 300px;
+        border-radius: 3px;
+        flex-direction: row;
+        padding: 9px 14px;
+        -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, .4);
+        box-shadow: 0 0 5px rgba(0, 0, 0, .4);
+        cursor: default;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        -ms-word-break: break-all;
+        /* word-break: break-all; */
+        word-break: break-word;
+        -ms-hyphens: auto;
+        -moz-hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphens: auto;
+        border: 0;
+        background-color: #ebccd1;
     }
 </style>
 <script>
     $(document).ready(function() {
-        $('.errormsg').css('display', 'inline-block !important')
         $('a[name="action"]').on('click', function(e) {
             e.preventDefault();
             var $button = $(this);
             var url = $button.data('url');
             $button.find('.glyphicon').addClass('glyphicon-spin');
-            $button.find('.errormsg').css('display', 'inline-block !important');
 
 
             $.ajax({
@@ -86,8 +101,9 @@
                         "No error message found";
 
                     //popupbox
-                    var popup = document.getElementById("alert");
+                    var popup = document.getElementById("errorMsg");
 
+                    popup.style.display = "flex";
                     // Function to handle clicks outside the popup box
                     function handleClickOutside(event) {
                         if (!popup.contains(event.target)) {
