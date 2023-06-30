@@ -29,7 +29,7 @@
             var data = {
                 labels: weekNames,
                 datasets: [{
-                    label: 'Average resolved tickets',
+                    label: "{{__('Average resolved tickets')}}",
                     data: weeklyBarChart,
                     backgroundColor: '#2EA5FB', // Bar color
                     borderColor: 'rgba(54, 162, 235, 1)', // Border color

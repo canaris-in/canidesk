@@ -14,7 +14,7 @@
             var data = {
                 labels: cValues,
                 datasets: [{
-                    label: 'Average resolved tickets',
+                    label: "{{__('Average resolved tickets')}}",
                     data: ["{{ $tickets['Sunday'] }}", "{{ $tickets['Monday'] }}",
                         "{{ $tickets['Tuesday'] }}", "{{ $tickets['Wednesday'] }}",
                         "{{ $tickets['Thursday'] }}", "{{ $tickets['Friday'] }}",

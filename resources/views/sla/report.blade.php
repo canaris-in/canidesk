@@ -12,7 +12,7 @@
                         {{ __('Tickets Category') }}
                     </label>
                     <select class="form-control" name="ticket">
-                        <option value="0">All</option>
+                        <option value="0">{{__('All')}}</option>
                         @foreach ($categoryValues as $category)
                             <option value="{{ $category }}" {{ $filters['ticket'] === $category ? 'selected' : '' }}>
                                 {{ $category }}</option>
@@ -24,7 +24,7 @@
                         {{ __('Product') }}
                     </label>
                     <select class="form-control" name="product">
-                        <option value="0">All</option>
+                        <option value="0">{{__('All')}}</option>
                         @foreach ($productValues as $product)
                             <option value="{{ $product }}" {{ $filters['product'] === $product ? 'selected' : '' }}>
                                 {{ $product }}</option>
@@ -36,7 +36,7 @@
                         {{ __('Type') }}
                     </label>
                     <select class="form-control" name="type">
-                        <option value="0">All</option>
+                        <option value="0">{{__('All')}}</option>
                         <option value="{{ App\Conversation::TYPE_EMAIL }}"
                             {{ $filters['type'] == App\Conversation::TYPE_EMAIL ? 'selected' : '' }}>{{ __('Email') }}
                         </option>
@@ -53,7 +53,7 @@
                         {{ __('Mailbox') }}
                     </label>
                     <select class="form-control" name="mailbox">
-                        <option value="0">All</option>
+                        <option value="0">{{__('All')}}</option>
                         @foreach (Auth::user()->mailboxesCanView(true) as $mailbox)
                             <option value="{{ $mailbox->id }}"
                                 {{ $filters['mailbox'] == $mailbox->id ? 'selected' : '' }}>{{ $mailbox->name }}</option>
@@ -78,7 +78,7 @@
         </form>
     </div>
     <div class="container report-container">
-        <p style="font-weight: bold;width: 20%;float: left;">SLA REPORT</p>
+        <p style="font-weight: bold;width: 20%;float: left;">{{ __('SLA REPORT') }}</p>
         <table class="table datatable table-borderless slatable">
             <thead>
                 <tr>
@@ -87,16 +87,16 @@
                             <input class="form-check-input" type="checkbox" value="" id="selectAll">
                         </div>
                     </th>
-                    <th class="custom-cell">TICKET NO</th>
-                    <th class="custom-cell">STATUS</th>
-                    <th class="custom-cell">Priority</th>
-                    <th class="custom-cell">ENGINEER</th>
-                    <th class="custom-cell">CATEGORY</th>
-                    <th class="custom-cell">SUBJECT</th>
-                    <th class="custom-cell">Mailbox</th>
-                    <th class="custom-cell">Escalated</th>
-                    <th class="custom-cell">Created date</th>
-                    <th class="custom-cell">RESOLUTION TIME</th>
+                    <th class="custom-cell">{{ __('TICKET NO') }}</th>
+                    <th class="custom-cell">{{ __('STATUS') }}</th>
+                    <th class="custom-cell">{{ __('Priority') }}</th>
+                    <th class="custom-cell">{{ __('ENGINEER') }}</th>
+                    <th class="custom-cell">{{ __('CATEGORY') }}</th>
+                    <th class="custom-cell">{{ __('SUBJECT') }}</th>
+                    <th class="custom-cell">{{ __('Mailbox') }}</th>
+                    <th class="custom-cell">{{ __('Escalated') }}</th>
+                    <th class="custom-cell">{{ __('Created date') }}</th>
+                    <th class="custom-cell">{{ __('RESOLUTION TIME') }}</th>
                 </tr>
             </thead>
             <tbody>

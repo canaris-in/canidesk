@@ -7,7 +7,7 @@
         <colgroup>
             {{-- todo: without this columns table becomes not 100% wide --}}
             @if (empty($no_checkboxes))<col class="conv-current">@endif
-            {{--@if (empty($no_checkboxes))<col class="conv-cb">@endif--}}
+            {{-- @if (empty($no_checkboxes))<col class="conv-cb">@endif --}}
             <col class="conv-attachment">
             <col class="conv-subject">
             <col class="conv-thread-count">
@@ -20,7 +20,8 @@
         </colgroup>
         <thead>
         <tr>
-            @if (empty($no_checkboxes))<th class="conv-current">&nbsp;</th>@endif
+            {{-- @if (empty($no_checkboxes))<th class="conv-current">&nbsp;</th>@endif --}}
+            <th class="conv-owner"><span>{{ __("Ticket No") }}</span></th>
             {{--@if (empty($no_checkboxes))<th class="conv-cb"><input type="checkbox" class="toggle-all magic-checkbox" id="toggle-all"><label for="toggle-all"></label></th>@endif--}}
             <th class="conv-attachment">&nbsp;</th>
             <th class="conv-subject" colspan="2">
@@ -57,14 +58,14 @@
         <tbody>
             @foreach ($conversations as $conversation)
                 <tr class="conv-row @if (\EndUserPortal::hasNewReplies($conversation)) conv-active @endif" data-conversation_id="{{ $conversation->id }}">
-                    @if (empty($no_checkboxes))<td class="conv-current"></td>@endif
+                    {{-- @if (empty($no_checkboxes))<td class="conv-current"></td>@endif --}}
                     {{--@if (empty($no_checkboxes))
                         <td class="conv-cb">
                             <input type="checkbox" class="conv-checkbox magic-checkbox" id="cb-{{ $conversation->id }}" name="cb_{{ $conversation->id }}" value="{{ $conversation->id }}"><label for="cb-{{ $conversation->id }}"></label>
                         </td>
                     @endif--}}
+                    <td style="padding-left: 1em;">{{$conversation->id}}</td>
                     <td class="conv-attachment">
-
                         @if ($conversation->has_attachments)
                             <i class="glyphicon glyphicon-paperclip"></i>
                         @else
@@ -78,9 +79,9 @@
                                 @if ($conversation->has_attachments)
                                     <i class="conv-attachment-mobile glyphicon glyphicon-paperclip"></i>
                                 @endif
-                                {{--@if ($conversation->isPhone())
+                                @if ($conversation->isPhone())
                                     <i class="glyphicon glyphicon-earphone"></i>
-                                @endif--}}
+                                @endif
                                 {{ $conversation->getSubject() }}
                             </p>
                             <p class="conv-preview">@if (!empty($params['show_mailbox']))[{{ $conversation->mailbox_cached->name }}]<br/>@endif{{ '' }}@if ($conversation->preview){{ $conversation->preview }}@else&nbsp;@endif</p>

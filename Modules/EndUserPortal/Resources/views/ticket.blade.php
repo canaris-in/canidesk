@@ -14,21 +14,21 @@
 			</p>
 
 			<div class="heading eup-ticket-header">{{ $conversation->getSubject() }}
-				<span class="pull-right label label-default">{{ \EndUserPortal::getStatusName($conversation) }}</span>
+				<span class=" label label-default">{{ \EndUserPortal::getStatusName($conversation) }}</span>
 				@if (\EndUserPortal::getStatusName($conversation) == 'Open')
-					<span class="pull-right label label-danger mr-3 conv-status"><a href="javascript:void(0)" class="span-link" data-status="{{ App\Conversation::STATUS_CLOSED_EUP }}" data-conv-id="{{$conversation->id}}">{{ App\Conversation::statusCodeToName(App\Conversation::STATUS_CLOSED_EUP) }}</a></span>
+					<span class="pull-right label label-danger mr-3 conv-status btn-send-text"><a href="javascript:void(0)" class="span-link" data-status="{{ App\Conversation::STATUS_CLOSED_EUP }}" data-conv-id="{{$conversation->id}}">{{ App\Conversation::statusCodeToName(App\Conversation::STATUS_CLOSED_EUP) }}</a></span>
 					@else
-					<span class="pull-right label label-success mr-3 conv-status"><a href="javascript:void(0)" class="span-link" data-status="{{ App\Conversation::STATUS_ACTIVE }}" data-conv-id="{{$conversation->id}}">{{ App\Conversation::statusCodeToName(App\Conversation::STATUS_ACTIVE) }}</a></span>
+					<span class="pull-right label label-success mr-3 conv-status btn-send-text"><a href="javascript:void(0)" class="span-link" data-status="{{ App\Conversation::STATUS_ACTIVE }}" data-conv-id="{{$conversation->id}}">{{ __('Re-open') }}</a></span>
 				@endif
 			</div>
 		</div>
-		
+
 		<hr/>
 
 		@foreach($threads as $thread)
 			<div class="thread thread-type-{{ $thread->getTypeName() }}">
 				<div class="thread-photo">
-					<img class="person-photo" src="{{ asset('/img/default-avatar.png') }}" alt=""> 
+					<img class="person-photo" src="{{ asset('/img/default-avatar.png') }}" alt="">
 				</div>
 				<div class="thread-message">
 					<div class="thread-header">
@@ -36,14 +36,14 @@
 					    <div class="thread-person">
 							<strong>
 								@if ($thread->type == App\Thread::TYPE_CUSTOMER)
-									{{ \EndUserPortal::authCustomer()->getMainEmail() }}
+									{{ \EndUserPortal::authCustomer()->getFullName() }}
 								@else
-									{{ __(':mailbox.name Support', ['mailbox.name' => $mailbox->name]) }}
+									{{ __(':mailbox.name', ['mailbox.name' => $mailbox->name]) }}
 								@endif
 							</strong>
 					    </div>
 					</div>
-					
+
 					<div class="thread-info">
 						{{  \EndUserPortal::dateFormat($thread->created_at) }}
 					</div>
@@ -53,7 +53,7 @@
 						<div class="thread-content" dir="auto">
 		                    {!! $thread->getBodyWithFormatedLinks() !!}
 		                </div>
-					 
+
 						@if ($thread->has_attachments)
 						    <div class="thread-attachments">
 						        <i class="glyphicon glyphicon-paperclip"></i>
@@ -71,7 +71,7 @@
 					</div>
 
 				</div>
-				
+
 			</div>
 		@endforeach
 

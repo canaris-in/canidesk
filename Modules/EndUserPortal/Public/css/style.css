@@ -23,10 +23,10 @@
     margin: 1px 10px 5px 0;
 }
 #eup-container {
-    max-width: 1000px;
+    max-width: 1130px;
     margin-left: auto;
     margin-right: auto;
-    min-height: 500px;
+    min-height: 600px;
 }
 @media (max-width: 1028px) {
     .eup-container-padded {
@@ -37,7 +37,6 @@
 .eup-ticket-header .label {
     line-height: 20px;
     position: relative;
-    top: 4px;
 }
 .eup-table-tickets .conv-thread-count {
     width: 30px;
@@ -51,6 +50,7 @@
 
 .mr-3{
     margin-right: 2em;
+    margin-top: 6px;
 }
 .span-link {
     text-decoration: none;

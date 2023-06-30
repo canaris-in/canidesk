@@ -3,12 +3,16 @@
 <div class="layout-2col layout-2col-settings">
   <div class="sidebar-2col">
     <div class="sidebar-title">
-      Settings
+      {{ __('Settings') }}
+    </div>
+    <div class="sidebar-title reports-sidebar-title">
+      <span class="glyphicon glyphicon-file"></span>
+      {{ __('Reports') }}
     </div>
   </div>
   <div class="content-2col">
     <div class="section-heading">
-      Settings
+      {{ __('Settings') }}
     </div>
     <div class="container_settings row-container form-container top-margin">
       <div class="inner-container row">
@@ -16,7 +20,7 @@
             <form action="/reports/settings" class="setting_form form-horizontal margin-top margin-bottom" id="settings_forms" method="POST">
               {{@csrf_field()}}
               <div class="setting_form_labe form-group">
-                <label for="" class="col-sm-2 control-label">Send Auto Report</label>
+                <label for="" class="col-sm-2 control-label">{{ __('Send Auto Report') }}</label>
                <div class="col-sm-6">
                <div class="controls">
                 <div class="onoffswitch-wrap">
@@ -33,48 +37,48 @@
                </div>
             </div>
                 <div class="setting_form_labe form-group">
-                    <label for="" class="col-sm-2 control-label">To Email</label>
+                    <label for="" class="col-sm-2 control-label">{{ __('To Email') }}</label>
                    <div class="col-sm-6">
-                    <input class="setting_form_labe_input_email form-control input-sized" placeholder="" type="text" name="to_email" value="{{$settings && $settings->to_email ? $settings->to_email : ''}}">
+                    <input class="setting_form_labe_input_email form-control input-sized" placeholder="" type="text" name="to_email" value="{{$settings && $settings->to_email ? $settings->to_email : ''}}" required>
                    </div>
                 </div>
                 <div class="setting_form_labe form-group">
-                    <label for="" class="col-sm-2 control-label">Frequency</label>
+                    <label for="" class="col-sm-2 control-label">{{ __('Frequency') }}</label>
                     <div class="col-sm-6">
                       <select class="setting_form_labe_input_frequency form-control input-sized"  name="frequency" id="myFrequency">
-                        <option selected>Choose Frequency</option>
-                        <option value="Monthly" {{$settings && $settings->frequency == 'Monthly' ? 'selected': ''}}>Monthly</option>
-                        <option value="Weekly" {{$settings && $settings->frequency == 'Weekly' ? 'selected': ''}}>Weekly</option>
-                        <option value="Daily" {{$settings && $settings->frequency == 'Daily' ? 'selected': ''}}>Daily</option>
+                        <option selected>{{ __('Choose Frequency') }}</option>
+                        <option value="Monthly" {{$settings && $settings->frequency == 'Monthly' ? 'selected': ''}}>{{ __('Monthly') }}</option>
+                        <option value="Weekly" {{$settings && $settings->frequency == 'Weekly' ? 'selected': ''}}>{{ __('Weekly') }}</option>
+                        <option value="Daily" {{$settings && $settings->frequency == 'Daily' ? 'selected': ''}}>{{ __('Daily') }}</option>
                     </select>
                     </div>
                 </div>
                @if($settings->frequency!='null')
                <div class="setting_form_labe form-group" id="mySchedule1_a">
-                <label for="" class="col-sm-2 control-label">Schedule</label>
+                <label for="" class="col-sm-2 control-label">{{ __('Schedule') }}</label>
                <div class="col-sm-6">
                 <select class="setting_form_labe_input_schedule form-control input-sized" name="schedule" id="mySchedule1" >
-                  <option selected>Choose Schedule</option>
+                  <option selected>{{ __('Choose Schedule') }}</option>
               </select>
               </div>
             </div>
             <div class="setting_form_labe form-group" id="mySchedule2_a">
-              <label for="" class="col-sm-2 control-label">Schedule</label>
+              <label for="" class="col-sm-2 control-label">{{ __('Schedule') }}</label>
              <div class="col-sm-6">
               <select class="setting_form_labe_input_schedule form-control input-sized" name="schedule" id="mySchedule2" >
-                <option selected>Choose Schedule</option>
+                <option selected>{{ __('Choose Schedule') }}</option>
             </select>
             </div>
           </div>
                @endif
                 <div class="setting_form_labe form-group">
-                    <label for="" class="col-sm-2 control-label">Time</label>
+                    <label for="" class="col-sm-2 control-label">{{ __('Time') }}</label>
                     <div class="col-sm-6">
-                      <input class="setting_form_labe_input_time form-control input-sized" type="time" name="time"  value="{{$settings && $settings->time ? $settings->time : ''}}">
+                      <input class="setting_form_labe_input_time form-control input-sized" type="time" name="time"  value="{{$settings && $settings->time ? $settings->time : ''}}" required>
                     </div>
                 </div>
                 <div class="col-sm-6 col-sm-offset-2">
-                    <button class="setting_form_labe_button btn btn-primary" >Save</button>
+                    <button class="setting_form_labe_button btn btn-primary" >{{ __('Save') }}</button>
                 </div>
             </form>
           </div>
@@ -87,16 +91,19 @@
   .layout-2col-settings{
     margin-top: -19px;
   }
+  .reports-sidebar-title{
+    font-size: 15px;
+  }
 </style>
 <script >
   var stateList=[
-    {Frequency:'Weekly',schedule:'Monday'},
-    {Frequency:'Weekly',schedule:'Tuesday'},
-    {Frequency:'Weekly',schedule:'Wednesday'},
-    {Frequency:'Weekly',schedule:'Thursday'},
-    {Frequency:'Weekly',schedule:'Friday'},
-    {Frequency:'Weekly',schedule:'Saturday'},
-    {Frequency:'Weekly',schedule:'Sunday'},
+    {Frequency:'Weekly',schedule:'{{ __('Monday') }}'},
+    {Frequency:'Weekly',schedule:'{{ __('Tuesday') }}'},
+    {Frequency:'Weekly',schedule:'{{ __('Wednesday') }}'},
+    {Frequency:'Weekly',schedule:'{{ __('Thursday') }}'},
+    {Frequency:'Weekly',schedule:'{{ __('Friday') }}'},
+    {Frequency:'Weekly',schedule:'{{ __('Saturday') }}'},
+    {Frequency:'Weekly',schedule:'{{ __('Sunday') }}'},
   ];
 
    $(document).ready(function (){

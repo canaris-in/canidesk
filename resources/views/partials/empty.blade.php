@@ -4,6 +4,6 @@
 		<h2>{{ $empty_header }}</h2>
 	@endif
 	@if (!empty($empty_text))
-		<p>{{ $empty_text }}</p>
+		<p>{{ __($empty_text) }}</p>
 	@endif
 </div>

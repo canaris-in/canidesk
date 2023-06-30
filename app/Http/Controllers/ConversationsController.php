@@ -35,9 +35,8 @@ class ConversationsController extends Controller
      */
     public function __construct()
     {
-        // TODO: add customer auth like user till then removing auth 
+        // TODO: add customer auth like user till then removing auth
         // $this->middleware('auth');
-        return true;
     }
 
     /**
@@ -154,7 +153,7 @@ class ConversationsController extends Controller
         // 1. Email has been received from a customer.
         // 2. Customer has been changed.
         // 3. Reply has been sent to the original customer email.
-        if ($conversation->customer_email 
+        if ($conversation->customer_email
             && count($customer_emails)
             && !in_array($conversation->customer_email, $customer_emails->pluck('email')->toArray())
         ) {
@@ -378,7 +377,7 @@ class ConversationsController extends Controller
 
         if (!empty($from_thread_id)) {
             $orig_thread = Thread::find($from_thread_id);
-            
+
             if ($orig_thread) {
                 $orign_conv = $orig_thread->conversation;
                 $this->authorize('view', $orign_conv);
@@ -413,7 +412,7 @@ class ConversationsController extends Controller
                 $conversation->updateFolder();
                 $conversation->save();
 
-                
+
                 $thread = Thread::createExtended([
                         'conversation_id' => $orig_thread->conversation_id,
                         'user_id' => $orig_thread->user_id,
@@ -436,7 +435,7 @@ class ConversationsController extends Controller
                     ],
                     $conversation
                 );
-                
+
                 // Clone attachments.
                 $attachments = Attachment::where('thread_id', $orig_thread->id)->get();
                 foreach ($attachments as $attachment) {
@@ -546,7 +545,7 @@ class ConversationsController extends Controller
                 } else {
                     $new_status = (int) $request->status;
                 }
-                
+
                 if($user){
                     if (!$conversation) {
                         $response['msg'] = __('Conversation not found');
@@ -568,14 +567,10 @@ class ConversationsController extends Controller
                             // Stay on the current page
                             $response['redirect_url'] = $conversation->url();
                             $redirect_same_page = true;
-                        } else {
-                            $response['redirect_url'] = $this->getRedirectUrl($request, $conversation, $user);
                         }
-                        // $response['redirect_url'] = $conversation->url();
-                        // $redirect_same_page = true;
-    
+
                         $conversation->changeStatus($new_status, $user);
-    
+
                         $response['status'] = 'success';
                         // Flash
                         $flash_message = __('Status updated');
@@ -583,19 +578,19 @@ class ConversationsController extends Controller
                             $flash_message .= ' &nbsp;<a href="'.$conversation->url().'">'.__('View').'</a>';
                         }
                         \Session::flash('flash_success_floating', $flash_message);
-    
+
                         $response['msg'] = __('Status updated');
                     }
 
                 } else {
                     $user = Customer::where('id', $conversation->user_id)->first();
                     $conversation->changeStatus($new_status, $user);
-    
+
                         $response['status'] = 'success';
                         // Flash
                         $flash_message = __('Status updated');
                         \Session::flash('flash_success_floating', $flash_message);
-    
+
                         $response['msg'] = __('Status updated');
                 }
                 break;
@@ -728,12 +723,6 @@ class ConversationsController extends Controller
                     // Get attachments info
                     // Delete removed attachments.
                     $attachments_info = $this->processReplyAttachments($request);
-
-                    // Determine redirect.
-                    // Must be done before updating current conversation's status or assignee.
-                    if (!$new) {
-                        $response['redirect_url'] = $this->getRedirectUrl($request, $conversation, $user);
-                    }
 
                     // Conversation
                     $now = date('Y-m-d H:i:s');
@@ -1927,7 +1916,7 @@ class ConversationsController extends Controller
                     return \Response::json($response);
                 }
 
-                $response = \Eventy::filter('conversations.empty_folder', $response, 
+                $response = \Eventy::filter('conversations.empty_folder', $response,
                     $request->mailbox_id,
                     $request->folder_id
                 );
@@ -2507,7 +2496,7 @@ class ConversationsController extends Controller
         }
 
         // Jump to the conversation if searching by conversation number.
-        if (count($conversations) == 1 
+        if (count($conversations) == 1
             && $conversations[0]->number == $q
             && empty($filters)
             && !$request->x_embed

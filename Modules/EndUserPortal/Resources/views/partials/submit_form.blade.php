@@ -18,9 +18,9 @@
 @else
     @if (request()->get('success') && !empty($conversation->id))
         <div class="alert alert-success text-center">
-            <strong>{{ __('Your call has been successfully registered. Engineer will be assigned shortly.!') }}</strong>
+            <strong>{{ __('Your message has been send') }}</strong>
         </div>
-    @endif
+    @endif    
     <form class="" method="POST" action="{{ $form_action ?? '' }}" id="eup-ticket-form">
         <div id="eup-submit-form-main-area">
             {{ csrf_field() }}
@@ -120,9 +120,11 @@
                     @endforeach
                 @endif
             @endif
+            @if ($conversation->id=="")
             <div style="padding-bottom:10px; ">
                 <input type="text"  name="subject"  class="form-control eup-remember input-md" placeholder="{{ __('Subject') }}*">
             </div>
+            @endif
             <div class="form-group{{ $errors->has('message') ? ' has-error' : '' }}">
 
                 <textarea class="form-control eup-remember" name="message" rows="13" placeholder="{{ __('Message') }}*" @if (!empty($values['message'])) data-prefilled="1" @endif required autofocus>{{ old('message', $values['message'] ?? '') }}</textarea>

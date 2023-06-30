@@ -253,7 +253,7 @@ class UsersController extends Controller
     public function permissions($id)
     {
         $user = auth()->user();
-        if (!$user->isAdmin()||!$user->isITHead()) {
+        if (!$user->isAdmin()) {
             abort(403);
         }
 
@@ -369,7 +369,7 @@ class UsersController extends Controller
 
             // Both send and resend
             case 'send_invite':
-                if (!$auth_user->isAdmin()||!$auth_user->isITHead()) {
+                if (!$auth_user->isAdmin()) {
                     $response['msg'] = __('Not enough permissions');
                 }
                 if (empty($request->user_id)) {

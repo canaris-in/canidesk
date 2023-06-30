@@ -122,6 +122,7 @@
                                             <li class="{{ \App\Misc\Helper::menuSelectedHtml('users') }}"><a href="{{ route('users') }}">{{ __('Users') }}</a></li>
                                         @endif
                                         @if (Auth::user()->isAdmin())
+                                        <li class=""><a href="{{ asset('translations') }}">{{ __('Translate') }}</a></li>
                                             <li class="{{ \App\Misc\Helper::menuSelectedHtml('modules') }}"><a href="{{ route('modules') }}">{{ __('Modules') }}</a></li>
                                             <li class="{{ \App\Misc\Helper::menuSelectedHtml('logs') }}"><a href="{{ route('logs') }}">{{ __('Logs') }}</a></li>
                                             <li class="{{ \App\Misc\Helper::menuSelectedHtml('system') }}"><a href="{{ route('system') }}">{{ __('System') }}</a></li>
@@ -233,7 +234,7 @@
 
                                     <ul class="dropdown-menu dropdown-with-icons">
                                         <li>
-                                            <form class="form-inline form-nav-search" role="form" action="{{ route('conversations.search') }}" target="_blank">
+                                            <form class="form-inline form-nav-search" role="form" action="{{ route('conversations.search') }}">
                                                 <div class="input-group">
                                                     <input type="text" class="form-control" name="q">
                                                     <span class="input-group-btn">

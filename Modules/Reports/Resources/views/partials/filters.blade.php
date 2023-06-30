@@ -7,7 +7,7 @@
 	<div class="rpt-filter" style="margin-left: 10px;">
 		{{ __('Type') }}
 		<select class="form-control" name="type">
-			<option value="">All</option>
+			<option value="">{{__('All')}}</option>
 			<option value="{{ App\Conversation::TYPE_EMAIL }}">{{ __('Email') }}</option>
 			<option value="{{ App\Conversation::TYPE_CHAT }}">{{ __('Chat') }}</option>
 			<option value="{{ App\Conversation::TYPE_PHONE }}">{{ __('Phone') }}</option>
@@ -16,7 +16,7 @@
 	<div class="rpt-filter">
 		{{ __('Mailbox') }}
 		<select class="form-control" name="mailbox">
-			<option value="">All</option>
+			<option value="">{{__('All')}}</option>
 			@foreach (Auth::user()->mailboxesCanView(true) as $mailbox)
 				<option value="{{ $mailbox->id }}">{{ $mailbox->name }}</option>
 			@endforeach
@@ -26,7 +26,7 @@
 		<div class="rpt-filter">
     		{{ __('Tag') }}
     		<select class="form-control" name="tag">
-    			<option value="">All</option>
+    			<option value="">{{__('All')}}</option>
     			@foreach (Modules\Tags\Entities\Tag::orderBy('name')->get() as $tag)
     				<option value="{{ $tag->id }}">{{ $tag->name }}</option>
     			@endforeach
