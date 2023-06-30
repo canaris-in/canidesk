@@ -33,7 +33,7 @@
             role="button"><i class="glyphicon glyphicon-envelope"></i></a>
         <a class="btn btn-trans" href="javascript:void(0)"
             data-url="{{ route('mailboxes.fetchMail', ['mailbox_id' => $mailbox->id]) }}" data-toggle="tooltip"
-            title="{{ __('Fetch Tickets') }}" role="button" name="action" value="fetchEmail" onclick="myFunction()"><i
+            title="{{ __('Fetch Tickets') }}" role="button" name="action" value="fetchEmail"><i
                 class="glyphicon glyphicon-refresh " id="fetchEmail"></i></a>
     </div>
 @endif
