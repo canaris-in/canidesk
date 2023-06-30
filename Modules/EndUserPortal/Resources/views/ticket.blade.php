@@ -39,7 +39,7 @@
 									{{ \EndUserPortal::authCustomer()->getFullName() }}
 								@else
 									{{-- {{ __(':mailbox.name', ['mailbox.name' => $mailbox->name]) }} --}}
-									{{ \EndUserPortal::authCustomer()->getFullName() }}
+									{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}
 								@endif
 							</strong>
 					    </div>
