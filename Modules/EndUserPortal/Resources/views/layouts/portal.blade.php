@@ -60,7 +60,8 @@
 	                <div class="collapse navbar-collapse" id="app-navbar-collapse">
 	                    <!-- Left Side Of Navbar -->
 	                    <ul class="nav navbar-nav navbar-right">
-	                    	<li class="{{ \App\Misc\Helper::menuSelectedHtml('enduserportal.submit') }}"><a href="{{ route('enduserportal.submit', ['id' => \EndUserPortal::encodeMailboxId($mailbox->id)]) }}">{{ \EndUserPortal::getMailboxParam($mailbox, 'text_submit') }}</a></li>
+	                    	{{-- <li class="{{ \App\Misc\Helper::menuSelectedHtml('enduserportal.submit') }}"><a href="{{ route('enduserportal.submit', ['id' => \EndUserPortal::encodeMailboxId($mailbox->id)]) }}">{{ \EndUserPortal::getMailboxParam($mailbox, 'text_submit') }}</a></li> --}}
+							<li class="{{ \App\Misc\Helper::menuSelectedHtml('enduserportal.submit') }}"><a href="{{ route('enduserportal.submit', ['id' => \EndUserPortal::encodeMailboxId($mailbox->id)]) }}">{{ __('Submit a Ticket') }}</a></li>
 	                    	<li class="{{ \App\Misc\Helper::menuSelectedHtml('enduserportal.tickets') }}"><a href="{{ route('enduserportal.tickets', ['id' => \EndUserPortal::encodeMailboxId($mailbox->id)]) }}">{{ __('My Tickets') }}</a></li>
 	                    	@if (!EndUserPortal::authCustomer())
 	                    		<li><a href="{{ route('enduserportal.login', ['id' => \EndUserPortal::encodeMailboxId($mailbox->id)]) }}"><i class="glyphicon glyphicon-user"></i> {{ __('Log In') }}</a></li>
