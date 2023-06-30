@@ -1,7 +1,7 @@
 <div class="alert alert-danger  alert-floating errormsg" id="alert">
     <div class="glyphicon-msg">
         <i class="glyphicon glyphicon-exclamation-sign"></i>
-        {{-- <p id="errorMsg"></p> --}}
+        <p id="errorMsg"></p>
     </div>
 </div>
 <div class="dropdown sidebar-title sidebar-title-extra">
@@ -54,12 +54,14 @@
 </style>
 <script>
     $(document).ready(function() {
+        $('.errormsg').css('display', 'inline-block !important')
         $('a[name="action"]').on('click', function(e) {
             e.preventDefault();
             var $button = $(this);
             var url = $button.data('url');
             $button.find('.glyphicon').addClass('glyphicon-spin');
-            $('.errormsg').css('display', 'inline-block !important')
+            $button.find('.errormsg').css('display', 'inline-block !important');
+
 
             $.ajax({
                 url: url,
