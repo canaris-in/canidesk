@@ -98,12 +98,15 @@
 
                     // Retrieve the error message
                     const errorMessage = match && match[1] ? match[1] :
-                        "No error message found";
+                        "";
 
                     //popupbox
                     var popup = document.getElementById("errorMsg");
 
                     popup.style.display = "flex";
+                    if(errorMessage==''){
+                        popup.style.display = "none";
+                    }
                     // Function to handle clicks outside the popup box
                     function handleClickOutside(event) {
                         if (!popup.contains(event.target)) {
