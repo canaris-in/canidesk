@@ -13,9 +13,9 @@ class CustomFieldsSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('custom_fields')->truncate();
         $data=[
             [
-                'id'=>1,
                 'mailbox_id'=>'1',
                 'name'=>'Ticket Category',
                 'type'=>'1',
@@ -25,7 +25,6 @@ class CustomFieldsSeeder extends Seeder
                 'show_in_list'=>'1',
             ],
             [
-                'id'=>2,
                 'mailbox_id'=>'1',
                 'name'=>'Product',
                 'type'=>'1',
@@ -35,7 +34,6 @@ class CustomFieldsSeeder extends Seeder
                 'show_in_list'=>'1',
             ],
             [
-                'id'=>3,
                 'mailbox_id'=>'1',
                 'name'=>'Escalated',
                 'type'=>'1',
@@ -45,7 +43,6 @@ class CustomFieldsSeeder extends Seeder
                 'show_in_list'=>'1',
             ],
             [
-                'id'=>4,
                 'mailbox_id'=>'1',
                 'name'=>'Priority',
                 'type'=>'1',
