@@ -38,7 +38,8 @@
 								@if ($thread->type == App\Thread::TYPE_CUSTOMER)
 									{{ \EndUserPortal::authCustomer()->getFullName() }}
 								@else
-									{{ __(':mailbox.name', ['mailbox.name' => $mailbox->name]) }}
+									{{-- {{ __(':mailbox.name', ['mailbox.name' => $mailbox->name]) }} --}}
+									{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}
 								@endif
 							</strong>
 					    </div>
