@@ -38,10 +38,10 @@
                         }
                     @endphp
                 @endforeach
-    
+
                 @foreach ($ticketCategoryArray as $item)
                 @php
-    
+
                     $options = $item['options'];
                     $ticketCategory = null;
                     foreach ($options as $key => $option) {
@@ -51,12 +51,12 @@
                         }
                     }
                 @endphp
-    
+
             @endforeach
-    
+
                 @foreach ($ticketPriorityArray as $item)
                 @php
-    
+
                     $options = $item['options'];
                     $ticketPriority = null;
                     foreach ($options as $key => $option) {
@@ -66,7 +66,7 @@
                         }
                     }
                 @endphp
-    
+
             @endforeach
                 <tr>
                     <td class="custom-cell">#{{$ticket->number}}</td>
@@ -80,7 +80,7 @@
                 @endforeach
             </tbody>
         </table>
-    
+
     </div>
 </div>
 
@@ -116,7 +116,7 @@
     margin: 0 !important;
    }
 @media only screen and (max-width: 600px) {
-   
+
     .report-container{
         width: fit-content;
    }
@@ -124,11 +124,11 @@
     margin-top: 0px;
    }
    div.dataTables_filter{
-    
+
     /* margin-top: -35px; */
 }
 div.dt-buttons {
-   
+
     /* margin-left: 38em; */
 }
 .horizontal-scroll {
@@ -137,18 +137,8 @@ div.dt-buttons {
 }
 }
 </style>
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
-<script>
-// $(document).ready(function() {
-//     $('.datatable').DataTable({
-//         dom: 'Bfrtip',
-//         buttons: [
-//             'csv'
-//         ]
-//     });
-// });
-</script>
+<script src="/js/jquery-3.5.1.js"></script>
+<script src="/js/jquery.dataTables.min.js"></script>
+<script src="/js/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="/js/buttons.html5.min.js"></script>

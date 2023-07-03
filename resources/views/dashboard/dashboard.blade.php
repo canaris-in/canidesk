@@ -544,7 +544,7 @@
 @endpush
 
 @push('vendor_libraries')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="public/js/chart.js"></script>
 @endpush
 
 @push('scripts')

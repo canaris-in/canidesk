@@ -18,7 +18,7 @@
 @if ($thread->has_attachments)
 {{ __('Attached:') }}
 @foreach ($thread->attachments as $i => $attachment)
-{{ ($i+1) }}) {{ $attachment->file_name }} [{{ $attachment->url() }}]
+{{ ($i+1) }} {{ $attachment->file_name }} [{{ $attachment->url() }}]
 @endforeach
 @endif
 @endforeach
