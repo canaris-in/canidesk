@@ -20,9 +20,9 @@
     <meta name="theme-color" content="#ffffff">
 
     <link rel="stylesheet" href="/css/dataTables.bootstrap.min.css">
-    <script src="/js/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="/js/jquery-3.7.0.min.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="/css/buttons.dataTables.min.css">
-    <link rel="stylesheet" href="/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="/css/all.min.css"  crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     @action('layout.head')
     {{-- Styles --}}
