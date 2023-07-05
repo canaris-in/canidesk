@@ -18,7 +18,7 @@ class DashboardDefaultQueryConfiguration extends AbstractQueryConfiguration
         DashboardQueryManager $dashboardQueryManager
     ): Builder
     {
-        $query = Conversation::query();
+        $query = Conversation::query()->select('conversations.*');
 
         $query = $query->where('state', '!=', Conversation::STATE_DRAFT)
             ->where('threads_count', '>', 0);
@@ -35,8 +35,7 @@ class DashboardDefaultQueryConfiguration extends AbstractQueryConfiguration
                 ->where('custom_fields.name', 'Ticket Category')
                 ->where('conversation_custom_field.value', $categoryIndex)
                 ->orWhere('custom_fields.name', 'Product')
-                ->where('conversation_custom_field.value', $productIndex)
-                ->select('conversations.*');
+                ->where('conversation_custom_field.value', $productIndex);
         }
 
         return $query;

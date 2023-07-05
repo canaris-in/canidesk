@@ -13,6 +13,7 @@ use App\Events\UserReplied;
 use App\Events\ConversationStatusChanged;
 use App\Events\ConversationUserChanged;
 use App\Events\ConversationCustomerChanged;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Input;
 use Modules\CustomFields\Entities\ConversationCustomField;
@@ -1069,6 +1070,7 @@ class Conversation extends Model
      */
     public static function getQueryByFolder($folder, $user_id)
     {
+        /** @var Builder $query_conversations */
         if ($folder->type == Folder::TYPE_MINE) {
             // Get conversations from personal folder
             $query_conversations = self::where('user_id', $user_id)
