@@ -124,6 +124,7 @@
                                     break;
                                 }
                             }
+                            break;
                         @endphp
                     @endforeach
 
