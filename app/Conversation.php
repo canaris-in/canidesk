@@ -2,12 +2,6 @@
 
 namespace App;
 
-use App\Attachment;
-use App\Customer;
-use App\Mailbox;
-use App\Folder;
-use App\Thread;
-use App\User;
 use App\Events\UserAddedNote;
 use App\Events\UserReplied;
 use App\Events\ConversationStatusChanged;
@@ -15,11 +9,21 @@ use App\Events\ConversationUserChanged;
 use App\Events\ConversationCustomerChanged;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Input;
 use Modules\CustomFields\Entities\ConversationCustomField;
 use Modules\CustomFields\Entities\CustomField;
 use Watson\Rememberable\Rememberable;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
+/**
+ * @property User $user
+ * @property Mailbox $mailbox
+ * @property int $folder_id
+ * @property Folder $folder
+ * @property EloquentCollection<Folder> $folders
+ */
 class Conversation extends Model
 {
     use Rememberable;
@@ -262,7 +266,7 @@ class Conversation extends Model
     /**
      * Who the conversation is assigned to (assignee).
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo('App\User');
     }
@@ -270,7 +274,7 @@ class Conversation extends Model
     /**
      * Get the folder to which conversation belongs via folder field.
      */
-    public function folder()
+    public function folder(): BelongsTo
     {
         return $this->belongsTo('App\Folder');
     }
@@ -278,7 +282,7 @@ class Conversation extends Model
     /**
      * Get the folder to which conversation belongs via conversation_folder table.
      */
-    public function folders()
+    public function folders(): BelongsToMany
     {
         return $this->belongsToMany('App\Folder');
     }
@@ -286,7 +290,7 @@ class Conversation extends Model
     /**
      * Get the mailbox to which conversation belongs.
      */
-    public function mailbox()
+    public function mailbox(): BelongsTo
     {
         return $this->belongsTo('App\Mailbox');
     }
