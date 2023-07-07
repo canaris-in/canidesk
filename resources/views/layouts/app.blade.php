@@ -179,7 +179,7 @@
                                                     @if ($web_notifications_info['notifications']->hasMorePages())
                                                         <li class="Container-flweb-notification-more">
                                                             <button class="btn btn-link btn-block link-dark" data-loading-text="{{ __('Loading') }}…">
-                                                                {{ __('Load more') }}
+                                                               <a href="{{ route('users.view_notification', ['id' => Auth::user()->id]) }}"> {{ __('View more') }} </a>
                                                             </button>
                                                         </li>
                                                     @endif
