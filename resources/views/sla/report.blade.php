@@ -102,9 +102,6 @@
             <tbody>
                 @foreach ($tickets as $ticket)
                     @php
-                        
-                        $cheker=0;
-                        $value1=0;
                         $dataArray = json_decode($ticket->conversationCustomField, true);
                         $ticketPriorityArray = json_decode($ticket->conversationPriority, true);
                         $ticketCategoryArray = json_decode($ticket->conversationCategory, true);
@@ -120,10 +117,6 @@
                             $options = $customField['options'];
                             $name = $customField['name'];
                             $value = $item['value'];
-                            if($cheker==0){
-                                $value1 = $item['value'];
-                                $cheker++;
-                            }
                             $optionValue = null;
                             foreach ($options as $key => $option) {
                                 if ($key == $value) {
@@ -131,7 +124,6 @@
                                     break;
                                 }
                             }
-                            // break;
                         @endphp
                     @endforeach
 
@@ -147,7 +139,7 @@
                             $options = $item['options'];
                             $ticketCategory = null;
                             foreach ($options as $key => $option) {
-                                if ($key == $value1) {
+                                if ($key == $value) {
                                     $ticketCategory = $option;
                                     break;
                                 }
