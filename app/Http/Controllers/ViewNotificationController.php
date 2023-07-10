@@ -6,6 +6,7 @@ use App\Notifications\WebsiteNotification;
 use Illuminate\Http\Request;
 use App\Thread;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ViewNotificationController extends Controller
@@ -15,7 +16,7 @@ class ViewNotificationController extends Controller
     const WEBSITE_NOTIFICATIONS_PAGE_PARAM = 'wp_page';
     public function index($id){
 
-        $auth_user = auth()->user();
+        $auth_user = Auth::user();
         $data = [];
 
         $threads = [];
@@ -84,6 +85,6 @@ class ViewNotificationController extends Controller
             ];
         }
 
-        return view('/users/view_notification',['web_notifications_info_data' => $data]);
+        return view('users.view_notification',['web_notifications_info_data' => $data]);
     }
 }

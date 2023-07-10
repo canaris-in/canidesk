@@ -1,6 +1,9 @@
 @extends('layouts.app')
 @section('content')
     <div class="layout-2col layout-2col-settings">
+        @php
+            $web_notifications_info = Auth::user()->getWebsiteNotificationsInfo();
+        @endphp
         <div class="sidebar-2col">
             <div class="sidebar-title">
                 {{ __('Notifications') }}
@@ -13,6 +16,15 @@
         <div class="content-2col">
             <div class="section-heading">
                 {{ __('Notifications') }}
+                <small class="web-notifications-count  @if (!(int) $web_notifications_info['unread_count']) hidden @endif"
+                    title="{{ __('Unread Notifications') }}" data-toggle="tooltip">
+                    @if ($web_notifications_info['unread_count'])
+                        {{ $web_notifications_info['unread_count'] }}
+                    @endif
+                </small>
+                <a href="#" class="web-notifications-mark-read @if (!(int)$web_notifications_info['unread_count']) hidden @endif" data-loading-text="{{ __('Processing') }}…">
+                    {{ __('Mark all as read') }}
+                </a>
             </div>
             <div class="container_settings row-container form-container top-margin">
                 <div class="inner-container row">
