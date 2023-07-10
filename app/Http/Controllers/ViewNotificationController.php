@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\DB;
 class ViewNotificationController extends Controller
 {
 
-    const WEBSITE_NOTIFICATIONS_PAGE_SIZE = 40;
-    const WEBSITE_NOTIFICATIONS_PAGE_PARAM = 'wp_page';
     public function index($id){
 
         $auth_user = Auth::user();
@@ -21,12 +19,16 @@ class ViewNotificationController extends Controller
 
         $threads = [];
         $thread_ids = [];
-        $notifications = $auth_user->notifications()->paginate(self::WEBSITE_NOTIFICATIONS_PAGE_SIZE, ['*'], self::WEBSITE_NOTIFICATIONS_PAGE_PARAM, request()->wn_page);
+        $perPage = 10;
+        $currentPage = request('page') ?? 1;
+        $notifications = $auth_user->notifications()->paginate($perPage, ['*'],'page', $currentPage);
 
+        // Extract data from Notification ID
         foreach ($notifications as $notification) {
             if (!empty($notification->data['thread_id'])) {
                 $thread_ids[] = $notification->data['thread_id'];
             }
+
         }
         if ($thread_ids) {
             $threads = Thread::whereIn('id', $thread_ids)
@@ -42,6 +44,7 @@ class ViewNotificationController extends Controller
             if (!empty($notification->data['number'])) {
                 $conversation_number = $notification->data['number'];
             }
+
 
             $thread = null;
             $user = null;
@@ -68,7 +71,6 @@ class ViewNotificationController extends Controller
 
             $last_thread_body = $thread->body;
             $conversation = $thread->conversation;
-
             if (empty($conversation)) {
                 continue;
             }
@@ -84,7 +86,6 @@ class ViewNotificationController extends Controller
                 'created_by_customer' => $created_by_customer,
             ];
         }
-
-        return view('users.view_notification',['web_notifications_info_data' => $data]);
+        return view('users.view_notification',['web_notifications_info_data' => $data, 'notifications' => $notifications]);
     }
 }

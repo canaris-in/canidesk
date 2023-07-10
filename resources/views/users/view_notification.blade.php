@@ -22,7 +22,8 @@
                         {{ $web_notifications_info['unread_count'] }}
                     @endif
                 </small>
-                <a href="#" class="web-notifications-mark-read @if (!(int)$web_notifications_info['unread_count']) hidden @endif" data-loading-text="{{ __('Processing') }}…">
+                <a href="#" class="web-notifications-mark-read @if (!(int) $web_notifications_info['unread_count']) hidden @endif"
+                    data-loading-text="{{ __('Processing') }}…">
                     {{ __('Mark all as read') }}
                 </a>
             </div>
@@ -89,12 +90,35 @@
                                 </li>
                             @endforeach
                         @endif
-
-
-
                     </div>
                 </div>
             </div>
+
+            @if (!empty($notifications))
+            <div class="customers-pager">
+                @if ($notifications->links())
+                    {{-- First Page Link --}}
+                    <a href="{{ $notifications->url(1) }}"
+                        class="pager-nav pager-first glyphicon glyphicon-backward @if ($notifications->currentPage() <= 2) disabled @endif"
+                        data-page="1" title="{{ __('First Page') }}"></a>
+
+                    {{-- Previous Page Link --}}
+                    <a href="{{ $notifications->previousPageUrl() }}"
+                        class="pager-nav pager-prev glyphicon glyphicon-triangle-left @if ($notifications->onFirstPage()) disabled @endif"
+                        data-page="{{ $notifications->currentPage() + 1 }}" title="{{ __('Previous Page') }}"></a>
+
+                    {{-- Next Page Link --}}
+                    <a href="{{ $notifications->nextPageUrl() }}"
+                        class="pager-nav pager-next glyphicon glyphicon-triangle-right @if (!$notifications->hasMorePages()) disabled @endif"
+                        data-page="{{ $notifications->currentPage() + 1 }}" title="{{ __('Next Page') }}"></a>
+
+                    {{-- Last Page Link --}}
+                    <a href="{{ $notifications->url($notifications->lastPage()) }}"
+                        class="pager-nav pager-last glyphicon glyphicon-forward @if ($notifications->currentPage() >= $notifications->lastPage() - 1) disabled @endif"
+                        data-page="{{ $notifications->lastPage() }}" title="{{ __('Last Page') }}"></a>
+                @endif
+            </div>
+            @endif
         </div>
     </div>
     <style>
