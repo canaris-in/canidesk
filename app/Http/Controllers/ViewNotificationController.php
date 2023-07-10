@@ -3,13 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Notifications\WebsiteNotification;
-use App\User;
-use App\Thread;
 use Illuminate\Http\Request;
+use App\Thread;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
 
-class view_notificationController extends Controller
+class ViewNotificationController extends Controller
 {
 
     const WEBSITE_NOTIFICATIONS_PAGE_SIZE = 40;
