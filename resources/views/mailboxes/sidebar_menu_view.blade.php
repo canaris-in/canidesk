@@ -1,3 +1,6 @@
+<?php
+/** @var \App\Folder $folder */
+?>
 <div class="alert alert-danger errormsg glyphicon glyphicon-exclamation-sign" id="errorMsg">
 </div>
 <div class="dropdown sidebar-title sidebar-title-extra">
