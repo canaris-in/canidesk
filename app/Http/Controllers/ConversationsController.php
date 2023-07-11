@@ -507,8 +507,6 @@ class ConversationsController extends Controller
                         // If user assigned conversation to himself, stay on the current page
                         $response['redirect_url'] = $conversation->url();
                         $redirect_same_page = true;
-                    } else {
-                        $response['redirect_url'] = $this->getRedirectUrl($request, $conversation, $user);
                     }
 
                     $conversation->changeUser($new_user_id, $user);
