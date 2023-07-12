@@ -1,3 +1,7 @@
+<?php
+/** @var \App\Folder $folder */
+
+?>
 @extends('layouts.app')
 
 @section('body_attrs')@parent data-mailbox_id="{{ $mailbox->id }}"@endsection

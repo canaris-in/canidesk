@@ -6,6 +6,7 @@ use App\Support\Dashboard\DashboardQueryManager;
 use App\QueryConfigurations\{DashboardDefaultQueryConfiguration, TicketsQueryConfiguration};
 use App\QueryFilters\Dashboard\{ConversationTypeFilter,
     DateRangeFilter,
+    DeletedTicketsFilter,
     MailboxQueryFilter,
     ProductFilter,
     TicketCategoryFilter};
@@ -25,6 +26,7 @@ class DashboardController extends Controller
         ];
 
         $filtersConfigs = [
+            DeletedTicketsFilter::class,
             TicketCategoryFilter::class,
             ProductFilter::class,
             MailboxQueryFilter::class,

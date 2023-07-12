@@ -42,7 +42,7 @@ abstract class AbstractQueryFilter implements QueryFilterStageContract
 
         $filter = $this->getFilterValue($filterBag, $queryConfiguration);
 
-        if (!empty($filter)) {
+        if (isset($filter)) {
             $query = $this->apply($query, $filter);
         }
 

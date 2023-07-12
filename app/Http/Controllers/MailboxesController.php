@@ -7,6 +7,7 @@ use App\Folder;
 use App\Mailbox;
 use App\Thread;
 use App\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
@@ -474,9 +475,10 @@ class MailboxesController extends Controller
 
         $this->authorize('view', $folder);
 
+        /** @var Builder $query_conversations */
         $query_conversations = Conversation::getQueryByFolder($folder, $user->id);
         $conversations = $folder->queryAddOrderBy($query_conversations);
-
+        
         $conversations = $conversations->paginate(Conversation::DEFAULT_LIST_SIZE);
 
         return view('mailboxes/view', [

@@ -4539,3 +4539,14 @@ a.disabled:focus {
         display: none;
     }
 }
+.conversation-color-table{
+    display: flex;
+}
+.dm .conversation-color{
+
+    color: burlywood;
+}
+.dm .conversation-color-active{
+
+    color: #6ac27b;
+}

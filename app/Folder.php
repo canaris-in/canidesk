@@ -2,8 +2,19 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Underscore\Underscore;
 
+/**
+ * @property EloquentCollection<Conversation> $conversations
+ * @property User $user
+ * @property Mailbox $mailbox
+ * @property int $type
+ *
+ */
 class Folder extends Model
 {
     /**
@@ -81,7 +92,7 @@ class Folder extends Model
     /**
      * Get the mailbox to which folder belongs.
      */
-    public function mailbox()
+    public function mailbox(): BelongsTo
     {
         return $this->belongsTo('App\Mailbox');
     }
@@ -89,7 +100,7 @@ class Folder extends Model
     /**
      * Get the user to which folder belongs.
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo('App\User');
     }
@@ -97,11 +108,14 @@ class Folder extends Model
     /**
      * Get starred conversations.
      */
-    public function conversations()
+    public function conversations(): HasMany
     {
         return $this->hasMany('App\Conversation');
     }
 
+    /**
+     * @return array|string|Underscore|null
+     */
     public function getTypeName()
     {
         // To make name translatable.
@@ -137,19 +151,15 @@ class Folder extends Model
      *
      * @return array
      */
-    public function getOrderByArray()
+    public function getOrderByArray(): array
     {
         $order_by = [];
 
         switch ($this->type) {
             case self::TYPE_UNASSIGNED:
             case self::TYPE_MINE:
-            case self::TYPE_ASSIGNED:
-                $order_by[] = ['status' => 'asc'];
-                $order_by[] = ['last_reply_at' => 'desc'];
-                break;
-
             case self::TYPE_STARRED:
+            case self::TYPE_ASSIGNED:
                 $order_by[] = ['status' => 'asc'];
                 $order_by[] = ['last_reply_at' => 'desc'];
                 break;

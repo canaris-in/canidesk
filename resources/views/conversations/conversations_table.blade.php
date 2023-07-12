@@ -193,15 +193,17 @@
         <tfoot>
             <tr>
                 <td class="conv-totals" colspan="{{ $col_counter-3 }}">
+                   <div class="conversation-color-table">
                     @if ($conversations->total())
-                        <strong>{{ $conversations->total() }}</strong> {{ __('total conversations') }}&nbsp;|&nbsp; 
-                    @endif
-                    @if (isset($folder->active_count) && !$folder->isIndirect())
-                        <strong>{{ $folder->getActiveCount() }}</strong> {{ __('active') }}&nbsp;|&nbsp; 
-                    @endif
-                    @if ($conversations)
-                        <strong>{{ $conversations->firstItem() }}</strong>-<strong>{{ $conversations->lastItem() }}</strong>
-                    @endif
+                    <div class="conversation-color"> {{ $conversations->total() }} {{ __('total conversations') }}&nbsp;|&nbsp;</div> 
+                 @endif
+                 @if (isset($folder->active_count) && !$folder->isIndirect())
+                     <div class="conversation-color-active">{{ $folder->getActiveCount() }} {{ __('active') }}&nbsp;|&nbsp;</div> 
+                 @endif
+                 @if ($conversations)
+                     <div><strong>{{ $conversations->firstItem() }}</strong>-<strong>{{ $conversations->lastItem() }}</strong></div>
+                 @endif
+                   </div>
                 </td>
                 <td colspan="3" class="conv-nav">
                     <div class="table-pager">
