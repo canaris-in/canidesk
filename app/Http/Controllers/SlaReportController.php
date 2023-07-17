@@ -4,14 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Conversation;
 use App\User;
+use App\Mailbox;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
 class SlaReportController extends Controller
 {
+    public function permissionsforSLA()
+    {
+        $user = auth()->user();
+        $user = User::findOrFail( $user->id);
+        return $user->mailboxes;
+    }
+
     public function slaReport(Request $request)
     {
 
@@ -138,8 +145,7 @@ class SlaReportController extends Controller
         }
 
         $tickets = $tickets->where('conversations.threads_count', '!=', '0')->get();
-        $user=new UsersController();
-        $user_email_permissions=$user->permissionsforSLA();
+        $user_email_permissions=SlaReportController::permissionsforSLA();
 
         return view('sla/report', compact('tickets','categoryValues','productValues','filters','user_email_permissions'));
     }
