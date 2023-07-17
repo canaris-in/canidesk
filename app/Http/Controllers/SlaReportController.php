@@ -6,6 +6,7 @@ use App\Conversation;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Http\Controllers\UsersController;
 use Illuminate\Support\Facades\DB;
 use Exception;
 
@@ -137,7 +138,9 @@ class SlaReportController extends Controller
         }
 
         $tickets = $tickets->where('conversations.threads_count', '!=', '0')->get();
+        $user=new UsersController();
+        $user_email_permissions=$user->permissionsforSLA();
 
-        return view('sla/report', compact('tickets','categoryValues','productValues','filters'));
+        return view('sla/report', compact('tickets','categoryValues','productValues','filters','user_email_permissions'));
     }
 }

@@ -271,6 +271,21 @@ class UsersController extends Controller
         ]);
     }
 
+
+    public function permissionsforSLA()
+    {
+        $user = auth()->user();
+        if (!$user->isAdmin()) {
+            abort(403);
+        }
+        $user = User::findOrFail( $user->id);
+        $mailboxes = Mailbox::all();
+
+        $users = $this->getUsersForSidebar( $user->id);
+        return $user->mailboxes;
+    }
+
+
     /**
      * Save user permissions.
      *
