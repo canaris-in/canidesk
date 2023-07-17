@@ -112,7 +112,7 @@ class UsersController extends Controller
                 $user->sendInvite(true);
             } catch (\Exception $e) {
                 // Admin is allowed to see exceptions
-                \Session::flash('flash_error_floating', 'Please Configure General Email Setting...');
+                \Session::flash('flash_error_floating', 'Please configure the general email settings....');
             }
         }
 
@@ -392,7 +392,7 @@ class UsersController extends Controller
                         $response['status'] = 'success';
                     } catch (\Exception $e) {
                         // Admin is allowed to see exceptions
-                        $response['msg'] = 'Please Configure General Email Setting...';
+                        $response['msg'] = 'Please configure the general email settings....';
                     }
                 }
                 break;

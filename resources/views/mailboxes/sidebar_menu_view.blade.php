@@ -1,4 +1,3 @@
-</div>
 <div class="dropdown sidebar-title sidebar-title-extra">
     <span class="sidebar-title-extra-value active-count">{{ $folder->getTypeName() }}
         ({{ $folder->active_count }})</span>
