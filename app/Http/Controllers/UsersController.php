@@ -271,6 +271,7 @@ class UsersController extends Controller
         ]);
     }
 
+
     /**
      * Save user permissions.
      *
