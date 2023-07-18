@@ -12,15 +12,15 @@
 @section('content')
 
     <div class="section-heading">
-        <a href="{{ route('mailboxes.workflows', ['id' => $mailbox->id]) }}" class="btn btn-link padding-left-0"><i class="glyphicon glyphicon-arrow-left"></i><a href="https://freescout.net/module/workflows/" target="_blank" class="small link-help pull-right"><i class="glyphicon glyphicon-question-sign"></i> &nbsp;{{ __('Workflows Help') }}</a>{{ __('Workflows') }}
+        <a href="{{ route('mailboxes.workflows', ['id' => $mailbox->id]) }}" class="btn btn-link padding-left-0"><i class="glyphicon glyphicon-arrow-left"></i><a href="https://canidesk.net/module/workflows/" target="_blank" class="small link-help pull-right"><i class="glyphicon glyphicon-question-sign"></i> &nbsp;{{ __('Workflows Help') }}</a>{{ __('Workflows') }}
     </div>
-   
+
     <form class="form-horizontal" method="POST" action="">
 
         <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }} margin-top form-inline margin-left margin-right">
             <label for="name" class="control-label">{{ __('Workflow Name') }}</label>&nbsp;
 
-            <input id="name" type="text" class="form-control wf-name" name="name" value="{{ old('name', $workflow->name) }}" maxlength="75" required="required"> 
+            <input id="name" type="text" class="form-control wf-name" name="name" value="{{ old('name', $workflow->name) }}" maxlength="75" required="required">
 
             @include('partials/field_error', ['field'=>'name'])
         </div>
@@ -156,7 +156,7 @@
                         <div class="col-sm-6 col-sm-offset-2">
                             <button type="submit" class="btn btn-primary wf-save wf-save-execute hidden">
                                 {{ __('Save & Execute') }}
-                            </button> 
+                            </button>
                             <button type="submit" class="btn btn-primary wf-save wf-save-save">
                                 {{ __('Save') }}
                             </button>

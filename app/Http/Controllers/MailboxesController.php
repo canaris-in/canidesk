@@ -478,7 +478,7 @@ class MailboxesController extends Controller
         /** @var Builder $query_conversations */
         $query_conversations = Conversation::getQueryByFolder($folder, $user->id);
         $conversations = $folder->queryAddOrderBy($query_conversations);
-        
+
         $conversations = $conversations->paginate(Conversation::DEFAULT_LIST_SIZE);
 
         return view('mailboxes/view', [
@@ -916,7 +916,7 @@ class MailboxesController extends Controller
         $outputLog = new BufferedOutput();
         $params = [];
         $params['--mailbox_id'] = $id;
-        \Artisan::call('freescout:fetch-emails', $params,$outputLog);
+        \Artisan::call('canidesk:fetch-emails', $params,$outputLog);
         $output = $outputLog->fetch();
         unset($outputLog);
         return response()->json(['message' => 'Mail fetched successfully',$params,$output]);

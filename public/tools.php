@@ -67,7 +67,7 @@ function clearCache($root_dir, $php_path)
     if (file_exists($root_dir.'bootstrap/cache/config.php')) {
         unlink($root_dir.'bootstrap/cache/config.php');
     }
-    return shell_exec($php_path.' '.$root_dir.'artisan freescout:clear-cache');
+    return shell_exec($php_path.' '.$root_dir.'artisan canidesk:clear-cache');
 }
 
 $alerts = [];
@@ -110,7 +110,7 @@ if (!empty($_POST)) {
                     } else {
                         if ($_POST['action'] == 'update') {
                             // Update Now
-                            $output = shell_exec($php_path.' '.$root_dir.'artisan freescout:update --force');
+                            $output = shell_exec($php_path.' '.$root_dir.'artisan canidesk:update --force');
                             if (strstr($output, 'Broadcasting queue restart signal')) {
                                 $alerts[] = [
                                     'type' => 'success',

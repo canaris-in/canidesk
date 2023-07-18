@@ -406,8 +406,8 @@ class Message
                 } catch (\Exception $_e) {
                     $this->date = Carbon::now();
                     \Helper::logException($_e, '[Webklex\IMAP\Message]');
-                    \Helper::logExceptionToActivityLog($_e, 
-                        \App\ActivityLog::NAME_EMAILS_FETCHING, 
+                    \Helper::logExceptionToActivityLog($_e,
+                        \App\ActivityLog::NAME_EMAILS_FETCHING,
                         \App\ActivityLog::DESCRIPTION_EMAILS_FETCHING_ERROR
                     );
                     //throw new InvalidMessageDateException("Invalid message date. ID:".$this->getMessageId(), 1000, $e);
@@ -591,13 +591,13 @@ class Message
     private function fetchStructure($structure, $partNumber = null)
     {
         if ($structure->type == self::TYPE_TEXT &&
-            # FreeScout #320
+            # canidesk #320
             #($structure->ifdisposition == 0 ||
             #    ($structure->ifdisposition == 1 && !isset($structure->parts) && $partNumber == null)
             #)
             (empty($structure->disposition) || strtolower($structure->disposition) != 'attachment')
         ) {
-            // FreeScout improvement
+            // canidesk improvement
             /*if (strtolower($structure->subtype) == 'plain' || strtolower($structure->subtype) == 'csv') {
                 if (!$partNumber) {
                     $partNumber = 1;
@@ -644,7 +644,7 @@ class Message
                 $content = $this->decodeString($content, $structure->encoding);
                 $content = $this->convertEncoding($content, $encoding);
 
-                // FreeScout #381
+                // canidesk #381
                 // Some messages (for exaple Apple Mail) may have multiple HTML parts.
                 if (empty($this->bodies['html'])) {
                     $body = new \stdClass();
@@ -831,7 +831,7 @@ class Message
     public function convertEncoding($str, $from = 'ISO-8859-2', $to = 'UTF-8')
     {
 
-        // FreeScout fix
+        // canidesk fix
         // We don't need to do convertEncoding() if charset is ASCII (us-ascii):
         //     ASCII is a subset of UTF-8, so all ASCII files are already UTF-8 encoded
         //     https://stackoverflow.com/a/11303410
@@ -850,7 +850,7 @@ class Message
         try {
             try {
                 if (function_exists('iconv') && $from != 'UTF-7' && $to != 'UTF-7') {
-                    // FreeScout #351
+                    // canidesk #351
                     return iconv($from, $to, $str);
                 } else {
                     if (!$from) {
@@ -860,15 +860,15 @@ class Message
                     return mb_convert_encoding($str, $to, $from);
                 }
             } catch (\Exception $e) {
-                // FreeScout #360
+                // canidesk #360
                 if (strstr($from, '-')) {
                     $from = str_replace('-', '', $from);
                     return $this->convertEncoding($str, $from, $to);
                 } else {
                     // No need to log this error.
                     // \Helper::logException($e, '[Webklex\IMAP\Message]');
-                    // \Helper::logExceptionToActivityLog($e, 
-                    //     \App\ActivityLog::NAME_EMAILS_FETCHING, 
+                    // \Helper::logExceptionToActivityLog($e,
+                    //     \App\ActivityLog::NAME_EMAILS_FETCHING,
                     //     \App\ActivityLog::DESCRIPTION_EMAILS_FETCHING_ERROR
                     // );
                     return $str;

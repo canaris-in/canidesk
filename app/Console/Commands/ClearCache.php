@@ -11,7 +11,7 @@ class ClearCache extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:clear-cache {--doNotCacheConfig} {--doNotGenerateVars}';
+    protected $signature = 'canidesk:clear-cache {--doNotCacheConfig} {--doNotGenerateVars}';
 
     /**
      * The console command description.
@@ -52,7 +52,7 @@ class ClearCache extends Command
         }
         // Regenerate vars to get new data from .env
         if (!$this->option('doNotGenerateVars')) {
-            $this->call('freescout:generate-vars');
+            $this->call('canidesk:generate-vars');
         }
         \App\Jobs\RestartQueueWorker::dispatch()->onQueue('default');
     }

@@ -11,7 +11,7 @@
 	    <meta name="robots" content="noindex, nofollow">
 
 	    <title>@if (View::getSection('title') != \Kb::getKbName($mailbox))@yield('title') - {{ \Kb::getKbName($mailbox) }}@else{{ \Kb::getKbName($mailbox) }}@endif</title>
-	    
+
 	    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	    {{--<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 	    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">--}}
@@ -30,7 +30,7 @@
 	            \Helper::logException($e);
 	        }
 	    @endphp
-	    
+
 	    @yield('stylesheets')
 	</head>
     <body @yield('body_attrs')>
@@ -121,7 +121,7 @@
 	            // To prevent 500 errors on update.
 	            // Also catches errors when activating a module and public symlink not created for module.
 	            if (strstr($e->getMessage(), 'vars.js')) {
-	                \Artisan::call('freescout:generate-vars');
+	                \Artisan::call('canidesk:generate-vars');
 	            }
 	            \Helper::logException($e);
 	        }

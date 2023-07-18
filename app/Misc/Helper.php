@@ -885,7 +885,7 @@ class Helper
      */
     public static function clearCache($options = [])
     {
-        \Artisan::call('freescout:clear-cache', $options);
+        \Artisan::call('canidesk:clear-cache', $options);
     }
 
     /**

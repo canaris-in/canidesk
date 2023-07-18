@@ -12,7 +12,7 @@ class ModuleLaroute extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:module-laroute {module_alias?}';
+    protected $signature = 'canidesk:module-laroute {module_alias?}';
 
     /**
      * The console command description.
@@ -22,7 +22,7 @@ class ModuleLaroute extends Command
     protected $description = 'Generate a laravel routes JS-file for a module or all modules (if module_alias is empty)';
 
     public $config;
-    
+
     public $generator;
 
     /**
@@ -92,7 +92,7 @@ class ModuleLaroute extends Command
 
         $public_symlink = public_path('modules').DIRECTORY_SEPARATOR.$module->getAlias();
         if (!file_exists($public_symlink)) {
-            $this->error('Public symlink ['.$public_symlink.'] not found. Run module installation command first: php artisan freescout:module-install');
+            $this->error('Public symlink ['.$public_symlink.'] not found. Run module installation command first: php artisan canidesk:module-install');
 
             return;
         }

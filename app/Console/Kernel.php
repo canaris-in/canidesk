@@ -43,26 +43,26 @@ class Kernel extends ConsoleKernel
         $schedule->command('report:weekly')
             ->weekly()->mondays()->at('10:30');
 
-        $schedule->command('freescout:fetch-monitor')
+        $schedule->command('canidesk:fetch-monitor')
             ->everyMinute()
             ->withoutOverlapping();
 
-        $schedule->command('freescout:update-folder-counters')
+        $schedule->command('canidesk:update-folder-counters')
             ->hourly();
 
         $app_key = config('app.key');
         if ($app_key) {
             $crc = crc32($app_key);
-            $schedule->command('freescout:module-check-licenses')
+            $schedule->command('canidesk:module-check-licenses')
                 ->cron((int)($crc % 59).' '.(int)($crc % 23).' * * *');
         }
 
         // Check if user finished viewing conversation.
-        $schedule->command('freescout:check-conv-viewers')
+        $schedule->command('canidesk:check-conv-viewers')
             ->everyMinute()
             ->withoutOverlapping();
 
-        $schedule->command('freescout:clean-send-log')
+        $schedule->command('canidesk:clean-send-log')
             ->monthly();
 
         // Logs monitoring.
@@ -84,14 +84,14 @@ class Kernel extends ConsoleKernel
                     break;
             }
             if ($logs_cron) {
-                $schedule->command('freescout:logs-monitor')
+                $schedule->command('canidesk:logs-monitor')
                     ->cron($logs_cron)
                     ->withoutOverlapping();
             }
         }
 
         // Fetch emails from mailboxes
-        $fetch_command = $schedule->command('freescout:fetch-emails')
+        $fetch_command = $schedule->command('canidesk:fetch-emails')
             ->withoutOverlapping()
             ->sendOutputTo(storage_path().'/logs/fetch-emails.log');
 
@@ -163,7 +163,7 @@ class Kernel extends ConsoleKernel
         }
 
         $queue_work_params = Config('app.queue_work_params');
-        // Add identifier to avoid conflicts with other FreeScout instances on the same server.
+        // Add identifier to avoid conflicts with other canidesk instances on the same server.
         $queue_work_params['--queue'] .= ','.\Helper::getWorkerIdentifier();
 
         $schedule->command('queue:work', $queue_work_params)

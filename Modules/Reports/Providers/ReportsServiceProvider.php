@@ -57,7 +57,7 @@ class ReportsServiceProvider extends ServiceProvider
             $styles[] = \Module::getPublicPath(REPORTS_MODULE).'/css/module.css';
             return $styles;
         });
-        
+
         // Add module's JS file to the application layout.
         \Eventy::addFilter('javascripts', function($javascripts) {
             $javascripts[] = \Module::getPublicPath(REPORTS_MODULE).'/js/laroute.js';
@@ -99,7 +99,7 @@ class ReportsServiceProvider extends ServiceProvider
 
         // Prepare reports data in background.
         \Eventy::addFilter('schedule', function($schedule) {
-            $schedule->command('freescout:reports-collect-data')->cron('* * * * *');
+            $schedule->command('canidesk:reports-collect-data')->cron('* * * * *');
 
             return $schedule;
         });
@@ -137,13 +137,13 @@ class ReportsServiceProvider extends ServiceProvider
     {
         $custom_fields = [];
         if (\Module::isActive('customfields')) {
-            
+
             $mailbox_ids = auth()->user()->mailboxesIdsCanView();
-            
+
             if ($mailbox_ids) {
                 $custom_fields = \Modules\CustomFields\Entities\CustomField::whereIn('mailbox_id', $mailbox_ids)
                 ->get();
-                
+
             }
         }
         return $custom_fields;
@@ -199,7 +199,7 @@ class ReportsServiceProvider extends ServiceProvider
                 $response_times = [];
                 $last_customer_reply = null;
                 foreach ($threads as $i => $thread) {
-                    if ($i > 0 && $thread->isUserMessage() 
+                    if ($i > 0 && $thread->isUserMessage()
                         && !in_array($thread->created_by_user_id, $robots_ids)
                     ) {
                         // First response time.
@@ -216,7 +216,7 @@ class ReportsServiceProvider extends ServiceProvider
                             $response_times[] = $thread->created_at->timestamp - $last_customer_reply->created_at->timestamp;
                         }
                         // Replies to resolve.
-                        if ($conversation->isClosed() && $conversation->closed_at 
+                        if ($conversation->isClosed() && $conversation->closed_at
                             // Add 10 seconds in case there was a delay between setting of closed_at and thread creation.
                             && ($thread->created_at->timestamp-10 <= $conversation->closed_at->timestamp)
                         ) {
@@ -260,7 +260,7 @@ class ReportsServiceProvider extends ServiceProvider
             return 0;
         }
         asort($values);
-        
+
         $half = floor($count / 2);
 
         if ($count % 2) {

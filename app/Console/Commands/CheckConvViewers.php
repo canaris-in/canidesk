@@ -12,7 +12,7 @@ class CheckConvViewers extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:check-conv-viewers';
+    protected $signature = 'canidesk:check-conv-viewers';
 
     /**
      * The console command description.
@@ -59,7 +59,7 @@ class CheckConvViewers extends Command
                 }
 
                 $view_date = Carbon::createFromFormat('Y-m-d H:i:s', $data['t']);
-            
+
                 if ($view_date && $now->diffInSeconds($view_date) > 25) {
                     // Remove user from viewers.
                     unset($cache_data[$conversation_id][$user_id]);

@@ -15,7 +15,7 @@ class CollectData extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:reports-collect-data';
+    protected $signature = 'canidesk:reports-collect-data';
 
     /**
      * The description of the console command.
