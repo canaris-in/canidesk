@@ -145,7 +145,7 @@ class SlaReportController extends Controller
         }
 
         $tickets = $tickets->where('conversations.threads_count', '!=', '0')->get();
-        $user_email_permissions=SlaReportController::permissionsforSLA();
+        $user_email_permissions=$this->permissionsforSLA();;
 
         return view('sla/report', compact('tickets','categoryValues','productValues','filters','user_email_permissions'));
     }
