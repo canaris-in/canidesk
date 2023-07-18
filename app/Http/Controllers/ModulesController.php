@@ -176,7 +176,7 @@ class ModulesController extends Controller
                     if ($request->action == 'install') {
                         // Download and install module
                         $license_details = WpApi::getVersion($params);
-                        
+
                         if (WpApi::$lastError) {
                             $response['msg'] = WpApi::$lastError['message'];
                         } elseif (!empty($license_details['code']) && !empty($license_details['message'])) {
@@ -308,7 +308,7 @@ class ModulesController extends Controller
                     \App\Module::setActive($alias, true);
 
                     $outputLog = new BufferedOutput();
-                    \Artisan::call('freescout:module-install', ['module_alias' => $alias], $outputLog);
+                    \Artisan::call('canidesk:module-install', ['module_alias' => $alias], $outputLog);
                     $output = $outputLog->fetch();
 
                     // Get module name
@@ -331,7 +331,7 @@ class ModulesController extends Controller
                     } else {
                         // Deactivate the module.
                         \App\Module::setActive($alias, false);
-                        \Artisan::call('freescout:clear-cache');
+                        \Artisan::call('canidesk:clear-cache');
                     }
 
                     // Check public folder.
@@ -341,7 +341,7 @@ class ModulesController extends Controller
                             $type = 'danger';
                             $msg = 'Error occured creating a module symlink ('.$public_folder.'). Please check folder permissions.';
                             \App\Module::setActive($alias, false);
-                            \Artisan::call('freescout:clear-cache');
+                            \Artisan::call('canidesk:clear-cache');
                         }
                     }
 
@@ -367,7 +367,7 @@ class ModulesController extends Controller
                 \App\Module::setActive($alias, false);
 
                 $outputLog = new BufferedOutput();
-                \Artisan::call('freescout:clear-cache', [], $outputLog);
+                \Artisan::call('canidesk:clear-cache', [], $outputLog);
                 $output = $outputLog->fetch();
 
                 // Get module name
@@ -423,7 +423,7 @@ class ModulesController extends Controller
 
                                 // Deactivate module
                                 \App\Module::setActive($alias, false);
-                                \Artisan::call('freescout:clear-cache', []);
+                                \Artisan::call('canidesk:clear-cache', []);
                             }
 
                             // Flash does not work here.
@@ -538,7 +538,7 @@ class ModulesController extends Controller
                 // Install updated module
                 if (!$response['msg'] && !$download_error) {
                     $outputLog = new BufferedOutput();
-                    \Artisan::call('freescout:module-install', ['module_alias' => $alias], $outputLog);
+                    \Artisan::call('canidesk:module-install', ['module_alias' => $alias], $outputLog);
                     $output = $outputLog->fetch();
 
                     // Get module name
@@ -561,7 +561,7 @@ class ModulesController extends Controller
                     } else {
                         // Deactivate module
                         \App\Module::setActive($alias, false);
-                        \Artisan::call('freescout:clear-cache');
+                        \Artisan::call('canidesk:clear-cache');
                     }
 
                     // \Session::flash does not work after BufferedOutput

@@ -11,7 +11,7 @@ class UpdateFolderCounters extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:update-folder-counters';
+    protected $signature = 'canidesk:update-folder-counters';
 
     /**
      * The console command description.

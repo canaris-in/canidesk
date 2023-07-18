@@ -75,7 +75,7 @@ class FileBag extends ParameterBag
             return $file;
         }
 
-        // freescout.
+        // canidesk.
         // PHP 8.1 adds full_path
         if (isset($file['full_path'])) {
             unset($file['full_path']);

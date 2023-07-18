@@ -23,11 +23,11 @@
                 <label class="col-sm-2 control-label">URL</label>
 
                 <div class="col-sm-6">
-                        <a href="{{ \Kb::getKbUrl($mailbox) }}" class="btn btn-primary" target="_blank"><i class="glyphicon glyphicon-new-window"></i> {{ __('Knowledge Base') }}</a>   
+                        <a href="{{ \Kb::getKbUrl($mailbox) }}" class="btn btn-primary" target="_blank"><i class="glyphicon glyphicon-new-window"></i> {{ __('Knowledge Base') }}</a>
 
                         <div class="margin-top-10">
                             <small style="word-break: break-all;" class="text-help">{{ \Kb::getKbUrl($mailbox) }}</small>
-                        </div>            
+                        </div>
 
                 </div>
             </div>
@@ -67,7 +67,7 @@
                     <p class="form-help">
                         <strong>{{ __('Format') }}</strong>: [Button 1](https://button1-url.com)[Button 2](https://button2-url.com)
                         <br/>
-                        <strong>{{ __('Example') }}</strong>: [Contact Us](https://demo.freescout.net/chat/widget/form/2312787837)
+                        <strong>{{ __('Example') }}</strong>: [Contact Us](https://demo.canidesk.net/chat/widget/form/2312787837)
                     </p>
                 </div>
             </div>
@@ -160,12 +160,12 @@
                 <div class="form-group @if (empty($widget_settings)) hidden @endif" id="kb-widget-code-wrapper">
 
                     <div class="col-sm-6 col-sm-offset-2">
-                        <textarea rows="5" readonly class="disabled form-control" id="kb-widget-code">&lt;!-- FreeScout BEGIN --&gt;
-&lt;script&gt;var FreeScoutW={s:{{ \Helper::jsonEncodeUtf8($widget_settings) }}{{ '}' }};(function(d,e,s){if(d.getElementById(&quot;freescout-w&quot;))return;a=d.createElement(e);m=d.getElementsByTagName(e)[0];a.async=1;a.id=&quot;freescout-w&quot;;a.src=s;m.parentNode.insertBefore(a, m)})(document,&quot;script&quot;,&quot;{{ \Kb::getWidgetScriptUrl($mailbox->id, true) }}&quot;);&lt;/script&gt;
-&lt;!-- FreeScout END --&gt;</textarea>
+                        <textarea rows="5" readonly class="disabled form-control" id="kb-widget-code">&lt;!-- canidesk BEGIN --&gt;
+&lt;script&gt;var canideskW={s:{{ \Helper::jsonEncodeUtf8($widget_settings) }}{{ '}' }};(function(d,e,s){if(d.getElementById(&quot;canidesk-w&quot;))return;a=d.createElement(e);m=d.getElementsByTagName(e)[0];a.async=1;a.id=&quot;canidesk-w&quot;;a.src=s;m.parentNode.insertBefore(a, m)})(document,&quot;script&quot;,&quot;{{ \Kb::getWidgetScriptUrl($mailbox->id, true) }}&quot;);&lt;/script&gt;
+&lt;!-- canidesk END --&gt;</textarea>
                         @if (!strstr(config('app.url'), 'https:'))
                             <p class="text-warning">
-                                {{ __("If you are embedding the contact form widget on HTTPS website, your FreeScout must also use HTTPS.") }}
+                                {{ __("If you are embedding the contact form widget on HTTPS website, your canidesk must also use HTTPS.") }}
                             </p>
                         @endif
                         <p class="text-help">

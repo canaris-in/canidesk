@@ -7,10 +7,10 @@
 
 	    <!-- CSRF Token -->
 	    <meta name="csrf-token" content="{{ csrf_token() }}">
-	    
+
 	    <meta name="robots" content="noindex, nofollow">
 	    <title>{{ __('Contact us') }}</title>
-	    
+
 	    @php
 	        try {
 	    @endphp
@@ -22,7 +22,7 @@
 	        }
 	    @endphp
 	    @yield('eup_stylesheets')
-	    
+
 	</head>
     <body @yield('body_attrs')>
     	<div id="eupw-header" @if (Request::get('color')) style="background-color: {{ Request::get('color') }} @endif">
@@ -51,7 +51,7 @@
 	            // To prevent 500 errors on update.
 	            // Also catches errors when activating a module and public symlink not created for module.
 	            if (strstr($e->getMessage(), 'vars.js')) {
-	                \Artisan::call('freescout:generate-vars');
+	                \Artisan::call('canidesk:generate-vars');
 	            }
 	            \Helper::logException($e);
 	        }

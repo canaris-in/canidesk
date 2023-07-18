@@ -12,7 +12,7 @@ class ModuleBuild extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:module-build {module_alias?}';
+    protected $signature = 'canidesk:module-build {module_alias?}';
 
     /**
      * The console command description.
@@ -65,7 +65,7 @@ class ModuleBuild extends Command
         if ($all) {
             foreach ($modules as $module) {
                 $this->buildModule($module);
-                // $this->call('freescout:module-laroute', ['module_alias' => $module->getAlias()]);
+                // $this->call('canidesk:module-laroute', ['module_alias' => $module->getAlias()]);
             }
         } else {
             $module = \Module::findByAlias($module_alias);
@@ -75,7 +75,7 @@ class ModuleBuild extends Command
                 return;
             }
             $this->buildModule($module);
-            // $this->call('freescout:module-laroute');
+            // $this->call('canidesk:module-laroute');
         }
     }
 
@@ -85,7 +85,7 @@ class ModuleBuild extends Command
 
         $public_symlink = public_path('modules').DIRECTORY_SEPARATOR.$module->alias;
         if (!file_exists($public_symlink)) {
-            $this->error('Public symlink ['.$public_symlink.'] not found. Run module installation command first: php artisan freescout:module-install');
+            $this->error('Public symlink ['.$public_symlink.'] not found. Run module installation command first: php artisan canidesk:module-install');
 
             return;
         }

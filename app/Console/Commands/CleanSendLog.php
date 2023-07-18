@@ -13,7 +13,7 @@ class CleanSendLog extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:clean-send-log';
+    protected $signature = 'canidesk:clean-send-log';
 
     /**
      * The console command description.

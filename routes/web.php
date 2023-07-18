@@ -10,7 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 | Every time you change routes, run the following command to make them available in JS:
-|     php artisan freescout:build
+|     php artisan canidesk:build
 */
 
 // use Symfony\Component\Routing\Route;

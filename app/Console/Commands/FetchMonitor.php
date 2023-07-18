@@ -11,7 +11,7 @@ class FetchMonitor extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:fetch-monitor';
+    protected $signature = 'canidesk:fetch-monitor';
 
     /**
      * The console command description.

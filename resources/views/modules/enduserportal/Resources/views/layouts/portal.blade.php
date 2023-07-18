@@ -11,7 +11,7 @@
 	    <meta name="robots" content="noindex, nofollow">
 
 	    <title>@yield('title') - {{ $mailbox->name }}</title>
-	    
+
 	    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
 	    <link rel="shortcut icon" type="image/x-icon" href="@filter('layout.favicon', URL::asset('favicon.ico'))">
 	    <link rel="manifest" href="{{ asset('site.webmanifest') }}" crossorigin="use-credentials">
@@ -29,7 +29,7 @@
 	            \Helper::logException($e);
 	        }
 	    @endphp
-	    
+
 	    @yield('stylesheets')
 
 	    @yield('eup_stylesheets')
@@ -110,7 +110,7 @@
 	            // To prevent 500 errors on update.
 	            // Also catches errors when activating a module and public symlink not created for module.
 	            if (strstr($e->getMessage(), 'vars.js')) {
-	                \Artisan::call('freescout:generate-vars');
+	                \Artisan::call('canidesk:generate-vars');
 	            }
 	            \Helper::logException($e);
 	        }

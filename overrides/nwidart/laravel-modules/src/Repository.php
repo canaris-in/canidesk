@@ -156,7 +156,7 @@ abstract class Repository implements RepositoryInterface, Countable
                 $modules[$name] = $this->createModule($this->app, $name, dirname($manifest));
 
                 // Overwrite module `active` flag with value from DB modules table.
-                // Configuration is cached right when freescout:clear-cache is executed.
+                // Configuration is cached right when canidesk:clear-cache is executed.
                 $alias = $modules[$name]->getAlias();
                 if ($alias) {
                     $modules[$name]->json()->set('active', (int) \App\Module::isActive($alias));

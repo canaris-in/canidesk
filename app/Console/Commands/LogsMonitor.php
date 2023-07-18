@@ -11,7 +11,7 @@ class LogsMonitor extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:logs-monitor';
+    protected $signature = 'canidesk:logs-monitor';
 
     /**
      * The console command description.

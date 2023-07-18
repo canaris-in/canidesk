@@ -27,7 +27,7 @@ class FetchEmails extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:fetch-emails {--days=3} {--unseen=1} {--mailbox_id=0}';
+    protected $signature = 'canidesk:fetch-emails {--days=3} {--unseen=1} {--mailbox_id=0}';
 
     /**
      * The console command description.
@@ -247,7 +247,7 @@ class FetchEmails extends Command
                 if ($last_error && stristr($last_error, 'The specified charset is not supported')) {
                     $errors_count = count($client->getErrors());
                     // Solution for MS mailboxes.
-                    // https://github.com/freescout-helpdesk/freescout/issues/176
+                    // https://github.com/canidesk-helpdesk/canidesk/issues/176
                     $messages_query = $folder->query()->since(now()->subDays($this->option('days')))->leaveUnread()->setCharset(null);
                     if ($unseen) {
                         $messages_query->unseen();
@@ -477,7 +477,7 @@ class FetchEmails extends Command
                         // Customer replied to the email from user
                         preg_match('/^'.\MailHelper::MESSAGE_ID_PREFIX_REPLY_TO_CUSTOMER."\-(\d+)\-([^@]+)@/", $prev_message_id, $m);
                         // Simply checking thread_id from message_id was causing an issue when
-                        // customer was sending a message from FreeScout - the message was
+                        // customer was sending a message from Canidesk - the message was
                         // connected to the wrong conversation.
                         if (!empty($m[1]) && !empty($m[2])) {
                             $message_id_hash = $m[2];
@@ -717,7 +717,7 @@ class FetchEmails extends Command
     {
         preg_match("/[\"'<:]([^\"'<:]+@[^\"'>:]+)[\"'>:]/", $body, $b);
         $email = $b[1] ?? '';
-        // https://github.com/freescout-helpdesk/freescout/issues/2517
+        // https://github.com/canidesk-helpdesk/canidesk/issues/2517
         $email = preg_replace("#.*&lt(.*)&gt.*#", "$1", $email);
         return Email::sanitizeEmail($email);
     }
@@ -808,7 +808,7 @@ class FetchEmails extends Command
             $conversation = $prev_thread->conversation;
 
             // If reply came from another customer: change customer, add original as CC.
-            // If FreeScout will not change the customer, the reply will be shown
+            // If Canidesk will not change the customer, the reply will be shown
             // as coming from the original customer (not the real sender) and cause confusion.
             if ($conversation->customer_id != $customer->id) {
                 $prev_customer_id = $conversation->customer_id;

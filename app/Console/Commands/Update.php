@@ -14,7 +14,7 @@ class Update extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:update {--force : Force the operation to run when in production.}';
+    protected $signature = 'canidesk:update {--force : Force the operation to run when in production.}';
 
     /**
      * The console command description.
@@ -53,7 +53,7 @@ class Update extends Command
                 // Script may fail here and stop with the error:
                 // PHP Fatal error:  Allowed memory size of 94371840 bytes exhausted
                 \Updater::update();
-                $this->call('freescout:after-app-update');
+                $this->call('canidesk:after-app-update');
             } catch (\Exception $e) {
                 $this->error('Error occured: '.$e->getMessage());
             }

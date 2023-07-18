@@ -207,7 +207,7 @@ if (empty($app_key)) {
     if (!preg_match('/^APP_KEY=/m', file_get_contents($root_dir.'.env'))) {
         $append_result = file_put_contents($root_dir.'.env', PHP_EOL.'APP_KEY=', FILE_APPEND);
         if (!$append_result) {
-            //showError('Could not write APP_KEY to .env file. Please run the following commands in SSH console:<br/><code>php artisan key:generate</code><br/><code>php artisan freescout:clear-cache</code>');
+            //showError('Could not write APP_KEY to .env file. Please run the following commands in SSH console:<br/><code>php artisan key:generate</code><br/><code>php artisan canidesk:clear-cache</code>');
             showPermissionsError();
             exit();
         }

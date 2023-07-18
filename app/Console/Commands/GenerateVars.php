@@ -15,7 +15,7 @@ class GenerateVars extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:generate-vars';
+    protected $signature = 'canidesk:generate-vars';
 
     /**
      * The console command description.

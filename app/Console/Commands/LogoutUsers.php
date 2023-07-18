@@ -11,7 +11,7 @@ class LogoutUsers extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:logout-users';
+    protected $signature = 'canidesk:logout-users';
 
     /**
      * The console command description.
@@ -40,7 +40,7 @@ class LogoutUsers extends Command
         try {
             // Remove files from storage/frameworks/sessions
             $files = \File::files(storage_path('framework/sessions'));
-            
+
             $count = 0;
 
             foreach ($files as $file) {

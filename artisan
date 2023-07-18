@@ -3,7 +3,7 @@
 
 // Check PHP version
 if (!version_compare(phpversion(), '7.0.0', '>=')) {
-	echo "\e[31mPHP 7.x is required to run FreeScout.\e[0m\n";
+	echo "\e[31mPHP 7.x is required to run canidesk.\e[0m\n";
 	exit();
 }
 

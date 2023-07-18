@@ -19,7 +19,7 @@
 	<p>
 		<small>If you don't know how to configure cron jobs, contact your hosting provider. On some shared hostings you may need to specify full path to the PHP executable (for example, <code>/usr/local/bin/php-7.0</code>)</small>
 	</p>
-	
+
 	@if ($dbMessage && !empty($dbMessage['status']) && $dbMessage['status'] == 'error' && !empty($dbMessage['message']))
 		<h4>Database Migration Error</h4>
 		<p>Error occured migrating database:</p>
@@ -30,7 +30,7 @@
 		<p>
 			Please configure database access in <code>.env</code> file and run the following console commands:
 		</p>
-		<pre><code>php artisan freescout:clear-cache
+		<pre><code>php artisan canidesk:clear-cache
 php artisan migrate</code></pre>
 	@endif
 
