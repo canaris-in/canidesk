@@ -1,3 +1,8 @@
+<?php
+/** @var \App\Folder $folder */
+?>
+<div class="alert alert-danger errormsg glyphicon glyphicon-exclamation-sign" id="errorMsg" style="display: none;">
+</div>
 <div class="dropdown sidebar-title sidebar-title-extra">
     <span class="sidebar-title-extra-value active-count">{{ $folder->getTypeName() }}
         ({{ $folder->active_count }})</span>
