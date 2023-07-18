@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // Keep in mind that this function is also called on clearing cache.
-        
+
         // Remove failed jobs
         $schedule->command('queue:flush')
             ->weekly();
@@ -39,7 +39,7 @@ class Kernel extends ConsoleKernel
         // Restart processing queued jobs (just in case)
         $schedule->command('queue:restart')
             ->hourly();
-        //$schedule->command('canidesk:auto-reporting')->everyMinute();
+        $schedule->command('canidesk:auto-reporting')->everyMinute();
         $schedule->command('report:weekly')
             ->weekly()->mondays()->at('10:30');
 
@@ -132,7 +132,7 @@ class Kernel extends ConsoleKernel
         // $schedule->command('queue:work') command below has withoutOverlapping() option,
         // which works via special mutex stored in the cache preventing several 'queue:work' to work at the same time.
         // So when the cache is cleared the mutex indicating that the 'queue:work' is running is removed,
-        // and the second 'queue:work' command is launched by cron. When `artisan schedule:run` is executed it sees 
+        // and the second 'queue:work' command is launched by cron. When `artisan schedule:run` is executed it sees
         // that there are two 'queue:work' processes running and kills them.
         // After one minute 'queue:work' is executed by cron via `artisan schedule:run` and works in the background.
         if (function_exists('shell_exec')) {
@@ -147,7 +147,7 @@ class Kernel extends ConsoleKernel
                 sleep(1);
                 // Check processes again.
                 $worker_pids = $this->getRunningQueueProcesses();
-                
+
                 if (count($worker_pids) > 1) {
                     // Current process also has to be killed, as otherwise it "stucks"
                     // $current_pid = getmypid();
@@ -167,17 +167,17 @@ class Kernel extends ConsoleKernel
         $queue_work_params['--queue'] .= ','.\Helper::getWorkerIdentifier();
 
         $schedule->command('queue:work', $queue_work_params)
-        
+
             ->everyMinute()
             ->withoutOverlapping()
             ->sendOutputTo(storage_path().'/logs/queue-jobs.log');
-        
-        
+
+
     }
 
     /**
      * Get pids of the queue:work processes.
-     * 
+     *
      * @return [type] [description]
      */
     protected function getRunningQueueProcesses()
