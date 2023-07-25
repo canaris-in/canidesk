@@ -915,6 +915,8 @@ class MailboxesController extends Controller
     {
         $outputLog = new BufferedOutput();
         $params = [];
+        $params['--days'] = 1;
+        $params['--unseen'] = 0;
         $params['--mailbox_id'] = $id;
         \Artisan::call('canidesk:fetch-emails', $params,$outputLog);
         $output = $outputLog->fetch();
