@@ -31,25 +31,26 @@ class UsersController extends Controller
      */
     public function users()
     {
-        $this->authorize('create', 'App\User');
+        // $this->authorize('create', 'App\User');
 
         $users = User::nonDeleted()->get();
         $users = User::sortUsers($users);
-
-        return view('users/users', ['users' => $users]);
+        if (auth()->user()->isAdmin() || auth()->user()->isITHead()) {
+            return view('users/users', ['users' => $users]);
+        }
     }
-
     /**
      * New user.
      */
     public function create()
     {
-        $this->authorize('create', 'App\User');
+        // $this->authorize('create', 'App\User');
         $mailboxes = Mailbox::all();
+        if (auth()->user()->isAdmin() || auth()->user()->isITHead()) {
+            return view('users/create', ['mailboxes' => $mailboxes]);
+        }
 
-        return view('users/create', ['mailboxes' => $mailboxes]);
     }
-
     /**
      * Create new user.
      *
@@ -58,7 +59,7 @@ class UsersController extends Controller
     public function createSave(Request $request)
     {
         $invalid = false;
-        $this->authorize('create', 'App\User');
+        // $this->authorize('create', 'App\User');
         $auth_user = auth()->user();
 
         $rules = [
@@ -67,7 +68,7 @@ class UsersController extends Controller
             'email'      => 'required|string|email|max:100|unique:users',
             //'role'       => ['required', Rule::in(array_keys(User::$roles))],
         ];
-        if ($auth_user->isAdmin()) {
+        if ($auth_user->isAdmin() || $auth_user->isITHead()) {
             $rules['role'] = ['required', Rule::in(array_keys(User::$roles))];
         }
         if (empty($request->send_invite)) {
