@@ -63,8 +63,8 @@
 
                 <div class="rpt-filter">
                     <label class="mobile-label">{{ __('Date Range') }}</label>
-                    <nobr><input type="date" name="from" class="form-control rpt-filter-date"
-                            value="{{ $filters['from'] }}" />-<input type="date" name="to"
+                    <nobr><input type="date" name="from" class="form-control rpt-filter-date" id="from"
+                            value="{{ $filters['from'] }}" />-<input type="date" name="to" id="to"
                             class="form-control rpt-filter-date" value="{{ $filters['to'] }}" /></nobr>
                 </div>
 
@@ -567,5 +567,12 @@
         function refreshPage() {
             location.reload();
         }
+
+
+        $(document).ready(function() {
+            var today = new Date().toISOString().split('T')[0];
+            $('#from').attr('max', today);
+            $('#to').attr('max', today);
+        });
     </script>
 @endpush
