@@ -169,7 +169,7 @@ class MailboxesController extends Controller
         if ($user->can('updateSettings', $mailbox)) {
 
             // if not admin, the text only fields don't pass so spike them into the request.
-            if (!auth()->user()->isAdmin()||!auth()->user()->isITHead()) {
+            if (!auth()->user()->isAdmin() || !auth()->user()->isITHead()) {
                 $request->merge([
                     'name' => $mailbox->name,
                     'email' => $mailbox->email
@@ -294,7 +294,7 @@ class MailboxesController extends Controller
                 }
             }
 
-            if ($user->id == $mailbox_user->id && (!$user->isAdmin()||!$user->isITHead())) {
+            if ($user->id == $mailbox_user->id && (!$user->isAdmin() || !$user->isITHead())) {
                 // User with Permission priv's can't edit their own additional priv's.
             } else {
                 $mailbox_with_settings->settings->access = json_encode($access);
@@ -478,7 +478,6 @@ class MailboxesController extends Controller
         /** @var Builder $query_conversations */
         $query_conversations = Conversation::getQueryByFolder($folder, $user->id);
         $conversations = $folder->queryAddOrderBy($query_conversations);
-
         $conversations = $conversations->paginate(Conversation::DEFAULT_LIST_SIZE);
 
         return view('mailboxes/view', [
@@ -918,9 +917,9 @@ class MailboxesController extends Controller
         $params['--days'] = 1;
         $params['--unseen'] = 0;
         $params['--mailbox_id'] = $id;
-        \Artisan::call('canidesk:fetch-emails', $params,$outputLog);
+        \Artisan::call('canidesk:fetch-emails', $params, $outputLog);
         $output = $outputLog->fetch();
         unset($outputLog);
-        return response()->json(['message' => 'Mail fetched successfully',$params,$output]);
+        return response()->json(['message' => 'Mail fetched successfully', $params, $output]);
     }
 }
