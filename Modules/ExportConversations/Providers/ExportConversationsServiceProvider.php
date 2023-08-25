@@ -108,6 +108,7 @@ class ExportConversationsServiceProvider extends ServiceProvider
             'last_reply_from' => 'Last Reply From',
             'closed_at' => 'Closed On',
             'closed_by_user_id' => 'Closed By',
+            'preview' => 'Preview'
         ];
 
         if (\Module::isActive('tags')) {
