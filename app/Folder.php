@@ -20,7 +20,7 @@ class Folder extends Model
     /**
      * Folders types (ids from HelpScout interface).
      */
-    const TYPE_OPEN = 10;
+    // const TYPE_OPEN = 10;
     const TYPE_UNASSIGNED = 1;
     // User specific
     const TYPE_MINE = 20;
@@ -33,7 +33,7 @@ class Folder extends Model
     const TYPE_SPAM = 80;
 
     public static $types = [
-        self::TYPE_OPEN => 'Open',
+        // self::TYPE_OPEN => 'Open',
         self::TYPE_UNASSIGNED => 'Unassigned',
         self::TYPE_MINE       => 'Mine',
         self::TYPE_STARRED    => 'Starred',
@@ -48,7 +48,7 @@ class Folder extends Model
      * https://glyphicons.bootstrapcheatsheets.com/.
      */
     public static $type_icons = [
-        self::TYPE_OPEN => 'open',
+        // self::TYPE_OPEN => 'open',
         self::TYPE_UNASSIGNED => 'folder-open',
         self::TYPE_MINE       => 'hand-right',
         self::TYPE_DRAFTS     => 'duplicate',
@@ -61,7 +61,7 @@ class Folder extends Model
 
     // Public non-user specific mailbox types
     public static $public_types = [
-        self::TYPE_OPEN,
+        // self::TYPE_OPEN,
         self::TYPE_UNASSIGNED,
         self::TYPE_DRAFTS,
         self::TYPE_ASSIGNED,
@@ -73,14 +73,14 @@ class Folder extends Model
     // Folder types which belong to specific user.
     // These folders has user_id specified.
     public static $personal_types = [
-        self::TYPE_OPEN,
+        // self::TYPE_OPEN,
         self::TYPE_MINE,
         self::TYPE_STARRED,
     ];
 
     // Folder types to which conversations are added via conversation_folder table.
     public static $indirect_types = [
-        self::TYPE_OPEN,
+        // self::TYPE_OPEN,
         self::TYPE_DRAFTS,
         self::TYPE_STARRED,
     ];
@@ -126,8 +126,8 @@ class Folder extends Model
     {
         // To make name translatable.
         switch ($this->type) {
-            case self::TYPE_OPEN:
-                return __('Open');
+            // case self::TYPE_OPEN:
+            //     return __('Open');
             case self::TYPE_UNASSIGNED:
                 return __('Unassigned');
             case self::TYPE_MINE:
@@ -164,7 +164,7 @@ class Folder extends Model
         $order_by = [];
 
         switch ($this->type) {
-            case self::TYPE_OPEN:
+            // case self::TYPE_OPEN:
             case self::TYPE_UNASSIGNED:
             case self::TYPE_MINE:
             case self::TYPE_STARRED:
