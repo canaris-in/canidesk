@@ -1084,12 +1084,14 @@ class Conversation extends Model
                 ->where('mailbox_id', $folder->mailbox_id)
                 ->whereIn('status', [self::STATUS_ACTIVE, self::STATUS_PENDING])
                 ->where('state', self::STATE_PUBLISHED);
-        } elseif ($folder->type == Folder::TYPE_OPEN) {
-            // Get conversations from personal folder
-            $query_conversations = self::query()->where('mailbox_id', $folder->mailbox_id)
-                ->whereIn('status', [self::STATUS_ACTIVE, self::STATUS_PENDING, self::STATUS_SPAM])
-                ->where('state', self::STATE_PUBLISHED);
-        } elseif ($folder->type == Folder::TYPE_ASSIGNED) {
+        } 
+        // elseif ($folder->type == Folder::TYPE_OPEN) {
+        //     // Get conversations from personal folder
+        //     $query_conversations = self::query()->where('mailbox_id', $folder->mailbox_id)
+        //         ->whereIn('status', [self::STATUS_ACTIVE, self::STATUS_PENDING, self::STATUS_SPAM])
+        //         ->where('state', self::STATE_PUBLISHED);
+        // }
+         elseif ($folder->type == Folder::TYPE_ASSIGNED) {
 
             // Assigned - do not show my conversations
             $query_conversations = $folder->conversations()
