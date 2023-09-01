@@ -16,8 +16,19 @@ class ReportSettingsController extends Controller
     public function index(){
 
     $settings=SLASetting::orderBy('id', 'desc')->first();
-    // return $settings;
-    return view('sla.settings',compact('settings'));
+    if (empty($settings)) {
+        $settings = (object) [
+            "to_email" => "support@gmail.com",
+            "frequency" => "Daily",
+            "schedule" => "Monday",
+            "auto_data" => "1",
+            "time" => "12:10:00"
+        ];
+        return view('sla.settings',compact('settings'));
+    } else {
+        return view('sla.settings',compact('settings'));
+    }
+
 }
 
     public function addDataSettings(Request $request){
@@ -30,7 +41,7 @@ class ReportSettingsController extends Controller
     }else{
         $slaSettings->schedule=$request->schedule;
     }
-   
+
     $slaSettings->time=$request->time;
     $auto=$request->auto_data;
     if($auto==""){

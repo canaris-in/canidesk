@@ -11,11 +11,9 @@ class MailboxQueryFilter extends AbstractQueryFilter
 
     public function apply(Builder $query, $filterValue): Builder
     {
-
-        $query = $query->where('conversations.mailbox_id', $filterValue);
-
         if (intval($filterValue) != 0) {
-            $query = $query->with('mailbox.folders');
+            $query = $query->where('conversations.mailbox_id', $filterValue)
+                ->with('mailbox.folders');
         }
 
         return $query;

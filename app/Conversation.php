@@ -2,23 +2,28 @@
 
 namespace App;
 
-use App\Attachment;
-use App\Customer;
-use App\Mailbox;
-use App\Folder;
-use App\Thread;
-use App\User;
 use App\Events\UserAddedNote;
 use App\Events\UserReplied;
 use App\Events\ConversationStatusChanged;
 use App\Events\ConversationUserChanged;
 use App\Events\ConversationCustomerChanged;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Input;
 use Modules\CustomFields\Entities\ConversationCustomField;
 use Modules\CustomFields\Entities\CustomField;
 use Watson\Rememberable\Rememberable;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
+/**
+ * @property User $user
+ * @property Mailbox $mailbox
+ * @property int $folder_id
+ * @property Folder $folder
+ * @property EloquentCollection<Folder> $folders
+ */
 class Conversation extends Model
 {
     use Rememberable;
@@ -261,7 +266,7 @@ class Conversation extends Model
     /**
      * Who the conversation is assigned to (assignee).
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo('App\User');
     }
@@ -269,7 +274,7 @@ class Conversation extends Model
     /**
      * Get the folder to which conversation belongs via folder field.
      */
-    public function folder()
+    public function folder(): BelongsTo
     {
         return $this->belongsTo('App\Folder');
     }
@@ -277,7 +282,7 @@ class Conversation extends Model
     /**
      * Get the folder to which conversation belongs via conversation_folder table.
      */
-    public function folders()
+    public function folders(): BelongsToMany
     {
         return $this->belongsToMany('App\Folder');
     }
@@ -285,7 +290,7 @@ class Conversation extends Model
     /**
      * Get the mailbox to which conversation belongs.
      */
-    public function mailbox()
+    public function mailbox(): BelongsTo
     {
         return $this->belongsTo('App\Mailbox');
     }
@@ -768,11 +773,14 @@ class Conversation extends Model
             $folder_type = Folder::TYPE_SPAM;
         } elseif ($this->status == self::STATUS_CLOSED) {
             $folder_type = Folder::TYPE_CLOSED;
+        } elseif ($this->status == self::STATUS_OPEN) {
+            $folder_type = Folder::TYPE_OPEN;
         } elseif ($this->user_id) {
             $folder_type = Folder::TYPE_ASSIGNED;
         } else {
             $folder_type = Folder::TYPE_UNASSIGNED;
         }
+
 
         if (!$mailbox) {
             $mailbox = $this->mailbox;
@@ -1069,13 +1077,21 @@ class Conversation extends Model
      */
     public static function getQueryByFolder($folder, $user_id)
     {
+        /** @var Builder $query_conversations */
         if ($folder->type == Folder::TYPE_MINE) {
             // Get conversations from personal folder
-            $query_conversations = self::where('user_id', $user_id)
+            $query_conversations = self::query()->where('user_id', $user_id)
                 ->where('mailbox_id', $folder->mailbox_id)
                 ->whereIn('status', [self::STATUS_ACTIVE, self::STATUS_PENDING])
                 ->where('state', self::STATE_PUBLISHED);
-        } elseif ($folder->type == Folder::TYPE_ASSIGNED) {
+        } 
+        // elseif ($folder->type == Folder::TYPE_OPEN) {
+        //     // Get conversations from personal folder
+        //     $query_conversations = self::query()->where('mailbox_id', $folder->mailbox_id)
+        //         ->whereIn('status', [self::STATUS_ACTIVE, self::STATUS_PENDING, self::STATUS_SPAM])
+        //         ->where('state', self::STATE_PUBLISHED);
+        // }
+         elseif ($folder->type == Folder::TYPE_ASSIGNED) {
 
             // Assigned - do not show my conversations
             $query_conversations = $folder->conversations()
@@ -1084,11 +1100,11 @@ class Conversation extends Model
                 ->where('state', self::STATE_PUBLISHED);
         } elseif ($folder->type == Folder::TYPE_STARRED) {
             $starred_conversation_ids = self::getUserStarredConversationIds($folder->mailbox_id, $user_id);
-            $query_conversations = self::whereIn('id', $starred_conversation_ids);
+            $query_conversations = self::query()->whereIn('id', $starred_conversation_ids);
         } elseif ($folder->isIndirect()) {
 
             // Conversations are connected to folder via conversation_folder table.
-            $query_conversations = self::select('conversations.*')
+            $query_conversations = self::query()->select('conversations.*')
                 //->where('conversations.mailbox_id', $folder->mailbox_id)
                 ->join('conversation_folder', 'conversations.id', '=', 'conversation_folder.conversation_id')
                 ->where('conversation_folder.folder_id', $folder->id);

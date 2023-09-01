@@ -11,7 +11,7 @@ class AfterAppUpdate extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:after-app-update';
+    protected $signature = 'canidesk:after-app-update';
 
     /**
      * The console command description.
@@ -37,7 +37,7 @@ class AfterAppUpdate extends Command
      */
     public function handle()
     {
-        $this->call('freescout:clear-cache');
+        $this->call('canidesk:clear-cache');
         $this->call('migrate', ['--force' => true]);
         $this->call('queue:restart');
     }

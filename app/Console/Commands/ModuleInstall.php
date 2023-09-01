@@ -1,6 +1,6 @@
 <?php
 /**
- * php artisan freescout:module-install modulealias.
+ * php artisan canidesk:module-install modulealias.
  */
 
 namespace App\Console\Commands;
@@ -14,7 +14,7 @@ class ModuleInstall extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:module-install {module_alias?}';
+    protected $signature = 'canidesk:module-install {module_alias?}';
 
     /**
      * The console command description.
@@ -83,7 +83,7 @@ class ModuleInstall extends Command
             $this->createModulePublicSymlink($module);
         }
         $this->line('Clearing cache...');
-        $this->call('freescout:clear-cache');
+        $this->call('canidesk:clear-cache');
     }
 
     public function createModulePublicSymlink($module)

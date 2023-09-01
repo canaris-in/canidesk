@@ -289,7 +289,7 @@ class Client {
 
         $items = imap_getmailboxes($this->connection, $this->getAddress(), $pattern);
 
-        // FreeScout fix
+        // canidesk fix
         if (!$items) {
             return $folders;
         }
@@ -343,7 +343,7 @@ class Client {
 
         return $status;
     }
-    
+
     /**
      * Rename Folder
      * @param string  $old_name
@@ -360,7 +360,7 @@ class Client {
 
         return $status;
     }
-    
+
      /**
      * Delete Folder
      * @param string $name

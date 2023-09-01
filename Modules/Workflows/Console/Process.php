@@ -18,7 +18,7 @@ class Process extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:workflows-process';
+    protected $signature = 'canidesk:workflows-process';
 
     /**
      * The description of the console command.

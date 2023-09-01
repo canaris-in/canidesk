@@ -11,7 +11,7 @@ class Build extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:build';
+    protected $signature = 'canidesk:build';
 
     /**
      * The console command description.
@@ -37,7 +37,7 @@ class Build extends Command
      */
     public function handle()
     {
-        $this->call('freescout:generate-vars');
+        $this->call('canidesk:generate-vars');
         $this->call('laroute:generate');
     }
 }

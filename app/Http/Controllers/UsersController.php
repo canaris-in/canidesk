@@ -31,25 +31,26 @@ class UsersController extends Controller
      */
     public function users()
     {
-        $this->authorize('create', 'App\User');
+        // $this->authorize('create', 'App\User');
 
         $users = User::nonDeleted()->get();
         $users = User::sortUsers($users);
-
-        return view('users/users', ['users' => $users]);
+        if (auth()->user()->isAdmin() || auth()->user()->isITHead()) {
+            return view('users/users', ['users' => $users]);
+        }
     }
-
     /**
      * New user.
      */
     public function create()
     {
-        $this->authorize('create', 'App\User');
+        // $this->authorize('create', 'App\User');
         $mailboxes = Mailbox::all();
+        if (auth()->user()->isAdmin() || auth()->user()->isITHead()) {
+            return view('users/create', ['mailboxes' => $mailboxes]);
+        }
 
-        return view('users/create', ['mailboxes' => $mailboxes]);
     }
-
     /**
      * Create new user.
      *
@@ -58,7 +59,7 @@ class UsersController extends Controller
     public function createSave(Request $request)
     {
         $invalid = false;
-        $this->authorize('create', 'App\User');
+        // $this->authorize('create', 'App\User');
         $auth_user = auth()->user();
 
         $rules = [
@@ -67,7 +68,7 @@ class UsersController extends Controller
             'email'      => 'required|string|email|max:100|unique:users',
             //'role'       => ['required', Rule::in(array_keys(User::$roles))],
         ];
-        if ($auth_user->isAdmin()) {
+        if ($auth_user->isAdmin() || $auth_user->isITHead()) {
             $rules['role'] = ['required', Rule::in(array_keys(User::$roles))];
         }
         if (empty($request->send_invite)) {
@@ -82,8 +83,8 @@ class UsersController extends Controller
 
         if ($invalid || $validator->fails()) {
             return redirect()->route('users.create')
-                        ->withErrors($validator)
-                        ->withInput();
+                ->withErrors($validator)
+                ->withInput();
         }
 
         $user = new User();
@@ -112,7 +113,7 @@ class UsersController extends Controller
                 $user->sendInvite(true);
             } catch (\Exception $e) {
                 // Admin is allowed to see exceptions
-                \Session::flash('flash_error_floating', $e->getMessage());
+                \Session::flash('flash_error_floating', 'Please configure the general email settings....');
             }
         }
 
@@ -165,7 +166,7 @@ class UsersController extends Controller
         $validator = Validator::make($request->all(), [
             'first_name'  => 'required|string|max:20',
             'last_name'   => 'required|string|max:30',
-            'email'       => 'required|string|email|max:100|unique:users,email,'.$id,
+            'email'       => 'required|string|email|max:100|unique:users,email,' . $id,
             //'emails'      => 'max:100',
             'job_title'   => 'max:100',
             'phone'       => 'max:60',
@@ -208,8 +209,8 @@ class UsersController extends Controller
 
         if ($invalid || $validator->fails()) {
             return redirect()->route('users.profile', ['id' => $id])
-                        ->withErrors($validator)
-                        ->withInput();
+                ->withErrors($validator)
+                ->withInput();
         }
 
         // Save language into session.
@@ -270,6 +271,7 @@ class UsersController extends Controller
             'users'          => $users,
         ]);
     }
+
 
     /**
      * Save user permissions.
@@ -367,16 +369,17 @@ class UsersController extends Controller
 
         switch ($request->action) {
 
-            // Both send and resend
+                // Both send and resend
             case 'send_invite':
-                if (!$auth_user->isAdmin()) {
+                $user = User::find($request->user_id);
+                if (!$auth_user->can('sendResetInvite', $user)) {
                     $response['msg'] = __('Not enough permissions');
                 }
                 if (empty($request->user_id)) {
                     $response['msg'] = __('Incorrect user');
                 }
                 if (!$response['msg']) {
-                    $user = User::find($request->user_id);
+
                     if (!$user) {
                         $response['msg'] = __('User not found');
                     } elseif ($user->invite_state == User::INVITE_STATE_ACTIVATED) {
@@ -391,21 +394,21 @@ class UsersController extends Controller
                         $response['status'] = 'success';
                     } catch (\Exception $e) {
                         // Admin is allowed to see exceptions
-                        $response['msg'] = $e->getMessage();
+                        $response['msg'] = 'Please configure the general email settings....';
                     }
                 }
                 break;
 
-            // Reset password
+                // Reset password
             case 'reset_password':
-                if (!auth()->user()->isAdmin()) {
+                $user = User::find($request->user_id);
+                if (!$auth_user->can('resetPassword', $user)) {
                     $response['msg'] = __('Not enough permissions');
                 }
                 if (empty($request->user_id)) {
                     $response['msg'] = __('Incorrect user');
                 }
                 if (!$response['msg']) {
-                    $user = User::find($request->user_id);
                     if (!$user) {
                         $response['msg'] = __('User not found');
                     }
@@ -424,7 +427,7 @@ class UsersController extends Controller
                 }
                 break;
 
-            // Load website notifications
+                // Load website notifications
             case 'web_notifications':
                 if (!$auth_user) {
                     $response['msg'] = __('You are not logged in');
@@ -441,7 +444,7 @@ class UsersController extends Controller
                 }
                 break;
 
-            // Mark all user website notifications as read
+                // Mark all user website notifications as read
             case 'mark_notifications_as_read':
                 if (!$auth_user) {
                     $response['msg'] = __('You are not logged in');
@@ -454,7 +457,7 @@ class UsersController extends Controller
                 }
                 break;
 
-            // Delete user photo
+                // Delete user photo
             case 'delete_photo':
                 $user = User::find($request->user_id);
 
@@ -471,7 +474,7 @@ class UsersController extends Controller
                 }
                 break;
 
-            // Delete user
+                // Delete user
             case 'delete_user':
                 $user = User::find($request->user_id);
 
@@ -501,7 +504,7 @@ class UsersController extends Controller
                         if (!empty($request->assign_user) && !empty($request->assign_user[$conversation->mailbox_id]) && (int) $request->assign_user[$conversation->mailbox_id] != -1) {
                             // Set assignee.
                             $conversation->user_id = $request->assign_user[$conversation->mailbox_id];
-                        // In this case conversation stays assigned, just assignee changes.
+                            // In this case conversation stays assigned, just assignee changes.
                         } else {
                             // Set assignee.
                             $conversation->user_id = null;
@@ -560,15 +563,15 @@ class UsersController extends Controller
 
                     $user->status = \App\User::STATUS_DELETED;
                     // Update email.
-                    $email_suffix = User::EMAIL_DELETED_SUFFIX.date('YmdHis');
+                    $email_suffix = User::EMAIL_DELETED_SUFFIX . date('YmdHis');
                     // We have to truncate email to avoid "Data too long" error.
-                    $user->email = mb_substr($user->email, 0, User::EMAIL_MAX_LENGTH - mb_strlen($email_suffix)).$email_suffix;
+                    $user->email = mb_substr($user->email, 0, User::EMAIL_MAX_LENGTH - mb_strlen($email_suffix)) . $email_suffix;
 
                     $user->save();
 
                     event(new UserDeleted($user, $auth_user));
 
-                    \Session::flash('flash_success_floating', __('User deleted').': '.$user->getFullName());
+                    \Session::flash('flash_success_floating', __('User deleted') . ': ' . $user->getFullName());
 
                     $response['status'] = 'success';
                 }
@@ -632,8 +635,8 @@ class UsersController extends Controller
 
         if ($validator->fails()) {
             return redirect()->route('users.password', ['id' => $id])
-                        ->withErrors($validator)
-                        ->withInput();
+                ->withErrors($validator)
+                ->withInput();
         }
 
         $user->password = bcrypt($request->password);

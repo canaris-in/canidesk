@@ -8,7 +8,7 @@ use Barryvdh\TranslationManager\Controller as BaseController;
 class TranslateController extends BaseController
 {
     /**
-     * Send translations to FreeScout team.
+     * Send translations to canidesk team.
      *
      * @return [type] [description]
      */

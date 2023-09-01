@@ -59,7 +59,7 @@ class SystemController extends Controller
                 $non_writable_cache_file = '';
             }
         }
-        
+
 
         // Check if public symlink exists, if not, try to create.
         $public_symlink_exists = true;
@@ -84,7 +84,7 @@ class SystemController extends Controller
 
         // Commands
         $commands_list = [
-            'freescout:fetch-emails' => 'freescout:fetch-emails',
+            'canidesk:fetch-emails' => 'canidesk:fetch-emails',
             \Helper::getWorkerIdentifier() => 'queue:work'
         ];
         foreach ($commands_list as $command_identifier => $command_name) {
@@ -163,7 +163,7 @@ class SystemController extends Controller
             if ($command_name == 'queue:work' && !$last_successful_run) {
                 $status_texts[] = __('Try to :%a_start%clear cache:%a_end% to force command to start.', ['%a_start%' => '<a href="'.route('system.tools').'" target="_blank">', '%a_end%' => '</a>']);
                 // This sometimes makes Status page open as non logged in user.
-                //\Artisan::call('freescout:clear-cache', ['--doNotGenerateVars' => true]);
+                //\Artisan::call('canidesk:clear-cache', ['--doNotGenerateVars' => true]);
             }
 
             $commands[] = [
@@ -262,14 +262,14 @@ class SystemController extends Controller
 
         switch ($request->action) {
             case 'clear_cache':
-                \Artisan::call('freescout:clear-cache', [], $outputLog);
+                \Artisan::call('canidesk:clear-cache', [], $outputLog);
                 break;
 
             case 'fetch_emails':
                 $params = [];
                 $params['--days'] = (int)$request->days;
                 $params['--unseen'] = (int)$request->unseen;
-                \Artisan::call('freescout:fetch-emails', $params, $outputLog);
+                \Artisan::call('canidesk:fetch-emails', $params, $outputLog);
                 break;
 
             case 'migrate_db':
@@ -277,7 +277,7 @@ class SystemController extends Controller
                 break;
 
             case 'logout_users':
-                \Artisan::call('freescout:logout-users', [], $outputLog);
+                \Artisan::call('canidesk:logout-users', [], $outputLog);
                 break;
         }
 
@@ -384,7 +384,7 @@ class SystemController extends Controller
                 if (!empty($payload['data']['command'])) {
                     $html .= '<pre>'.print_r(unserialize($payload['data']['command']), 1).'</pre>';
                 }
-                
+
                 $html .= '<pre>'.$job->exception.'</pre>';
 
                 return response($html);

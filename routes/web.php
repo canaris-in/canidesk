@@ -10,7 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 | Every time you change routes, run the following command to make them available in JS:
-|     php artisan freescout:build
+|     php artisan canidesk:build
 */
 
 // use Symfony\Component\Routing\Route;
@@ -142,3 +142,5 @@ Route::post('/reports/settings','ReportSettingsController@addDataSettings');
 Route::post('/reports/sla/', 'SlaReportController@slaReport')->name('slafilter');
 
 Route::get('/fetch-mailbox/{id}', 'MailboxesController@fetchMail')->name('mailboxes.fetchMail');
+
+Route::get('/users/view_notification/{id}','ViewNotificationController@index')->name('users.view_notification');

@@ -50,7 +50,7 @@ class AppServiceProvider extends ServiceProvider
         // If APP_KEY is not set, redirect to /install.php
         if (!\Config::get('app.key') && !app()->runningInConsole() && !file_exists(storage_path('.installed'))) {
             // Not defined here yet
-            //\Artisan::call("freescout:clear-cache");
+            //\Artisan::call("canidesk:clear-cache");
             redirect(\Helper::getSubdirectory().'/install.php')->send();
         }
 

@@ -11,7 +11,7 @@
 	    <meta name="robots" content="noindex, nofollow">
 
 	    <title>@yield('title') - {{ $mailbox->name }}</title>
-	    
+
 	    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
 	    <link rel="shortcut icon" type="image/x-icon" href="@filter('layout.favicon', URL::asset('favicon.ico'))">
 	    <link rel="manifest" href="{{ asset('site.webmanifest') }}" crossorigin="use-credentials">
@@ -29,7 +29,7 @@
 	            \Helper::logException($e);
 	        }
 	    @endphp
-	    
+
 	    @yield('stylesheets')
 
 	    @yield('eup_stylesheets')
@@ -60,7 +60,8 @@
 	                <div class="collapse navbar-collapse" id="app-navbar-collapse">
 	                    <!-- Left Side Of Navbar -->
 	                    <ul class="nav navbar-nav navbar-right">
-	                    	<li class="{{ \App\Misc\Helper::menuSelectedHtml('enduserportal.submit') }}"><a href="{{ route('enduserportal.submit', ['id' => \EndUserPortal::encodeMailboxId($mailbox->id)]) }}">{{ \EndUserPortal::getMailboxParam($mailbox, 'text_submit') }}</a></li>
+	                    	{{-- <li class="{{ \App\Misc\Helper::menuSelectedHtml('enduserportal.submit') }}"><a href="{{ route('enduserportal.submit', ['id' => \EndUserPortal::encodeMailboxId($mailbox->id)]) }}">{{ \EndUserPortal::getMailboxParam($mailbox, 'text_submit') }}</a></li> --}}
+							<li class="{{ \App\Misc\Helper::menuSelectedHtml('enduserportal.submit') }}"><a href="{{ route('enduserportal.submit', ['id' => \EndUserPortal::encodeMailboxId($mailbox->id)]) }}">{{ __('Submit a Ticket') }}</a></li>
 	                    	<li class="{{ \App\Misc\Helper::menuSelectedHtml('enduserportal.tickets') }}"><a href="{{ route('enduserportal.tickets', ['id' => \EndUserPortal::encodeMailboxId($mailbox->id)]) }}">{{ __('My Tickets') }}</a></li>
 	                    	@if (!EndUserPortal::authCustomer())
 	                    		<li><a href="{{ route('enduserportal.login', ['id' => \EndUserPortal::encodeMailboxId($mailbox->id)]) }}"><i class="glyphicon glyphicon-user"></i> {{ __('Log In') }}</a></li>
@@ -110,7 +111,7 @@
 	            // To prevent 500 errors on update.
 	            // Also catches errors when activating a module and public symlink not created for module.
 	            if (strstr($e->getMessage(), 'vars.js')) {
-	                \Artisan::call('freescout:generate-vars');
+	                \Artisan::call('canidesk:generate-vars');
 	            }
 	            \Helper::logException($e);
 	        }

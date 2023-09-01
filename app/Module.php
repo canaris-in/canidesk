@@ -156,7 +156,7 @@ class Module extends Model
         // Update modules cache
         \Module::clearCache();
         if ($clear_app_cache) {
-            \Artisan::call('freescout:clear-cache');
+            \Artisan::call('canidesk:clear-cache');
         }
     }
 
@@ -237,7 +237,7 @@ class Module extends Model
     public static function formatModuleData($module_data)
     {
         // Add (Third-Party).
-        if (\App\Module::isOfficial($module_data['authorUrl']) 
+        if (\App\Module::isOfficial($module_data['authorUrl'])
             && $module_data['author'] != 'FreeScout'
             && mb_substr(trim($module_data['name']), -1)  != ']'
         ) {
@@ -248,7 +248,7 @@ class Module extends Model
 
     public static function isThirdParty($module_data)
     {
-        if (\App\Module::isOfficial($module_data['authorUrl']) 
+        if (\App\Module::isOfficial($module_data['authorUrl'])
             && $module_data['author'] != 'FreeScout'
         ) {
             return true;

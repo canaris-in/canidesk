@@ -12,7 +12,7 @@ class ModuleCheckLicenses extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:module-check-licenses';
+    protected $signature = 'canidesk:module-check-licenses';
 
     /**
      * The console command description.
@@ -50,7 +50,7 @@ class ModuleCheckLicenses extends Command
 
         foreach ($modules as $module) {
             $license = $module->getLicense();
-        
+
             if (!$module->isOfficial() || !$license) {
                 continue;
             }

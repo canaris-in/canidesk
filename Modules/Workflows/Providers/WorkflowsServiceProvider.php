@@ -44,7 +44,7 @@ class WorkflowsServiceProvider extends ServiceProvider
             $styles[] = \Module::getPublicPath(WF_MODULE).'/css/module.css';
             return $styles;
         });
-        
+
         // Add module's JS file to the application layout.
         \Eventy::addFilter('javascripts', function($javascripts) {
             $javascripts[] = \Module::getPublicPath(WF_MODULE).'/js/laroute.js';
@@ -78,7 +78,7 @@ class WorkflowsServiceProvider extends ServiceProvider
                 return $value;
             }
         }, 20, 3);
-        
+
         // Fix mailbox menu route name
         \Eventy::addFilter('mailboxes.menu_current_route', function($route_name) {
             if ($route_name == 'mailboxes.workflows.update') {
@@ -102,7 +102,7 @@ class WorkflowsServiceProvider extends ServiceProvider
 
         // Schedule background processing
         \Eventy::addFilter('schedule', function($schedule) {
-            $schedule->command('freescout:workflows-process')
+            $schedule->command('canidesk:workflows-process')
                 ->cron(config('workflows.process_cron'));
 
             return $schedule;
@@ -110,13 +110,13 @@ class WorkflowsServiceProvider extends ServiceProvider
 
         // Show action description for the line item thread.
         \Eventy::addFilter('thread.action_text', function($did_this, $thread, $conversation_number, $escape) {
-            if ($thread->action_type == Workflow::ACTION_TYPE_AUTOMATIC_WORKFLOW 
+            if ($thread->action_type == Workflow::ACTION_TYPE_AUTOMATIC_WORKFLOW
                 || $thread->action_type == Workflow::ACTION_TYPE_MANUAL_WORKFLOW
             ) {
                 $meta = $thread->getMetas();
                 $workflow_id = $meta['workflow_id'] ?? '';
                 $workflow = Workflow::find($workflow_id);
-                
+
                 if ($workflow) {
                     $user = auth()->user();
 
@@ -280,7 +280,7 @@ class WorkflowsServiceProvider extends ServiceProvider
                         <?php endforeach ?>
                     </ul>
                 </div>
-            <?php   
+            <?php
         }, 40, 1);
 
         /**

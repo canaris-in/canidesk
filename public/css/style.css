@@ -2068,7 +2068,7 @@ button.conv-checkbox-clear {
 }
 .thread-photo {
     /*padding: 16px 18px 25px 20px;*/
-    padding: 21px 18px 25px 20px;
+    padding: 6px 18px 25px 20px;
     position: absolute;
 }
 .thread-photo .person-photo {
@@ -4538,4 +4538,15 @@ a.disabled:focus {
     .col3-hidden {
         display: none;
     }
+}
+.conversation-color-table{
+    display: flex;
+}
+.dm .conversation-color{
+
+    color: burlywood;
+}
+.dm .conversation-color-active{
+
+    color: #6ac27b;
 }

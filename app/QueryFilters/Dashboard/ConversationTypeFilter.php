@@ -10,7 +10,10 @@ class ConversationTypeFilter extends AbstractQueryFilter
 {
     public function apply(Builder $query, $filterValue): Builder
     {
-        return $query->where('conversations.type', $filterValue);
+        if (!empty($filterValue)) {
+            $query =  $query->where('conversations.type', $filterValue);
+        }
+        return $query;
     }
 
     public static function getFilterName(): string

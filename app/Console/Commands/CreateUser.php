@@ -12,7 +12,7 @@ class CreateUser extends Command
      *
      * @var string
      */
-    protected $signature = 'freescout:create-user {--role=} {--firstName=} {--lastName=} {--email=} {--password=}';
+    protected $signature = 'canidesk:create-user {--role=} {--firstName=} {--lastName=} {--email=} {--password=}';
 
     /**
      * The console command description.

@@ -64,7 +64,7 @@ class ConversationsController extends Controller
             $mark_read_result = $user->unreadNotifications()->where('id', $request->mark_as_read)->update(['read_at' => now()]);
             $user->clearWebsiteNotificationsCache();
         } else {
-            $mark_read_result = $user->unreadNotifications()->where('data', 'like', '%"conversation_id":'.$conversation->id.'%')->update(['read_at' => now()]);
+            $mark_read_result = $user->unreadNotifications()->where('data', 'like', '%"conversation_id":' . $conversation->id . '%')->update(['read_at' => now()]);
         }
         if ($mark_read_result) {
             $user->clearWebsiteNotificationsCache();
@@ -153,7 +153,8 @@ class ConversationsController extends Controller
         // 1. Email has been received from a customer.
         // 2. Customer has been changed.
         // 3. Reply has been sent to the original customer email.
-        if ($conversation->customer_email
+        if (
+            $conversation->customer_email
             && count($customer_emails)
             && !in_array($conversation->customer_email, $customer_emails->pluck('email')->toArray())
         ) {
@@ -205,13 +206,13 @@ class ConversationsController extends Controller
         $prev_conversations = [];
         if ($customer) {
             $prev_conversations = $mailbox->conversations()
-                                    ->where('customer_id', $customer->id)
-                                    ->where('id', '<>', $conversation->id)
-                                    ->where('status', '!=', Conversation::STATUS_SPAM)
-                                    ->where('state', Conversation::STATE_PUBLISHED)
-                                    //->limit(self::PREV_CONVERSATIONS_LIMIT)
-                                    ->orderBy('created_at', 'desc')
-                                    ->paginate(self::PREV_CONVERSATIONS_LIMIT);
+                ->where('customer_id', $customer->id)
+                ->where('id', '<>', $conversation->id)
+                ->where('status', '!=', Conversation::STATUS_SPAM)
+                ->where('state', Conversation::STATE_PUBLISHED)
+                //->limit(self::PREV_CONVERSATIONS_LIMIT)
+                ->orderBy('created_at', 'desc')
+                ->paginate(self::PREV_CONVERSATIONS_LIMIT);
         }
 
         $template = 'conversations/view';
@@ -275,7 +276,7 @@ class ConversationsController extends Controller
                 }
             }
             // Show replying first.
-            usort($viewers, function($a, $b) {
+            usort($viewers, function ($a, $b) {
                 return $b['replying'] <=> $a['replying'];
             });
         }
@@ -327,7 +328,7 @@ class ConversationsController extends Controller
         $thread = null;
         if (!empty($request->from_thread_id)) {
             $orig_thread = Thread::find($request->from_thread_id);
-            if ($orig_thread) {
+            if (is_object($orig_thread->request)) {
                 $conversation->subject = $orig_thread->request->subject;
                 $conversation->subject = preg_replace('/^Fwd:/i', 'Re: ', $request->subject);
 
@@ -383,12 +384,12 @@ class ConversationsController extends Controller
                 $this->authorize('view', $orign_conv);
 
 
-		        // $thread = $orig_thread->replicate();
-		        // $thread->id = '';
-		        // $thread->message_id .= ".clone".crc32(mktime());
-		        // $thread->status = Thread::STATUS_ACTIVE;
-		        // $thread->conversation_id = $conversation->id;
-		        // $thread->save();
+                // $thread = $orig_thread->replicate();
+                // $thread->id = '';
+                // $thread->message_id .= ".clone".crc32(mktime());
+                // $thread->status = Thread::STATUS_ACTIVE;
+                // $thread->conversation_id = $conversation->id;
+                // $thread->save();
 
 
                 $now = date('Y-m-d H:i:s');
@@ -413,7 +414,8 @@ class ConversationsController extends Controller
                 $conversation->save();
 
 
-                $thread = Thread::createExtended([
+                $thread = Thread::createExtended(
+                    [
                         'conversation_id' => $orig_thread->conversation_id,
                         'user_id' => $orig_thread->user_id,
                         'type' => $orig_thread->type,
@@ -427,7 +429,7 @@ class ConversationsController extends Controller
                         'bcc' => $orig_thread->bcc,
                         //'attachments' => $attachments,
                         'has_attachments' => $orig_thread->has_attachments,
-                        'message_id' => "clone".crc32(microtime()).'-'.$orig_thread->message_id,
+                        'message_id' => "clone" . crc32(microtime()) . '-' . $orig_thread->message_id,
                         'source_via' => $orig_thread->source_via,
                         'source_type' => $orig_thread->source_type,
                         'customer_id' => $orig_thread->customer_id,
@@ -481,7 +483,7 @@ class ConversationsController extends Controller
         $user = auth()->user();
         switch ($request->action) {
 
-            // Change conversation user
+                // Change conversation user
             case 'conversation_change_user':
                 $conversation = Conversation::find($request->conversation_id);
 
@@ -507,8 +509,6 @@ class ConversationsController extends Controller
                         // If user assigned conversation to himself, stay on the current page
                         $response['redirect_url'] = $conversation->url();
                         $redirect_same_page = true;
-                    } else {
-                        $response['redirect_url'] = $this->getRedirectUrl($request, $conversation, $user);
                     }
 
                     $conversation->changeUser($new_user_id, $user);
@@ -518,7 +518,7 @@ class ConversationsController extends Controller
                     // Flash
                     $flash_message = __('Assignee updated');
                     if (!$redirect_same_page || $response['redirect_url'] != $conversation->url()) {
-                        $flash_message .= ' &nbsp;<a href="'.$conversation->url().'">'.__('View').'</a>';
+                        $flash_message .= ' &nbsp;<a href="' . $conversation->url() . '">' . __('View') . '</a>';
                     }
                     \Session::flash('flash_success_floating', $flash_message);
 
@@ -526,7 +526,7 @@ class ConversationsController extends Controller
                 }
                 break;
 
-            // Change conversation status
+                // Change conversation status
             case 'conversation_change_status':
                 $conversation = Conversation::find($request->conversation_id);
 
@@ -546,7 +546,7 @@ class ConversationsController extends Controller
                     $new_status = (int) $request->status;
                 }
 
-                if($user){
+                if ($user) {
                     if (!$conversation) {
                         $response['msg'] = __('Conversation not found');
                     }
@@ -575,27 +575,26 @@ class ConversationsController extends Controller
                         // Flash
                         $flash_message = __('Status updated');
                         if (!$redirect_same_page || $response['redirect_url'] != $conversation->url()) {
-                            $flash_message .= ' &nbsp;<a href="'.$conversation->url().'">'.__('View').'</a>';
+                            $flash_message .= ' &nbsp;<a href="' . $conversation->url() . '">' . __('View') . '</a>';
                         }
                         \Session::flash('flash_success_floating', $flash_message);
 
                         $response['msg'] = __('Status updated');
                     }
-
                 } else {
                     $user = Customer::where('id', $conversation->user_id)->first();
                     $conversation->changeStatus($new_status, $user);
 
-                        $response['status'] = 'success';
-                        // Flash
-                        $flash_message = __('Status updated');
-                        \Session::flash('flash_success_floating', $flash_message);
+                    $response['status'] = 'success';
+                    // Flash
+                    $flash_message = __('Status updated');
+                    \Session::flash('flash_success_floating', $flash_message);
 
-                        $response['msg'] = __('Status updated');
+                    $response['msg'] = __('Status updated');
                 }
                 break;
 
-            // Send reply, new conversation, add note or forward
+                // Send reply, new conversation, add note or forward
             case 'send_reply':
 
                 $mailbox = Mailbox::findOrFail($request->mailbox_id);
@@ -696,9 +695,9 @@ class ConversationsController extends Controller
                     }
 
                     if ($validator->fails()) {
-                        foreach ($validator->errors()->getMessages()as $errors) {
+                        foreach ($validator->errors()->getMessages() as $errors) {
                             foreach ($errors as $field => $message) {
-                                $response['msg'] .= $message.' ';
+                                $response['msg'] .= $message . ' ';
                             }
                         }
                     }
@@ -755,7 +754,8 @@ class ConversationsController extends Controller
                             $conversation->type = $type;
                         }
                         // Allow to convert phone conversations into email conversations.
-                        if ($conversation->isPhone() && !$is_note && $conversation->customer
+                        if (
+                            $conversation->isPhone() && !$is_note && $conversation->customer
                             && $customer_email = $conversation->customer->getMainEmail()
                         ) {
                             $conversation->type = Conversation::TYPE_EMAIL;
@@ -954,7 +954,7 @@ class ConversationsController extends Controller
                             // Reload customer object, otherwise it stores previous customer.
                             $forwarded_conversation->load('customer');
                             $forwarded_conversation->customer_email = $recipient_email;
-                            $forwarded_conversation->subject = 'Fwd: '.$forwarded_conversation->subject;
+                            $forwarded_conversation->subject = 'Fwd: ' . $forwarded_conversation->subject;
                             //$forwarded_conversation->setCc(array_merge(Conversation::sanitizeEmails($request->cc), [$to]));
                             $forwarded_conversation->setCc(Conversation::sanitizeEmails($request->cc));
                             $forwarded_conversation->setBcc($request->bcc);
@@ -1054,7 +1054,8 @@ class ConversationsController extends Controller
                     }
 
                     // Follow conversation if it's assigned to someone else.
-                    if (!$is_create && !$new && !$is_forward && !$is_note
+                    if (
+                        !$is_create && !$new && !$is_forward && !$is_note
                         && $conversation->user_id != $user->id
                     ) {
                         $user->followConversation($conversation->id);
@@ -1155,21 +1156,21 @@ class ConversationsController extends Controller
                         $show_view_link = false;
                     }
 
-                    $flash_vars = ['%tag_start%' => '<strong>', '%tag_end%' => '</strong>', '%view_start%' => '&nbsp;<a href="'.$conversation->url().'">', '%a_end%' => '</a>&nbsp;', '%undo_start%' => '&nbsp;<a href="'.route('conversations.undo', ['thread_id' => $thread->id]).'" class="text-danger">'];
+                    $flash_vars = ['%tag_start%' => '<strong>', '%tag_end%' => '</strong>', '%view_start%' => '&nbsp;<a href="' . $conversation->url() . '">', '%a_end%' => '</a>&nbsp;', '%undo_start%' => '&nbsp;<a href="' . route('conversations.undo', ['thread_id' => $thread->id]) . '" class="text-danger">'];
 
                     if ($is_phone) {
                         $flash_type = 'warning';
                         if ($show_view_link) {
                             $flash_text = __(':%tag_start%Conversation created:%tag_end% :%view_start%View:%a_end% or :%undo_start%Undo:%a_end%', $flash_vars);
                         } else {
-                            $flash_text = '<strong>'.__('Conversation created').'</strong>';
+                            $flash_text = '<strong>' . __('Conversation created') . '</strong>';
                         }
                     } elseif ($is_note) {
                         $flash_type = 'warning';
                         if ($show_view_link) {
                             $flash_text = __(':%tag_start%Note added:%tag_end% :%view_start%View:%a_end%', $flash_vars);
                         } else {
-                            $flash_text = '<strong>'.__('Note added').'</strong>';
+                            $flash_text = '<strong>' . __('Note added') . '</strong>';
                         }
                     } else {
                         $flash_type = 'success';
@@ -1180,11 +1181,11 @@ class ConversationsController extends Controller
                         }
                     }
 
-                    \Session::flash('flash_'.$flash_type.'_floating', $flash_text);
+                    \Session::flash('flash_' . $flash_type . '_floating', $flash_text);
                 }
                 break;
 
-            // Save draft (automatically or by click) of a new conversation or reply.
+                // Save draft (automatically or by click) of a new conversation or reply.
             case 'save_draft':
 
                 $mailbox = Mailbox::findOrFail($request->mailbox_id);
@@ -1232,7 +1233,8 @@ class ConversationsController extends Controller
                     // Check if the last thread has same content as the new one.
                     $last_thread = $conversation->getLastThread([Thread::TYPE_MESSAGE, Thread::TYPE_NOTE]);
 
-                    if ($last_thread
+                    if (
+                        $last_thread
                         && $last_thread->created_by_user_id == $user->id
                         && $last_thread->body == $request->body
                     ) {
@@ -1418,7 +1420,7 @@ class ConversationsController extends Controller
 
                 break;
 
-            // Discard draft (from new conversation, from reply or conversation)
+                // Discard draft (from new conversation, from reply or conversation)
             case 'discard_draft':
 
                 $thread = Thread::find($request->thread_id);
@@ -1471,7 +1473,7 @@ class ConversationsController extends Controller
                 }
                 break;
 
-            // Save draft (automatically or by click)
+                // Save draft (automatically or by click)
             case 'load_draft':
                 $thread = Thread::find($request->thread_id);
                 if (!$thread) {
@@ -1510,8 +1512,8 @@ class ConversationsController extends Controller
                 }
                 break;
 
-            // Load attachments from all threads in conversation
-            // when forwarding or creating a new conversation.
+                // Load attachments from all threads in conversation
+                // when forwarding or creating a new conversation.
             case 'load_attachments':
                 $conversation = Conversation::find($request->conversation_id);
                 if (!$conversation) {
@@ -1554,7 +1556,7 @@ class ConversationsController extends Controller
                 }
                 break;
 
-            // Save default redirect
+                // Save default redirect
             case 'save_after_send':
                 $mailbox = Mailbox::find($request->mailbox_id);
                 if (!$mailbox) {
@@ -1579,7 +1581,7 @@ class ConversationsController extends Controller
                 }
                 break;
 
-            // Conversations navigation
+                // Conversations navigation
             case 'conversations_pagination':
                 if (!empty($request->filter)) {
                     $response = $this->ajaxConversationsFilter($request, $response, $user);
@@ -1588,7 +1590,7 @@ class ConversationsController extends Controller
                 }
                 break;
 
-            // Change conversation customer
+                // Change conversation customer
             case 'conversation_change_customer':
                 $conversation = Conversation::find($request->conversation_id);
                 $customer_email = $request->customer_email;
@@ -1610,7 +1612,7 @@ class ConversationsController extends Controller
 
                 break;
 
-            // Star/unstar conversation
+                // Star/unstar conversation
             case 'star_conversation':
                 $conversation = Conversation::find($request->conversation_id);
                 if (!$conversation) {
@@ -1631,7 +1633,7 @@ class ConversationsController extends Controller
                 }
                 break;
 
-            // Delete conversation (move to DELETED folder)
+                // Delete conversation (move to DELETED folder)
             case 'delete_conversation':
                 $conversation = Conversation::find($request->conversation_id);
                 if (!$conversation) {
@@ -1653,7 +1655,7 @@ class ConversationsController extends Controller
                 }
                 break;
 
-            // Delete conversation forever
+                // Delete conversation forever
             case 'delete_conversation_forever':
                 $conversation = Conversation::find($request->conversation_id);
                 if (!$conversation) {
@@ -1679,7 +1681,7 @@ class ConversationsController extends Controller
                 }
                 break;
 
-            // Restore conversation
+                // Restore conversation
             case 'restore_conversation':
                 $conversation = Conversation::find($request->conversation_id);
                 if (!$conversation) {
@@ -1724,7 +1726,7 @@ class ConversationsController extends Controller
                 }
                 break;
 
-            // Load data to edit thread.
+                // Load data to edit thread.
             case 'load_edit_thread':
                 $thread = Thread::find($request->thread_id);
                 if (!$thread) {
@@ -1743,7 +1745,7 @@ class ConversationsController extends Controller
                 }
                 break;
 
-            // Load data to edit thread.
+                // Load data to edit thread.
             case 'save_edit_thread':
                 $thread = Thread::find($request->thread_id);
                 if (!$thread) {
@@ -1778,7 +1780,7 @@ class ConversationsController extends Controller
                 }
                 break;
 
-            // Delete thread (note).
+                // Delete thread (note).
             case 'delete_thread':
                 $thread = Thread::find($request->thread_id);
                 if (!$thread || !$thread->isNote()) {
@@ -1793,7 +1795,7 @@ class ConversationsController extends Controller
                 }
                 break;
 
-            // Change conversations user
+                // Change conversations user
             case 'bulk_conversation_change_user':
 
                 $conversations = Conversation::findMany($request->conversation_id);
@@ -1821,7 +1823,7 @@ class ConversationsController extends Controller
                 }
                 break;
 
-            // Change conversations status
+                // Change conversations status
             case 'bulk_conversation_change_status':
                 $conversations = Conversation::findMany($request->conversation_id);
 
@@ -1849,7 +1851,7 @@ class ConversationsController extends Controller
                 }
                 break;
 
-            // Delete converations.
+                // Delete converations.
             case 'bulk_delete_conversation':
                 // At first, check if this user is able to delete conversations
                 if (!auth()->user()->isAdmin() && !auth()->user()->hasPermission(\App\User::PERM_DELETE_CONVERSATIONS)) {
@@ -1908,7 +1910,7 @@ class ConversationsController extends Controller
                 \Session::flash('flash_success_floating', __('Conversations deleted'));
                 break;
 
-            // Delete converations in a specific folder.
+                // Delete converations in a specific folder.
             case 'empty_folder':
                 // At first, check if this user is able to delete conversations
                 if (!auth()->user()->isAdmin() && !auth()->user()->hasPermission(\App\User::PERM_DELETE_CONVERSATIONS)) {
@@ -1916,7 +1918,9 @@ class ConversationsController extends Controller
                     return \Response::json($response);
                 }
 
-                $response = \Eventy::filter('conversations.empty_folder', $response,
+                $response = \Eventy::filter(
+                    'conversations.empty_folder',
+                    $response,
                     $request->mailbox_id,
                     $request->folder_id
                 );
@@ -1944,7 +1948,7 @@ class ConversationsController extends Controller
                 \Session::flash('flash_success_floating', __('Conversations deleted'));
                 break;
 
-            // Move conversation to another mailbox.
+                // Move conversation to another mailbox.
             case 'conversation_move':
                 $conversation = Conversation::find($request->conversation_id);
 
@@ -1993,7 +1997,7 @@ class ConversationsController extends Controller
 
                 break;
 
-            // Merge conversations
+                // Merge conversations
             case 'conversation_merge':
                 $conversation = Conversation::find($request->conversation_id);
 
@@ -2022,7 +2026,7 @@ class ConversationsController extends Controller
 
                 break;
 
-            // Follow conversation
+                // Follow conversation
             case 'follow':
             case 'unfollow':
                 $conversation = Conversation::find($request->conversation_id);
@@ -2090,8 +2094,8 @@ class ConversationsController extends Controller
 
                 if (!$response['msg']) {
                     $response['html'] = \View::make('conversations/partials/merge_search_result')->with([
-                            'conversation' => $conversation
-                        ])->render();
+                        'conversation' => $conversation
+                    ])->render();
                     $response['status'] = 'success';
                 }
 
@@ -2286,12 +2290,12 @@ class ConversationsController extends Controller
 
         if ($conversation->customer_id) {
             $prev_conversations = $conversation->mailbox->conversations()
-                                    ->where('customer_id', $conversation->customer_id)
-                                    ->where('id', '<>', $conversation->id)
-                                    ->where('status', '!=', Conversation::STATUS_SPAM)
-                                    ->where('state', Conversation::STATE_PUBLISHED)
-                                    ->orderBy('created_at', 'desc')
-                                    ->paginate(500);
+                ->where('customer_id', $conversation->customer_id)
+                ->where('id', '<>', $conversation->id)
+                ->where('status', '!=', Conversation::STATUS_SPAM)
+                ->where('state', Conversation::STATE_PUBLISHED)
+                ->orderBy('created_at', 'desc')
+                ->paginate(500);
         }
 
         return view('conversations/ajax_html/merge_conv', [
@@ -2496,7 +2500,8 @@ class ConversationsController extends Controller
         }
 
         // Jump to the conversation if searching by conversation number.
-        if (count($conversations) == 1
+        if (
+            count($conversations) == 1
             && $conversations[0]->number == $q
             && empty($filters)
             && !$request->x_embed
@@ -2516,10 +2521,10 @@ class ConversationsController extends Controller
             $filters_list = \Eventy::filter('search.filters_list_customers', Customer::$search_filters, $mode, $filters, $q);
         }
 
-        $mailboxes = \Cache::remember('search_filter_mailboxes_'.$user->id, 5, function () use ($user) {
+        $mailboxes = \Cache::remember('search_filter_mailboxes_' . $user->id, 5, function () use ($user) {
             return $user->mailboxesCanView();
         });
-        $users = \Cache::remember('search_filter_users_'.$user->id, 5, function () use ($user, $mailboxes) {
+        $users = \Cache::remember('search_filter_users_' . $user->id, 5, function () use ($user, $mailboxes) {
             return \Eventy::filter('search.assignees', $user->whichUsersCanView($mailboxes), $user, $mailboxes);
         });
         $search_mailbox = null;
@@ -2636,7 +2641,7 @@ class ConversationsController extends Controller
         $q = $this->getSearchQuery($request);
 
         // Like is case insensitive.
-        $like = '%'.mb_strtolower($q).'%';
+        $like = '%' . mb_strtolower($q) . '%';
 
         // We need to use aggregate function for email to avoid "Grouping error" error in PostgreSQL.
         $query_customers = Customer::select(['customers.*', \DB::raw('MAX(emails.email)')])
@@ -2654,7 +2659,7 @@ class ConversationsController extends Controller
                     ->orWhere('customers.last_name', $like_op, $like)
                     ->orWhere('customers.company', $like_op, $like)
                     ->orWhere('customers.job_title', $like_op, $like)
-                    ->orWhere('customers.phones', $like_op, '%"'.\Helper::phoneToNumeric($q).'"%')
+                    ->orWhere('customers.phones', $like_op, '%"' . \Helper::phoneToNumeric($q) . '"%')
                     ->orWhere('customers.websites', $like_op, $like)
                     ->orWhere('customers.social_profiles', $like_op, $like)
                     ->orWhere('customers.address', $like_op, $like)
