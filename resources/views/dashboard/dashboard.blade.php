@@ -107,7 +107,7 @@
                 </div>
                 <div class="col-md-4">
                     <p class="stat-options">{{__('Hold Tickets')}}</p>
-                    <h1 class="stat-values">{{ $unclosedCreated30DaysAgoCount }}</h1>
+                    <h1 class="stat-values">{{ $holdTicket }}</h1>
                 </div>
             </div>
         </div>

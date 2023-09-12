@@ -27,7 +27,7 @@
                 <div class="col-sm-6">
                     <span class="circle circle-blue"></span>
                     <p class="donutp">{{__('Hold Tickets')}}</p>
-                    <p class="donutp">{{ $unclosedCreated30DaysAgoCount }}</p>
+                    <p class="donutp">{{ $holdTicket }}</p>
                 </div>
             </div>
         </div>
@@ -44,7 +44,7 @@
         var data = {
             datasets: [{
                 data: ["{{ $unclosedCount }}", "{{ $closedCount }}",
-                    "{{ $unclosedCreated30DaysAgoCount }}"
+                    "{{ $holdTicket }}"
                 ],
                 backgroundColor: ['#89F81B', 'red', '#173292'],
                 borderColor: 'transparent',
