@@ -7,7 +7,7 @@
             <div class="rpt-filters">
 
 
-                <div class="rpt-filter">
+                {{-- <div class="rpt-filter">
                     <label>
                         {{ __('Tickets Category') }}
                     </label>
@@ -18,8 +18,8 @@
                                 {{ $category }}</option>
                         @endforeach
                     </select>
-                </div>
-                <div class="rpt-filter">
+                </div> --}}
+                {{-- <div class="rpt-filter">
                     <label>
                         {{ __('Product') }}
                     </label>
@@ -30,7 +30,7 @@
                                 {{ $product }}</option>
                         @endforeach
                     </select>
-                </div>
+                </div> --}}
                 <div class="rpt-filter">
                     <label>
                         {{ __('Type') }}
@@ -106,8 +106,8 @@
                     <h1 class="stat-values">{{ $closedCount }}</h1>
                 </div>
                 <div class="col-md-4">
-                    <p class="stat-options">{{__('Hold Tickets')}}</p>
-                    <h1 class="stat-values">{{ $unclosedCreated30DaysAgoCount }}</h1>
+                    <p class="stat-options">{{__('Pending Tickets')}}</p>
+                    <h1 class="stat-values">{{ $holdTicket }}</h1>
                 </div>
             </div>
         </div>
@@ -210,7 +210,7 @@
         }
 
         .top-form {
-            display: flex;
+            display: flow-root;
             height: auto;
             align-items: center;
             justify-content: space-evenly;
