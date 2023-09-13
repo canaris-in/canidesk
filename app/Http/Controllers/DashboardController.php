@@ -154,25 +154,29 @@ class DashboardController extends Controller
             $productIndex = array_search($filters['product'], $productValues) + 1;
         }
 
-        $results = Conversation::select(
+        $query = Conversation::select(
             DB::raw('COUNT(*) as total_count'),
             DB::raw('COUNT(CASE WHEN folder_id = 1 THEN 1 ELSE NULL END) as unassigned_count'),
-            DB::raw('COUNT(CASE WHEN created_at = DATE_SUB(NOW(), INTERVAL 3 DAY) AND closed_at IS NULL THEN 1 END) as overdue_count'),
-            DB::raw('COUNT(CASE WHEN closed_at IS NULL THEN 1 END) as unclosed_count'),
-            DB::raw('COUNT(CASE WHEN closed_at IS NOT NULL THEN 1 END) as closed_tickets_count'),
-            DB::raw('COUNT(CASE WHEN status = 2 THEN 1 ELSE NULL END) as hold_ticket')
+            DB::raw('COUNT(CASE WHEN DATE_SUB(created_at, INTERVAL 3 DAY) AND folder_id != 4 AND folder_id != 6 THEN 1 END) as overdue_count'),
+            DB::raw('COUNT(CASE WHEN (status = 1 OR status = 2) AND folder_id != 6 THEN 1 ELSE NULL END) as unclosed_count'),
+            DB::raw('COUNT(CASE WHEN folder_id = 4 THEN 1 ELSE NULL END) as closed_tickets_count'),
+            DB::raw('COUNT(CASE WHEN status = 2 AND folder_id != 6 THEN 1 ELSE NULL END) as hold_ticket')
         );
-        if ($filters['from'] != 0 || $filters['to'] != 0) {
-            $results->whereBetween('created_at', [$filters['from'], $filters['to']]);
-        }
+
         if ($filters['type'] != 0) {
-            $results->where('conversations.type', $filters['type']);
+            $query->where('conversations.type', $filters['type']);
         }
         if ($filters['mailbox'] != 0) {
-            $results->where('conversations.mailbox_id', $filters['mailbox']);
+            $query->where('conversations.mailbox_id', $filters['mailbox']);
+        }
+        if (!empty($from)) {
+            $query->where($date_field, '>=', date('Y-m-d 00:00:00', strtotime($from)));
+        }
+        if (!empty($to)) {
+            $query->where($date_field_to, '<=', date('Y-m-d 23:59:59', strtotime($to)));
         }
 
-        $results = $results->first();
+        $results = $query->first();
 
         $totalCount = $results->total_count;
         $unassignedCount = $results->unassigned_count;
