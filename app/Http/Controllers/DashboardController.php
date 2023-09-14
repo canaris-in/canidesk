@@ -157,7 +157,7 @@ class DashboardController extends Controller
         $query = Conversation::select(
             DB::raw('COUNT(*) as total_count'),
             DB::raw('COUNT(CASE WHEN folder_id = 1 THEN 1 ELSE NULL END) as unassigned_count'),
-            DB::raw('COUNT(CASE WHEN DATE_SUB(created_at, INTERVAL 3 DAY) AND folder_id != 4 AND folder_id != 6 THEN 1 END) as overdue_count'),
+            DB::raw('COUNT(CASE WHEN created_at <= DATE_SUB(NOW(), INTERVAL 3 DAY) AND folder_id NOT IN (4, 6) THEN 1 END) as overdue_count'),
             DB::raw('COUNT(CASE WHEN (status = 1 OR status = 2) AND folder_id != 6 THEN 1 ELSE NULL END) as unclosed_count'),
             DB::raw('COUNT(CASE WHEN folder_id = 4 THEN 1 ELSE NULL END) as closed_tickets_count'),
             DB::raw('COUNT(CASE WHEN status = 2 AND folder_id != 6 THEN 1 ELSE NULL END) as hold_ticket')
