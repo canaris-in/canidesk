@@ -290,9 +290,6 @@
             </div>
         @endif
     </div>
-    <div class="phone-button">
-        <a href="{{ route('responsive.screen') }}"><i class="glyphicon glyphicon-phone"></i></a>
-    </div>
     
 
     <div id="loader-main"></div>
@@ -331,24 +328,5 @@
         @action('javascript', $__env->yieldContent('javascripts'))
     </script>
     @stack('scripts')
- <style>
-.phone-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #7da837;
-    color: #fff;
-    border-radius: 50%;
-    padding: 10px; 
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-    z-index: 1000;
-}
-
-.phone-button i {
-    font-size: 24px;
-    vertical-align: middle;
-}
-
-</style>   
 </body>
 </html>

@@ -21,8 +21,8 @@
                 <img class="mobilescreen" src="{{ asset('img/manu.jpeg') }}" alt="" height="600px" width="300px">
                 <img class="mobilescreen" src="{{ asset('img/customerservice.jpeg') }}" alt="" height="600px" width="300px">
                 <img class="mobilescreen" src="{{ asset('img/customerportal.jpeg') }}" alt="" height="600px" width="300px">
-            </div>
-            <div class="col-xs-12">
+            {{-- </div>
+            <div class="col-xs-12"> --}}
               <img class="mobilescreen" src="{{ asset('img/contactpage.jpeg') }}" alt="" height="600px" width="300px">
               <img class="mobilescreen" src="{{ asset('img/enduserportal.jpeg') }}" alt="" height="600px" width="300px">
               <img class="mobilescreen" src="{{ asset('img/workflow.jpeg') }}" alt="" height="600px" width="300px">
