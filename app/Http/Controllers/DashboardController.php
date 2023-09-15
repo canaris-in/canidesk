@@ -159,15 +159,15 @@ class DashboardController extends Controller
         // $totalCountQuery = clone $queryCommon;
 
         if ($filters['type'] != 0) {
-                 $queryCommon->where('conversations.type', $filters['type']);
-         }
-         if ($filters['mailbox'] != 0) {
-             $queryCommon->where('conversations.mailbox_id', $filters['mailbox']);
-         }
-         if (!empty($from)) {
-             $queryCommon->where($date_field, '>=', date('Y-m-d 00:00:00', strtotime($from)));
-         }
-         if (!empty($to)) {
+            $queryCommon->where('conversations.type', $filters['type']);
+        }
+        if ($filters['mailbox'] != 0) {
+            $queryCommon->where('conversations.mailbox_id', $filters['mailbox']);
+        }
+        if (!empty($from)) {
+            $queryCommon->where($date_field, '>=', date('Y-m-d 00:00:00', strtotime($from)));
+        }
+        if (!empty($to)) {
             $queryCommon->where($date_field_to, '<=', date('Y-m-d 23:59:59', strtotime($to)));
         }
         $unassignedCountQuery = clone $queryCommon;
@@ -181,13 +181,11 @@ class DashboardController extends Controller
         $overdueCount = $overdueCountQuery->where(function ($query) {
             $query->where('created_at', '<=', Carbon::now()->subDays(3))->orWhere('status', '!=', Conversation::STATUS_CLOSED);
         })->count();
-        $unclosedCount = $unclosedCountQuery->where(function($query){
+        $unclosedCount = $unclosedCountQuery->where(function ($query) {
             $query->where('status', Conversation::STATUS_ACTIVE)->orWhere('status', Conversation::STATUS_PENDING)->orWhere('status', '!=', Conversation::STATUS_CLOSED);
         })->count();
         $closedCount = $closedCountQuery->where('status', Conversation::STATUS_CLOSED)->count();
         $holdTicket = $holdTicketQuery->where('status', Conversation::STATUS_PENDING)->count();
-        // dd($holdTicket);
-
         // For Weekly data
         $startDate = now()->startOfWeek();
         $endDate = now()->endOfWeek();
@@ -196,8 +194,8 @@ class DashboardController extends Controller
         ];
 
 
-        $closedTickets = Conversation::selectRaw('DAYNAME(closed_at) as day, COUNT(*) as count')
-            ->whereBetween('closed_at', [$startDate, $endDate])
+        $closedTickets = Conversation::selectRaw('DAYNAME(created_at) as day, COUNT(*) as count')
+            ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('day')
             ->pluck('count', 'day')
             ->toArray();
@@ -207,6 +205,6 @@ class DashboardController extends Controller
             $tickets[$day] = $closedTickets[$day] ?? 0;
         }
 
-        return view('/dashboard/dashboard', compact('filters', 'categoryValues', 'productValues', 'totalCount', 'unassignedCount', 'overdueCount', 'unclosedCount', 'closedCount', 'holdTicket', 'tickets'));
+        return view('/dashboard/dashboard', compact('filters', 'categoryValues', 'productValues', 'totalCount', 'unassignedCount', 'overdueCount', 'unclosedCount', 'closedCount', 'holdTicket', 'tickets', 'closedTickets'));
     }
 }
