@@ -154,36 +154,39 @@ class DashboardController extends Controller
             $productIndex = array_search($filters['product'], $productValues) + 1;
         }
 
-        $query = Conversation::select(
-            DB::raw('COUNT(*) as total_count'),
-            DB::raw('COUNT(CASE WHEN folder_id = 1 THEN 1 ELSE NULL END) as unassigned_count'),
-            DB::raw('COUNT(CASE WHEN created_at <= DATE_SUB(NOW(), INTERVAL 3 DAY) AND folder_id NOT IN (4, 6) THEN 1 END) as overdue_count'),
-            DB::raw('COUNT(CASE WHEN (status = 1 OR status = 2) AND folder_id != 6 THEN 1 ELSE NULL END) as unclosed_count'),
-            DB::raw('COUNT(CASE WHEN folder_id = 4 THEN 1 ELSE NULL END) as closed_tickets_count'),
-            DB::raw('COUNT(CASE WHEN status = 2 AND folder_id != 6 THEN 1 ELSE NULL END) as hold_ticket')
-        );
+        // Unassigned count
+        $queryCommon = Conversation::select();
+        // $totalCountQuery = clone $queryCommon;
 
         if ($filters['type'] != 0) {
-            $query->where('conversations.type', $filters['type']);
+                 $queryCommon->where('conversations.type', $filters['type']);
+         }
+         if ($filters['mailbox'] != 0) {
+             $queryCommon->where('conversations.mailbox_id', $filters['mailbox']);
+         }
+         if (!empty($from)) {
+             $queryCommon->where($date_field, '>=', date('Y-m-d 00:00:00', strtotime($from)));
+         }
+         if (!empty($to)) {
+            $queryCommon->where($date_field_to, '<=', date('Y-m-d 23:59:59', strtotime($to)));
         }
-        if ($filters['mailbox'] != 0) {
-            $query->where('conversations.mailbox_id', $filters['mailbox']);
-        }
-        if (!empty($from)) {
-            $query->where($date_field, '>=', date('Y-m-d 00:00:00', strtotime($from)));
-        }
-        if (!empty($to)) {
-            $query->where($date_field_to, '<=', date('Y-m-d 23:59:59', strtotime($to)));
-        }
+        $unassignedCountQuery = clone $queryCommon;
+        $overdueCountQuery = clone $queryCommon;
+        $unclosedCountQuery = clone $queryCommon;
+        $closedCountQuery = clone $queryCommon;
+        $holdTicketQuery = clone $queryCommon;
 
-        $results = $query->first();
-
-        $totalCount = $results->total_count;
-        $unassignedCount = $results->unassigned_count;
-        $overdueCount = $results->overdue_count;
-        $unclosedCount = $results->unclosed_count;
-        $closedCount = $results->closed_tickets_count;
-        $holdTicket = $results->hold_ticket;
+        $totalCount = $queryCommon->count();
+        $unassignedCount = $unassignedCountQuery->whereNull('user_id')->count();
+        $overdueCount = $overdueCountQuery->where(function ($query) {
+            $query->where('created_at', '<=', Carbon::now()->subDays(3))->orWhere('status', '!=', Conversation::STATUS_CLOSED);
+        })->count();
+        $unclosedCount = $unclosedCountQuery->where(function($query){
+            $query->where('status', Conversation::STATUS_ACTIVE)->orWhere('status', Conversation::STATUS_PENDING)->orWhere('status', '!=', Conversation::STATUS_CLOSED);
+        })->count();
+        $closedCount = $closedCountQuery->where('status', Conversation::STATUS_CLOSED)->count();
+        $holdTicket = $holdTicketQuery->where('status', Conversation::STATUS_PENDING)->count();
+        // dd($holdTicket);
 
         // For Weekly data
         $startDate = now()->startOfWeek();
