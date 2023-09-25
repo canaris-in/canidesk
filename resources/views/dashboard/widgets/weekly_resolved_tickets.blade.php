@@ -11,10 +11,7 @@
             // Bar Chart
             var ctxBar = document.getElementById('barChart').getContext('2d');
             // Set chart data
-            const weeklyBarChart = ["{{ $tickets['Sunday'] }}", "{{ $tickets['Monday'] }}",
-                "{{ $tickets['Tuesday'] }}", "{{ $tickets['Wednesday'] }}", "{{ $tickets['Thursday'] }}",
-                "{{ $tickets['Friday'] }}", "{{ $tickets['Saturday'] }}"
-            ];
+            const weeklyBarChart = <?php echo json_encode($tickets); ?>;
 
             for (let i = 6; i >= 0; i--) {
                 const day = new Date(currentDate);

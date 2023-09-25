@@ -7,7 +7,7 @@
 
 @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             // Get the canvas element
             var ctxLine = document.getElementById('lineChart').getContext('2d');
 
@@ -25,10 +25,7 @@
                 weekNames.push(weekName);
             }
 
-            const data = ["{{ $tickets['Sunday'] }}", "{{ $tickets['Monday'] }}",
-                "{{ $tickets['Tuesday'] }}", "{{ $tickets['Wednesday'] }}", "{{ $tickets['Thursday'] }}",
-                "{{ $tickets['Friday'] }}", "{{ $tickets['Saturday'] }}"
-            ];
+            const data = <?php echo json_encode($sla); ?>;
 
 
             var chartData = {

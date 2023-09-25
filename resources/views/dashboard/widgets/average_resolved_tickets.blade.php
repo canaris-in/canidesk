@@ -15,11 +15,7 @@
                 labels: cValues,
                 datasets: [{
                     label: "{{__('Average resolved tickets')}}",
-                    data: ["{{ $tickets['Sunday'] }}", "{{ $tickets['Monday'] }}",
-                        "{{ $tickets['Tuesday'] }}", "{{ $tickets['Wednesday'] }}",
-                        "{{ $tickets['Thursday'] }}", "{{ $tickets['Friday'] }}",
-                        "{{ $tickets['Saturday'] }}"
-                    ],
+                    data: <?php echo json_encode($categoryTickets); ?>,
                     backgroundColor: '#2EA5FB', // Bar color
                     borderColor: 'rgba(54, 162, 235, 1)', // Border color
                     borderWidth: 1 // Border width

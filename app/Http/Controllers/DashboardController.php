@@ -133,7 +133,7 @@ class DashboardController extends Controller
             ->where('name', 'Product')->first();
 
         $productValues = [];
-        if (!empty($values)) {
+        if (!empty($productValue->options)) {
             $options = json_decode($productValue->options, true);
             foreach ($options as $key => $productValue) {
                 array_push($productValues, $productValue);
@@ -156,7 +156,6 @@ class DashboardController extends Controller
 
         // Unassigned count
         $queryCommon = Conversation::select();
-        // $totalCountQuery = clone $queryCommon;
 
         if ($filters['type'] != 0) {
             $queryCommon->where('conversations.type', $filters['type']);
@@ -170,22 +169,43 @@ class DashboardController extends Controller
         if (!empty($to)) {
             $queryCommon->where($date_field_to, '<=', date('Y-m-d 23:59:59', strtotime($to)));
         }
+        $totalCountQuery = clone $queryCommon;
         $unassignedCountQuery = clone $queryCommon;
         $overdueCountQuery = clone $queryCommon;
         $unclosedCountQuery = clone $queryCommon;
         $closedCountQuery = clone $queryCommon;
         $holdTicketQuery = clone $queryCommon;
 
-        $totalCount = $queryCommon->count();
-        $unassignedCount = $unassignedCountQuery->whereNull('user_id')->count();
+        $closedTicketChartQuery = clone $queryCommon;
+        $closedCountChartQuery = clone $queryCommon;
+        $slaTicketsChartQuery = clone $queryCommon;
+
+        $totalCount = $totalCountQuery->where(function ($query) {
+            $query->where('state', Conversation::STATE_PUBLISHED)
+                ->where('status', '!=', Conversation::STATUS_SPAM);
+        })->count();
+        $unassignedCount = $unassignedCountQuery->where(function ($query) {
+            $query->where('state', Conversation::STATE_PUBLISHED)
+                ->where('status', '!=', Conversation::STATUS_CLOSED)
+                ->whereNull('user_id');
+        })->count();
         $overdueCount = $overdueCountQuery->where(function ($query) {
-            $query->where('created_at', '<=', Carbon::now()->subDays(3))->orWhere('status', '!=', Conversation::STATUS_CLOSED);
+            $query->where('created_at', '<=', Carbon::now()->subDays(3))
+                ->where('state', Conversation::STATE_PUBLISHED)
+                ->Where('status', '!=', Conversation::STATUS_CLOSED);
         })->count();
         $unclosedCount = $unclosedCountQuery->where(function ($query) {
-            $query->where('status', Conversation::STATUS_ACTIVE)->orWhere('status', Conversation::STATUS_PENDING)->orWhere('status', '!=', Conversation::STATUS_CLOSED);
+            $query->where('state', Conversation::STATE_PUBLISHED)
+                ->where('status', '!=', Conversation::STATUS_CLOSED);
         })->count();
-        $closedCount = $closedCountQuery->where('status', Conversation::STATUS_CLOSED)->count();
-        $holdTicket = $holdTicketQuery->where('status', Conversation::STATUS_PENDING)->count();
+        $closedCount = $closedCountQuery->where(function ($query) {
+            $query->where('state', Conversation::STATE_PUBLISHED)
+                ->where('status', Conversation::STATUS_CLOSED);
+        })->count();
+        $holdTicket = $holdTicketQuery->where(function ($query) {
+            $query->where('state', Conversation::STATE_PUBLISHED)
+                ->where('status', Conversation::STATUS_PENDING);
+        })->count();
         // For Weekly data
         $startDate = now()->startOfWeek();
         $endDate = now()->endOfWeek();
@@ -193,18 +213,66 @@ class DashboardController extends Controller
             'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
         ];
 
-
-        $closedTickets = Conversation::selectRaw('DAYNAME(created_at) as day, COUNT(*) as count')
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->groupBy('day')
-            ->pluck('count', 'day')
-            ->toArray();
-
-        $tickets = [];
-        foreach ($daysOfWeek as $day) {
-            $tickets[$day] = $closedTickets[$day] ?? 0;
+        //close ticket Category wise chart
+        $indexes = [];
+        for ($i = 1; $i <= count($categoryValues); $i++) {
+            $indexes[] = $i;
         }
+        $closedTicketChartCategory = $closedTicketChartQuery->whereHas('customFields', function ($query) use ($indexes) {
+            $query->where('name', 'Ticket Category')
+            ->where('conversation_custom_field.value', $indexes);
+        });
 
-        return view('/dashboard/dashboard', compact('filters', 'categoryValues', 'productValues', 'totalCount', 'unassignedCount', 'overdueCount', 'unclosedCount', 'closedCount', 'holdTicket', 'tickets', 'closedTickets'));
+        $closedTicketChart = $closedTicketChartCategory->where(function ($query) {
+            $query->where('state', Conversation::STATE_PUBLISHED)
+            ->where('status', Conversation::STATUS_CLOSED);
+        });
+
+        $closedTicketByDayOfWeek = $closedTicketChart
+            ->selectRaw('DAYOFWEEK(created_at) AS day_of_week, COUNT(*) AS count')
+            ->groupBy('day_of_week')
+            ->get();
+
+        $categoryTickets = array_fill(0, 7, 0);
+        foreach ($closedTicketByDayOfWeek as $result) {
+            // The day_of_week value is 1-based, so subtract 1 to get the correct index
+            $dayOfWeek = $result->day_of_week - 1;
+            $categoryTickets[$dayOfWeek] = $result->count;
+        }
+        //close ticket day of week wise chart
+        $closedCountChart = $closedCountChartQuery->where(function ($query) {
+            $query->where('state', Conversation::STATE_PUBLISHED)
+                ->where('status', Conversation::STATUS_CLOSED);
+        });
+
+        $closedCountByDayOfWeek = $closedCountChart
+            ->selectRaw('DAYOFWEEK(created_at) AS day_of_week, COUNT(*) AS count')
+            ->groupBy('day_of_week')
+            ->get();
+
+        $tickets = array_fill(0, 7, 0);
+        foreach ($closedCountByDayOfWeek as $result) {
+            // The day_of_week value is 1-based, so subtract 1 to get the correct index
+            $dayOfWeek = $result->day_of_week - 1;
+            $tickets[$dayOfWeek] = $result->count;
+        }
+        //sla chart
+        $slaTicketsChart = $slaTicketsChartQuery->where(function ($query) {
+            $query->where('created_at', '<=', Carbon::now()->subDays(3))
+                ->where('state', Conversation::STATE_PUBLISHED)
+                ->Where('status', '!=', Conversation::STATUS_CLOSED);
+        });
+        $slaTicketsCount = $slaTicketsChart
+            ->selectRaw('DAYOFWEEK(created_at) AS day_of_week, COUNT(*) AS count')
+            ->groupBy('day_of_week')
+            ->get();
+
+        $sla = array_fill(0, 7, 0);
+        foreach ($slaTicketsCount as $result) {
+            // The day_of_week value is 1-based, so subtract 1 to get the correct index
+            $dayOfWeek = $result->day_of_week - 1;
+            $sla[$dayOfWeek] = $result->count;
+        }
+        return view('/dashboard/dashboard', compact('filters', 'categoryValues', 'productValues', 'totalCount', 'unassignedCount', 'overdueCount', 'unclosedCount', 'closedCount', 'holdTicket', 'tickets', 'sla','categoryTickets'));
     }
 }

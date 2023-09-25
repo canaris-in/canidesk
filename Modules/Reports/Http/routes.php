@@ -7,4 +7,5 @@ Route::group(['middleware' => 'web', 'prefix' => \Helper::getSubdirectory(), 'na
     Route::get('/reports/satisfaction', ['uses' => 'ReportsController@satisfactionReport', 'middleware' => ['auth', 'roles'], 'roles' => ['user', 'admin','ithead','ticketEngineer','ticketCoordinator']])->name('reports.satisfaction');
     Route::get('/reports/time-tracking', ['uses' => 'ReportsController@timeReport', 'middleware' => ['auth', 'roles'], 'roles' => ['user', 'admin','ithead','ticketEngineer','ticketCoordinator']])->name('reports.time');
     Route::post('/reports/ajax', ['uses' => 'ReportsController@ajax', 'middleware' => ['auth', 'roles'], 'roles' => ['user', 'admin','ithead','ticketEngineer','ticketCoordinator'], 'laroute' => true])->name('reports.ajax');
+    Route::get('/reports/export/', 'ReportsController@exportActiveAndClosedTickets')->name('reports.export');
 });
