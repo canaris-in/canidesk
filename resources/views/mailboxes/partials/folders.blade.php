@@ -21,9 +21,9 @@
 
                 @if ($active_count)
                     @if ($folder_item->type == App\Folder::TYPE_UNASSIGNED || $folder_item->type == App\Folder::TYPE_MINE)
-                        <strong class="active-count pull-right" data-toggle="tooltip" title="{{ __("Active Conversations") }}">{{ $active_count }}</strong>
+                        <strong class="active-count pull-right" data-toggle="tooltip" title="{{ __("Active Conversations") }}">{{ $active_count-1 }}</strong>
                     @else
-                        <span class="active-count pull-right" data-toggle="tooltip" title="{{ __("Active Conversations") }}">{{ $active_count }}</span>
+                        <span class="active-count pull-right" data-toggle="tooltip" title="{{ __("Active Conversations") }}">{{ $active_count-1 }}</span>
                     @endif
                 @endif
             </a>

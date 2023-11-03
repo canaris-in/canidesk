@@ -12,7 +12,7 @@
                         {{ __('Tickets Category') }}
                     </label>
                     <select class="form-control" name="ticket">
-                        <option value="0">{{__('All')}}</option>
+                        <option value="0">{{ __('All') }}</option>
                         @foreach ($categoryValues as $category)
                             <option value="{{ $category }}" {{ $filters['ticket'] === $category ? 'selected' : '' }}>
                                 {{ $category }}</option>
@@ -24,7 +24,7 @@
                         {{ __('Product') }}
                     </label>
                     <select class="form-control" name="product">
-                        <option value="0">{{__('All')}}</option>
+                        <option value="0">{{ __('All') }}</option>
                         @foreach ($productValues as $product)
                             <option value="{{ $product }}" {{ $filters['product'] === $product ? 'selected' : '' }}>
                                 {{ $product }}</option>
@@ -36,7 +36,7 @@
                         {{ __('Type') }}
                     </label>
                     <select class="form-control" name="type">
-                        <option value="0">{{__('All')}}</option>
+                        <option value="0">{{ __('All') }}</option>
                         <option value="{{ App\Conversation::TYPE_EMAIL }}"
                             {{ $filters['type'] == App\Conversation::TYPE_EMAIL ? 'selected' : '' }}>{{ __('Email') }}
                         </option>
@@ -53,7 +53,7 @@
                         {{ __('Mailbox') }}
                     </label>
                     <select class="form-control" name="mailbox">
-                        <option value="0">{{__('All')}}</option>
+                        <option value="0">{{ __('All') }}</option>
                         @foreach (Auth::user()->mailboxesCanView(true) as $mailbox)
                             <option value="{{ $mailbox->id }}"
                                 {{ $filters['mailbox'] == $mailbox->id ? 'selected' : '' }}>{{ $mailbox->name }}</option>
@@ -76,6 +76,9 @@
             </div>
 
         </form>
+    </div>
+    <div class="container report-container sla_chart">
+        @include('sla.widgets.sla_breach')
     </div>
     <div class="container report-container">
         <p style="font-weight: bold;width: 20%;float: left;">{{ __('SLA REPORT') }}</p>
@@ -118,10 +121,12 @@
                             $name = $customField['name'];
                             $value = $item['value'];
                             $optionValue = null;
-                            foreach ($options as $key => $option) {
-                                if ($key == $value) {
-                                    $optionValue = $option;
-                                    break;
+                            if (isset($options) && (is_array($options) || $options instanceof Countable) && count($options) > 0) {
+                                foreach ($options as $key => $option) {
+                                    if ($key == $value) {
+                                        $optionValue = $option;
+                                        break;
+                                    }
                                 }
                             }
                         @endphp
@@ -184,31 +189,33 @@
                         }
 
                     @endphp
-                   @foreach ($user_email_permissions as $permissions_email)
-                   @if($MailboxName->name==$permissions_email->name)
-                   <tr>
-                    <td class="custom-cell">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="">
-                            <label class="form-check-label" for="defaultCheck1">
-                            </label>
-                        </div>
-                    </td>
-                    <td class="custom-cell">#{{ $ticket->number }}</td>
-                    <td class="custom-cell"><span class="tag tag-{{ $status }}">{{ $status }}</span>
-                    </td>
-                    <td class="custom-cell">{{ isset($ticketPriority) ? $ticketPriority : '-' }}</td>
-                    <td class="custom-cell">
-                        {{ $ticket->user ? $ticket->user->first_name . ' ' . $ticket->user->last_name : '-' }}</td>
-                    <td class="custom-cell">{{ isset($ticketCategory) ? $ticketCategory : '-' }}</td>
-                    <td class="custom-cell">{{ $ticket->subject }}</td>
-                    <td class="custom-cell">{{ $MailboxName->name ? $MailboxName->name : '-' }}</td>
-                    <td class="custom-cell">{{ isset($ticketEscalate) ? 'YES' : 'NO' }}</td>
-                    <td class="custom-cell">{{ $ticket->created_at }}</td>
-                    <td class="custom-cell">{{ $restime }}</td>
-                </tr>
-                   @endif
-                   @endforeach
+                    @foreach ($user_email_permissions as $permissions_email)
+                        @if ($MailboxName->name == $permissions_email->name)
+                            <tr>
+                                <td class="custom-cell">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                        </label>
+                                    </div>
+                                </td>
+                                <td class="custom-cell">#{{ $ticket->number }}</td>
+                                <td class="custom-cell"><span
+                                        class="tag tag-{{ $status }}">{{ $status }}</span>
+                                </td>
+                                <td class="custom-cell">{{ isset($ticketPriority) ? $ticketPriority : '-' }}</td>
+                                <td class="custom-cell">
+                                    {{ $ticket->user ? $ticket->user->first_name . ' ' . $ticket->user->last_name : '-' }}
+                                </td>
+                                <td class="custom-cell">{{ isset($ticketCategory) ? $ticketCategory : '-' }}</td>
+                                <td class="custom-cell">{{ $ticket->subject }}</td>
+                                <td class="custom-cell">{{ $MailboxName->name ? $MailboxName->name : '-' }}</td>
+                                <td class="custom-cell">{{ isset($ticketEscalate) ? 'YES' : 'NO' }}</td>
+                                <td class="custom-cell">{{ $ticket->created_at }}</td>
+                                <td class="custom-cell">{{ $restime }}</td>
+                            </tr>
+                        @endif
+                    @endforeach
                 @endforeach
             </tbody>
         </table>
@@ -353,10 +360,10 @@
 
         @media screen and (max-width: 640px) {
             div.dt-buttons {
-            float: right !important;
-            text-align: center !important;
+                float: right !important;
+                text-align: center !important;
+            }
         }
-    }
 
         */ .dm .form-control {
             display: inline;
@@ -450,8 +457,18 @@
             background: #131414 !important;
             border-radius: 6px !important;
         }
+        .sla_chart{
+            background-color: #ffff !important;
+        }
+        .lineChart{
+            height: 260px !important;
+        }
     </style>
 @endsection
+
+@push('vendor_libraries')
+    <script src="/public/js/chart.js"></script>
+@endpush
 
 @section('javascript')
     <script src="/js/jquery-3.5.1.js"></script>

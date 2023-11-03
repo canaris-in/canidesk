@@ -262,6 +262,9 @@
             background-color: #173292;
         }
 
+        .circle-cyan {
+            background-color: #00FFFF;
+        }
         .dm .form-control {
             display: inline;
             width: 140px;
@@ -290,7 +293,7 @@
             background: #1D1C24;
             padding: 4px;
             border-radius: 4px;
-            height: 350px;
+            height: 267px;
             width: 100%;
         }
 
@@ -302,7 +305,7 @@
             background: #eeeeee;
             padding: 4px;
             border-radius: 4px;
-            height: 350px;
+            height: 267px;
             width: 100%;
         }
 
@@ -333,7 +336,7 @@
             background: #1D1C24;
             padding: 4px;
             border-radius: 4px;
-            height: 350px;
+            height: 267px;
             width: 100%;
         }
 
@@ -345,7 +348,7 @@
             background: #eeeeee;
             padding: 4px;
             border-radius: 4px;
-            height: 350px;
+            height: 267px;
             width: 100%;
         }
 
@@ -357,7 +360,7 @@
             background: #1D1C24;
             padding: 4px;
             border-radius: 4px;
-            height: 350px;
+            height: 267px;
             justify-content: center;
             width: 100%;
         }
@@ -370,7 +373,7 @@
             background: #eeeeee;
             padding: 4px;
             border-radius: 4px;
-            height: 350px;
+            height: 267px;
             justify-content: center;
             width: 100%;
         }
@@ -383,7 +386,7 @@
             background: #1D1C24;
             padding: 4px;
             border-radius: 4px;
-            height: 350px;
+            height: 267px;
             width: 100%;
         }
 
@@ -395,7 +398,7 @@
             background: #eeeeee;
             padding: 4px;
             border-radius: 4px;
-            height: 350px;
+            height: 267px;
             width: 100%;
         }
 

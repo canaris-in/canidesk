@@ -15,7 +15,7 @@ class SlaReportController extends Controller
     public function permissionsforSLA()
     {
         $user = auth()->user();
-        $user = User::findOrFail( $user->id);
+        $user = User::findOrFail($user->id);
         return $user->mailboxes;
     }
 
@@ -40,11 +40,11 @@ class SlaReportController extends Controller
         ];
 
 
-          //Filter accourding timezon
-          if($request->has('from') && $request->has('to')){
+        //Filter accourding timezon
+        if ($request->has('from') && $request->has('to')) {
             $from = $request->input('from');
             $to =  $request->input('to');
-        }else{
+        } else {
             $from = Carbon::today()->subDays(7);
             $to = Carbon::today();
             $filters['from'] = $from->format('Y-m-d');
@@ -73,53 +73,51 @@ class SlaReportController extends Controller
 
         // Ticket Category Labels for Filters
         $values = DB::table('custom_fields')
-        ->where('name', 'Ticket Category')
-        ->pluck('options');
+            ->where('name', 'Ticket Category')
+            ->pluck('options');
 
-       $categoryValues = [];
-       if(!empty($values)){
-           try{
-               $options = json_decode($values[0], true);
-               foreach ($options as $key => $value) {
-                   array_push($categoryValues, $value);
-               }
-           }catch(Exception $ex){
+        $categoryValues = [];
+        if (!empty($values)) {
+            try {
+                $options = json_decode($values[0], true);
+                foreach ($options as $key => $value) {
+                    array_push($categoryValues, $value);
+                }
+            } catch (Exception $ex) {
+            }
+        }
+        // Product value Labels
+        $values = DB::table('custom_fields')
+            ->where('name', 'Product')
+            ->pluck('options');
 
-           }
-       }
-       // Product value Labels
-       $values = DB::table('custom_fields')
-           ->where('name', 'Product')
-           ->pluck('options');
+        $productValues = [];
+        if (!empty($values)) {
+            try {
+                $options = json_decode($values[0], true);
+                foreach ($options as $key => $value) {
+                    array_push($productValues, $value);
+                }
+            } catch (Exception $ex) {
+            }
+        }
 
-       $productValues = [];
-       if(!empty($values)){
-           try{
-               $options = json_decode($values[0], true);
-               foreach ($options as $key => $value) {
-                   array_push($productValues, $value);
-               }
-           }catch(Exception $ex){
+        $categoryIndex = '';
+        $productIndex = '';
 
-           }
-       }
-
-       $categoryIndex = '';
-       $productIndex = '';
-
-       if ( $filters['ticket'] === '0' || $filters['ticket'] === null) {
-           $categoryIndex = 0;
-       } else {
-           $categoryIndex = array_search($filters['ticket'], $categoryValues) + 1;
-       }
-       if ($filters['product'] === '0' || $filters['product'] === null) {
-           $productIndex = 0;
-       } else {
-           $productIndex = array_search($filters['product'], $productValues) + 1;
-       }
+        if ($filters['ticket'] === '0' || $filters['ticket'] === null) {
+            $categoryIndex = 0;
+        } else {
+            $categoryIndex = array_search($filters['ticket'], $categoryValues) + 1;
+        }
+        if ($filters['product'] === '0' || $filters['product'] === null) {
+            $productIndex = 0;
+        } else {
+            $productIndex = array_search($filters['product'], $productValues) + 1;
+        }
 
         $tickets = Conversation::query();
-        $tickets = $tickets->with('user', 'conversationCustomField.custom_field', 'conversationCategory','conversationPriority','conversationEscalated');
+        $tickets = $tickets->with('user', 'conversationCustomField.custom_field', 'conversationCategory', 'conversationPriority', 'conversationEscalated');
         if (!empty($categoryIndex) || !empty($productIndex)) {
             $tickets = $tickets->join('conversation_custom_field', 'conversations.id', '=', 'conversation_custom_field.conversation_id')
                 ->join('custom_fields', 'conversation_custom_field.custom_field_id', '=', 'custom_fields.id')
@@ -144,9 +142,40 @@ class SlaReportController extends Controller
             $tickets->where($date_field_to, '<=', date('Y-m-d 23:59:59', strtotime($to)));
         }
 
-        $tickets = $tickets->where('conversations.threads_count', '!=', '0')->get();
-        $user_email_permissions=$this->permissionsforSLA();;
+        $slaTicketsChartQuery = clone $tickets;
+        $slaTicketsChartQueryAll = clone $tickets;
 
-        return view('sla/report', compact('tickets','categoryValues','productValues','filters','user_email_permissions'));
+        $tickets = $tickets->where('conversations.threads_count', '!=', '0')->get();
+
+        //sla chart
+        $slaTicketsChart = $slaTicketsChartQuery->where(function ($query) {
+            $query->where('created_at', '<=', Carbon::now()->subDays(3))
+                ->where('state', Conversation::STATE_PUBLISHED)
+                ->Where('status', '!=', Conversation::STATUS_CLOSED);
+        });
+
+        $slaTicketsCount = $slaTicketsChart
+            ->selectRaw('DATE_FORMAT(created_at, "%e %b") AS date, COUNT(*) AS count')
+            ->groupBy('date')
+            ->get();
+
+        $sla = [];
+        foreach ($slaTicketsCount as $result) {
+            $sla[$result->date] = $result->count;
+        }
+        //all data
+        $slaTicketsCount = $slaTicketsChartQueryAll
+            ->selectRaw('DATE_FORMAT(created_at, "%e %b") AS date, COUNT(*) AS count')
+            ->groupBy('date')
+            ->get();
+
+        $sla_all = [];
+        foreach ($slaTicketsCount as $result) {
+            $sla_all[$result->date] = $result->count;
+        }
+        // dd($sla_all);
+        $user_email_permissions = $this->permissionsforSLA();;
+
+        return view('sla/report', compact('tickets', 'categoryValues', 'productValues', 'filters', 'user_email_permissions', 'sla','sla_all'));
     }
 }
