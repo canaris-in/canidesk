@@ -173,7 +173,7 @@ class SlaReportController extends Controller
         foreach ($slaTicketsCount as $result) {
             $sla_all[$result->date] = $result->count;
         }
-        // dd($sla_all);
+
         $user_email_permissions = $this->permissionsforSLA();;
 
         return view('sla/report', compact('tickets', 'categoryValues', 'productValues', 'filters', 'user_email_permissions', 'sla','sla_all'));

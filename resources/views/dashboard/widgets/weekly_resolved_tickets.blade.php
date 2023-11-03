@@ -28,7 +28,7 @@
                 datasets: [{
                     label: "{{__('Average resolved tickets')}}",
                     data: weeklyBarChart,
-                    backgroundColor: '#2EA5FB', // Bar color
+                    backgroundColor: 'rgba(46,165,251, 0.7)', // Bar color
                     borderColor: 'rgba(54, 162, 235, 1)', // Border color
                     borderWidth: 1 // Border width
                 }]

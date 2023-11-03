@@ -33,7 +33,7 @@
                 datasets: [{
                     label: "{{ __('Average Time Taken To Close Within SLA') }}",
                     data: data,
-                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                    backgroundColor: 'rgba(46,165,251, 0.7)',
                     borderColor: 'rgba(0, 123, 255, 1)',
                     borderWidth: 1
                 }]
