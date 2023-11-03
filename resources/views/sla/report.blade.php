@@ -87,7 +87,7 @@
                 <tr>
                     <th class="custom-cell">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="selectAll">
+                            <input class="form-check-input" type="checkbox" value="" id="selectAll" onClick="toggle(this)">
                         </div>
                     </th>
                     <th class="custom-cell">{{ __('TICKET NO') }}</th>
@@ -194,7 +194,7 @@
                             <tr>
                                 <td class="custom-cell">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="">
+                                        <input class="form-check-input" type="checkbox" value="" name="selectAll">
                                         <label class="form-check-label" for="defaultCheck1">
                                         </label>
                                     </div>
@@ -457,10 +457,12 @@
             background: #131414 !important;
             border-radius: 6px !important;
         }
-        .sla_chart{
+
+        .sla_chart {
             background-color: #ffff !important;
         }
-        .lineChart{
+
+        .lineChart {
             height: 260px !important;
         }
     </style>
@@ -513,6 +515,13 @@
 
         function refreshPage() {
             location.reload();
+        }
+
+        function toggle(source) {
+            checkboxes = document.getElementsByName('selectAll');
+            for (var i = 0, n = checkboxes.length; i < n; i++) {
+                checkboxes[i].checked = source.checked;
+            }
         }
     </script>
 @endsection
