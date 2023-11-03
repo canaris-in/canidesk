@@ -4,12 +4,15 @@ namespace Modules\Reports\Http\Controllers;
 
 use App\Conversation;
 use App\Customer;
+use App\Email;
+use App\Mailbox;
 use App\Thread;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 
 class ReportsController extends Controller
 {
@@ -18,7 +21,7 @@ class ReportsController extends Controller
         $this->checkPermissions();
 
         $filters['to'] = User::dateFormat(date('Y-m-d H:i:s'), 'Y-m-d', null, false);
-        $filters['from'] = date('Y-m-d', strtotime($filters['to'].' -1 week'));
+        $filters['from'] = date('Y-m-d', strtotime($filters['to'] . ' -1 week'));
 
         return view('reports::conversations', [
             'filters' => $filters
@@ -30,8 +33,8 @@ class ReportsController extends Controller
         $this->checkPermissions();
 
         $filters['to'] = User::dateFormat(date('Y-m-d H:i:s'), 'Y-m-d', null, false);
-        $filters['from'] = date('Y-m-d', strtotime($filters['to'].' -1 week'));
-        
+        $filters['from'] = date('Y-m-d', strtotime($filters['to'] . ' -1 week'));
+
         return view('reports::productivity', [
             'filters' => $filters
         ]);
@@ -42,8 +45,8 @@ class ReportsController extends Controller
         $this->checkPermissions();
 
         $filters['to'] = User::dateFormat(date('Y-m-d H:i:s'), 'Y-m-d', null, false);
-        $filters['from'] = date('Y-m-d', strtotime($filters['to'].' -1 week'));
-        
+        $filters['from'] = date('Y-m-d', strtotime($filters['to'] . ' -1 week'));
+
         return view('reports::satisfaction', [
             'filters' => $filters
         ]);
@@ -54,20 +57,20 @@ class ReportsController extends Controller
         $this->checkPermissions();
 
         $filters['to'] = User::dateFormat(date('Y-m-d H:i:s'), 'Y-m-d', null, false);
-        $filters['from'] = date('Y-m-d', strtotime($filters['to'].' -1 week'));
-        
+        $filters['from'] = date('Y-m-d', strtotime($filters['to'] . ' -1 week'));
+
         return view('reports::time', [
             'filters' => $filters
         ]);
     }
 
-	/**
+    /**
      * Ajax controller.
      */
     public function ajax(Request $request)
     {
         $this->checkPermissions();
-        
+
         $response = [
             'status' => 'error',
             'msg'    => '', // this is error message
@@ -78,7 +81,7 @@ class ReportsController extends Controller
         switch ($request->action) {
 
             case 'report':
-                
+
                 switch ($request->report_name) {
                     case \Reports::REPORT_CONVERSATIONS:
                         $data = $this->getReportDataConversations($request);
@@ -87,7 +90,7 @@ class ReportsController extends Controller
                     case \Reports::REPORT_PRODUCTIVITY:
                         $data = $this->getReportDataProductivity($request);
                         break;
-                        
+
                     case \Reports::REPORT_SATISFACTION:
                         $data = $this->getReportSatisfaction($request);
                         break;
@@ -97,7 +100,7 @@ class ReportsController extends Controller
                         break;
                 }
 
-                $response['report'] = view('reports::partials/report_'.$request->report_name, $data)->render();
+                $response['report'] = view('reports::partials/report_' . $request->report_name, $data)->render();
                 $response['chart'] = $data['chart'];
                 $response['status'] = 'success';
                 break;
@@ -157,7 +160,7 @@ class ReportsController extends Controller
             case 'new_conv':
                 $data['chart'] = $this->chartNewConv($data['chart'], $request);
                 break;
-            
+
             case 'messages':
                 $data['chart'] = $this->chartMessages($data['chart'], $request);
                 break;
@@ -219,7 +222,7 @@ class ReportsController extends Controller
                     $this->chartCustomersHelpedData($request, true)
                 );
                 break;
-            
+
             case 'replies':
                 $data['chart'] = $this->getChart(
                     $data['chart'],
@@ -227,7 +230,7 @@ class ReportsController extends Controller
                     $this->chartRepliesData($request),
                     $this->chartRepliesData($request, true)
                 );
-                break;   
+                break;
 
             case 'closed':
                 $data['chart'] = $this->getChart(
@@ -254,7 +257,7 @@ class ReportsController extends Controller
 
         $data['table_first_response_time'] = $this->tableFirstResponseTime($metas_response, $metas_response_prev ?: $metas_response);
         $data['table_response_time'] = $this->tableResponseTime($metas_response, $metas_response_prev ?: $metas_response);
-        
+
         return $data;
     }
 
@@ -268,7 +271,7 @@ class ReportsController extends Controller
     }
 
     /**
-     * Number of conversations touched (received, replied to, status changed, 
+     * Number of conversations touched (received, replied to, status changed,
      * assigned, workflow activated on), excluding spam and deleted conversations.
      */
     public function countTotalConv($request, $prev = false)
@@ -289,7 +292,7 @@ class ReportsController extends Controller
     {
         $query = Conversation::where('state', Conversation::STATE_PUBLISHED)
             ->where('status', '!=', Conversation::STATUS_SPAM);
-        
+
         $this->applyFilter($query, $request, $prev);
 
         return $query->count();
@@ -306,7 +309,7 @@ class ReportsController extends Controller
                 $join->on('conversations.id', '=', 'threads.conversation_id');
             })
             ->where('threads.type', Thread::TYPE_CUSTOMER);
-        
+
         $this->applyFilter($query, $request, $prev, 'threads.created_at');
 
         return $query->count();
@@ -455,16 +458,16 @@ class ReportsController extends Controller
             if (count($custom_fields)) {
                 foreach ($custom_fields as $custom_field) {
                     if (!empty($request->filters['custom_field'][$custom_field->id])) {
-                        $join_alias = 'ccf'.$custom_field->id;
+                        $join_alias = 'ccf' . $custom_field->id;
                         $value = $request->filters['custom_field'][$custom_field->id];
 
-                        $query->join('conversation_custom_field as '.$join_alias, function ($join) use ($custom_field, $value, $join_alias) {
-                            $join->on('conversations.id', '=', $join_alias.'.conversation_id');
-                            $join->where($join_alias.'.custom_field_id', $custom_field->id);
+                        $query->join('conversation_custom_field as ' . $join_alias, function ($join) use ($custom_field, $value, $join_alias) {
+                            $join->on('conversations.id', '=', $join_alias . '.conversation_id');
+                            $join->where($join_alias . '.custom_field_id', $custom_field->id);
                             if ($custom_field->type == \Modules\CustomFields\Entities\CustomField::TYPE_MULTI_LINE) {
-                                $join->where($join_alias.'.value', 'like', '%'.$value.'%');
+                                $join->where($join_alias . '.value', 'like', '%' . $value . '%');
                             } else {
-                                $join->where($join_alias.'.value', $value);
+                                $join->where($join_alias . '.value', $value);
                             }
                         });
                     }
@@ -504,7 +507,7 @@ class ReportsController extends Controller
         }
         return $group_by;
     }
-    
+
     public function chartNewConv($chart, $request)
     {
         $categories = $this->chartCategories($chart, $request);
@@ -512,7 +515,7 @@ class ReportsController extends Controller
         $chart['categories'] = $this->chartCategories($chart, $request, true);
 
         $chart = $this->chartAddSeries(
-            $chart, 
+            $chart,
             $this->chartNewConvData($request, $categories),
             $this->chartNewConvData($request, $categories, true)
         );
@@ -527,7 +530,7 @@ class ReportsController extends Controller
         $chart['categories'] = $this->chartCategories($chart, $request, true);
 
         $chart = $this->chartAddSeries(
-            $chart, 
+            $chart,
             $this->chartMessagesData($request, $categories),
             $this->chartMessagesData($request, $categories, true)
         );
@@ -552,7 +555,7 @@ class ReportsController extends Controller
                     case 'd':
                         $category = $to->format('M j');
                         break;
-                    
+
                     case 'w':
                         $category = $to->format('M j');
                         break;
@@ -569,7 +572,7 @@ class ReportsController extends Controller
                 case 'd':
                     $to->subDay();
                     break;
-                
+
                 case 'w':
                     $to->subWeek();
                     break;
@@ -578,7 +581,6 @@ class ReportsController extends Controller
                     $to->subMonth();
                     break;
             }
-            
         }
 
         return $categories;
@@ -641,7 +643,7 @@ class ReportsController extends Controller
         if ($prev) {
             $days = $this->prevDiffInDays($request);
             foreach ($dates as $i => $date) {
-                $dates[$i] = date('Y-m-d', strtotime($date) - $days*24*60*60);
+                $dates[$i] = date('Y-m-d', strtotime($date) - $days * 24 * 60 * 60);
             }
         }
 
@@ -649,7 +651,7 @@ class ReportsController extends Controller
         foreach ($dates as $i => $date) {
             foreach ($stats as $stat) {
                 if (($i == 0 && strtotime($stat['updated_date']) <= strtotime($date))
-                    || (strtotime($stat['updated_date']) <= strtotime($date) && strtotime($stat['updated_date']) > strtotime($dates[$i-1]))
+                    || (strtotime($stat['updated_date']) <= strtotime($date) && strtotime($stat['updated_date']) > strtotime($dates[$i - 1]))
                 ) {
                     $data[] = (int)$stat['conv_count'];
                     continue 2;
@@ -830,7 +832,7 @@ class ReportsController extends Controller
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'threads.conversation_id');
             });
-        
+
         $this->applyFilter($query, $request, $prev, 'threads.created_at');
 
         return $query->count();
@@ -872,12 +874,12 @@ class ReportsController extends Controller
     public function countClosed($request, $prev = false)
     {
         $query = Thread::where(function ($q) {
-                $q->where(function ($q2) {
-                        $q2->where('threads.type', Thread::TYPE_LINEITEM)
-                            ->where('threads.action_type', Thread::ACTION_TYPE_STATUS_CHANGED);
-                    })
-                    ->orWhere('threads.type', Thread::TYPE_MESSAGE);
+            $q->where(function ($q2) {
+                $q2->where('threads.type', Thread::TYPE_LINEITEM)
+                    ->where('threads.action_type', Thread::ACTION_TYPE_STATUS_CHANGED);
             })
+                ->orWhere('threads.type', Thread::TYPE_MESSAGE);
+        })
             ->where('threads.status', Thread::STATUS_CLOSED)
             ->where('threads.created_by_user_id', '!=', null)
             ->where('conversations.status', Conversation::STATUS_CLOSED)
@@ -885,7 +887,7 @@ class ReportsController extends Controller
                 $join->on('conversations.id', '=', 'threads.conversation_id');
             })
             ->distinct('conversations.id');
-        
+
         $this->applyFilter($query, $request, $prev, 'threads.created_at');
 
         return $query->count('conversations.id');
@@ -895,7 +897,7 @@ class ReportsController extends Controller
     public function getMetasResolution($request, $prev = false)
     {
         $query = Conversation::where('meta', '!=', '');
-        
+
         $this->applyFilter($query, $request, $prev, 'created_at', 'closed_at');
 
         return $query->pluck('meta');
@@ -906,14 +908,14 @@ class ReportsController extends Controller
         $robots_ids = User::getRobotsCondition()->pluck('id')->toArray();
 
         $query = Conversation::join('threads', function ($join) {
-                $join->on('threads.conversation_id', '=', 'conversations.id');
-            })
+            $join->on('threads.conversation_id', '=', 'conversations.id');
+        })
             ->where('conversations.meta', '!=', '')
             ->whereNotIn('threads.created_by_user_id', $robots_ids)
             ->where('threads.type', Thread::TYPE_MESSAGE)
             ->where('threads.state', Thread::STATE_PUBLISHED)
             ->distinct('conversations.id');
-        
+
         $this->applyFilter($query, $request, $prev, 'conversations.created_at', 'threads.created_at');
 
         $metas = $query->pluck('conversations.meta');
@@ -969,7 +971,7 @@ class ReportsController extends Controller
         $chart['categories'] = $this->chartCategories($chart, $request, true);
 
         $chart = $this->chartAddSeries(
-            $chart, 
+            $chart,
             $this->chartDataByDays($data, $categories, $request, false),
             $this->chartDataByDays($data_prev, $categories, $request, true)
         );
@@ -1034,12 +1036,12 @@ class ReportsController extends Controller
     public function chartClosedData($request, $prev = false)
     {
         $query = Thread::where(function ($q) {
-                $q->where(function ($q2) {
-                        $q2->where('threads.type', Thread::TYPE_LINEITEM)
-                            ->where('threads.action_type', Thread::ACTION_TYPE_STATUS_CHANGED);
-                    })
-                    ->orWhere('threads.type', Thread::TYPE_MESSAGE);
+            $q->where(function ($q2) {
+                $q2->where('threads.type', Thread::TYPE_LINEITEM)
+                    ->where('threads.action_type', Thread::ACTION_TYPE_STATUS_CHANGED);
             })
+                ->orWhere('threads.type', Thread::TYPE_MESSAGE);
+        })
             ->where('threads.status', Thread::STATUS_CLOSED)
             ->where('threads.created_by_user_id', '!=', null)
             ->where('conversations.status', Conversation::STATUS_CLOSED)
@@ -1110,15 +1112,15 @@ class ReportsController extends Controller
         }
 
         // Get other users metrics.
-        
+
         // Closed.
         $query = Thread::where(function ($q) {
-                $q->where(function ($q2) {
-                        $q2->where('threads.type', Thread::TYPE_LINEITEM)
-                            ->where('threads.action_type', Thread::ACTION_TYPE_STATUS_CHANGED);
-                    })
-                    ->orWhere('threads.type', Thread::TYPE_MESSAGE);
+            $q->where(function ($q2) {
+                $q2->where('threads.type', Thread::TYPE_LINEITEM)
+                    ->where('threads.action_type', Thread::ACTION_TYPE_STATUS_CHANGED);
             })
+                ->orWhere('threads.type', Thread::TYPE_MESSAGE);
+        })
             ->where('threads.status', Thread::STATUS_CLOSED)
             ->where('conversations.status', Conversation::STATUS_CLOSED)
             ->whereIn('threads.created_by_user_id', $user_ids)
@@ -1192,42 +1194,42 @@ class ReportsController extends Controller
         return [
             [
                 'from' => 0,
-                'to' => 15*60,
+                'to' => 15 * 60,
                 'title' => __(':value min', ['value' => '< 15']),
             ], [
-                'from' => 15*60,
-                'to' => 30*60,
+                'from' => 15 * 60,
+                'to' => 30 * 60,
                 'title' => __(':value min', ['value' => '15-30']),
             ], [
-                'from' => 30*60,
-                'to' => 60*60,
+                'from' => 30 * 60,
+                'to' => 60 * 60,
                 'title' => __(':value min', ['value' => '30-60']),
             ], [
-                'from' => 1*3600,
-                'to' => 2*3600,
+                'from' => 1 * 3600,
+                'to' => 2 * 3600,
                 'title' => __(':value hours', ['value' => '1-2']),
             ], [
-                'from' => 2*3600,
-                'to' => 3*3600,
+                'from' => 2 * 3600,
+                'to' => 3 * 3600,
                 'title' => __(':value hours', ['value' => '2-3']),
             ], [
-                'from' => 3*3600,
-                'to' => 6*3600,
+                'from' => 3 * 3600,
+                'to' => 6 * 3600,
                 'title' => __(':value hours', ['value' => '3-6']),
             ], [
-                'from' => 6*3600,
-                'to' => 12*3600,
+                'from' => 6 * 3600,
+                'to' => 12 * 3600,
                 'title' => __(':value hours', ['value' => '6-12']),
             ], [
-                'from' => 12*3600,
-                'to' => 24*3600,
+                'from' => 12 * 3600,
+                'to' => 24 * 3600,
                 'title' => __(':value hours', ['value' => '12-24']),
             ], [
-                'from' => 1*3600*24,
-                'to' => 2*3600*24,
+                'from' => 1 * 3600 * 24,
+                'to' => 2 * 3600 * 24,
                 'title' => __(':value days', ['value' => '1-2']),
             ], [
-                'from' => 2*3600*24,
+                'from' => 2 * 3600 * 24,
                 'to' => 2147483647,
                 'title' => __(':value days', ['value' => '> 2']),
             ],
@@ -1274,7 +1276,8 @@ class ReportsController extends Controller
 
         foreach ($table as $i => $row) {
             foreach ($metas as $meta) {
-                if (!empty($meta['rpt'][$meta_name])
+                if (
+                    !empty($meta['rpt'][$meta_name])
                     && (int)$meta['rpt'][$meta_name] >= $row['from']
                     && (int)$meta['rpt'][$meta_name] < $row['to']
                 ) {
@@ -1286,7 +1289,8 @@ class ReportsController extends Controller
         }
         foreach ($table as $i => $row) {
             foreach ($metas_prev as $meta) {
-                if (!empty($meta['rpt'][$meta_name])
+                if (
+                    !empty($meta['rpt'][$meta_name])
                     && (int)$meta['rpt'][$meta_name] >= $row['from']
                     && (int)$meta['rpt'][$meta_name] < $row['to']
                 ) {
@@ -1295,7 +1299,7 @@ class ReportsController extends Controller
                 }
             }
         }
-        
+
         // Calc percents and remove empty rows.
         foreach ($table as $i => $row) {
             if (empty($row['value']) /*&& empty($row['value_prev'])*/) {
@@ -1337,7 +1341,8 @@ class ReportsController extends Controller
 
         foreach ($table as $i => $row) {
             foreach ($metas as $meta) {
-                if (!empty($meta['rpt'][$meta_name])
+                if (
+                    !empty($meta['rpt'][$meta_name])
                     && (int)$meta['rpt'][$meta_name] >= $row['from']
                     && (int)$meta['rpt'][$meta_name] < $row['to']
                 ) {
@@ -1349,7 +1354,8 @@ class ReportsController extends Controller
         }
         foreach ($table as $i => $row) {
             foreach ($metas_prev as $meta) {
-                if (!empty($meta['rpt'][$meta_name])
+                if (
+                    !empty($meta['rpt'][$meta_name])
                     && (int)$meta['rpt'][$meta_name] >= $row['from']
                     && (int)$meta['rpt'][$meta_name] < $row['to']
                 ) {
@@ -1396,10 +1402,10 @@ class ReportsController extends Controller
 
         $result = __(':value min', ['value' => $minutes]);
         if ($hours) {
-            $result = __(':value h', ['value' => $hours]).' '.$result;
+            $result = __(':value h', ['value' => $hours]) . ' ' . $result;
         }
         if ($days) {
-            $result = __(':value d', ['value' => $days]).' '.$result;
+            $result = __(':value d', ['value' => $days]) . ' ' . $result;
         }
         return $result;
     }
@@ -1450,12 +1456,12 @@ class ReportsController extends Controller
         // Satisfaction score.
         $satscore = 0;
         if ((int)$ratings) {
-            $satscore = ceil(($great*100/$ratings) - ($notgood*100/$ratings));
+            $satscore = ceil(($great * 100 / $ratings) - ($notgood * 100 / $ratings));
         }
         $data['metrics']['satscore']['value'] = $satscore;
         $satscore_prev = 0;
         if ((int)$ratings_prev) {
-            $satscore_prev = ceil(($great_prev*100/$ratings_prev) - ($notgood_prev*100/$ratings_prev));
+            $satscore_prev = ceil(($great_prev * 100 / $ratings_prev) - ($notgood_prev * 100 / $ratings_prev));
         }
         $data['metrics']['satscore']['change'] = $this->calcChange($satscore, $satscore_prev);
 
@@ -1467,18 +1473,18 @@ class ReportsController extends Controller
             'data' => [
                 [
                     'name'      => __('Good'),
-                    'y'         => round($great*100/$ratings),
+                    'y'         => round($great * 100 / $ratings),
                     'selected'  => true,
                     'color'     => 'rgb(83,185,97)'
                 ],
                 [
                     'name'      => __('Okay'),
-                    'y'         => round($okay*100/$ratings),
+                    'y'         => round($okay * 100 / $ratings),
                     'color'     => 'rgb(147,161,175)'
                 ],
                 [
                     'name'      => __('Not Good'),
-                    'y'         => round($notgood*100/$ratings),
+                    'y'         => round($notgood * 100 / $ratings),
                     'color'     => 'rgb(212,63,58)'
                 ],
             ]
@@ -1500,7 +1506,7 @@ class ReportsController extends Controller
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'threads.conversation_id');
             });
-        
+
         $this->applyFilter($query, $request, $prev, 'threads.created_at');
 
         return $query->count();
@@ -1516,7 +1522,7 @@ class ReportsController extends Controller
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'threads.conversation_id');
             });
-        
+
         $this->applyFilter($query, $request, $prev, 'threads.created_at');
 
         return $query->count();
@@ -1532,7 +1538,7 @@ class ReportsController extends Controller
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'threads.conversation_id');
             });
-        
+
         $this->applyFilter($query, $request, $prev, 'threads.created_at');
 
         return $query->count();
@@ -1548,7 +1554,7 @@ class ReportsController extends Controller
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'threads.conversation_id');
             });
-        
+
         $this->applyFilter($query, $request, $prev, 'threads.created_at');
 
         return $query->count();
@@ -1564,7 +1570,7 @@ class ReportsController extends Controller
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'threads.conversation_id');
             });
-        
+
         $this->applyFilter($query, $request, $prev, 'threads.created_at');
 
         return $query->count();
@@ -1658,9 +1664,9 @@ class ReportsController extends Controller
     public function calcTotalHours($request, $prev = false)
     {
         $query = \Modules\TimeTracking\Entities\Timelog::rightJoin('conversations', function ($join) {
-                $join->on('conversations.id', '=', 'timelogs.conversation_id');
-            });
-        
+            $join->on('conversations.id', '=', 'timelogs.conversation_id');
+        });
+
         $this->applyFilter($query, $request, $prev, 'timelogs.updated_at');
 
         return $query->sum('time_spent');
@@ -1675,7 +1681,7 @@ class ReportsController extends Controller
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'timelogs.conversation_id');
             });
-        
+
         $this->applyFilter($query, $request, $prev, 'timelogs.updated_at');
 
         $timelogs = $query->get();
@@ -1690,17 +1696,17 @@ class ReportsController extends Controller
     public function tableTimes($request)
     {
         $query = \Modules\TimeTracking\Entities\Timelog::select([
-                // To avoid PostgreSQL error: 
-                // column "timelogs.id" must appear in the GROUP BY clause or be used in an aggregate function
-                'timelogs.user_id',
-                \DB::raw('SUM(timelogs.time_spent) as time_spent'),
-                \DB::raw('COUNT(DISTINCT timelogs.id) as time_count'),
-            ])
+            // To avoid PostgreSQL error:
+            // column "timelogs.id" must appear in the GROUP BY clause or be used in an aggregate function
+            'timelogs.user_id',
+            \DB::raw('SUM(timelogs.time_spent) as time_spent'),
+            \DB::raw('COUNT(DISTINCT timelogs.id) as time_count'),
+        ])
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'timelogs.conversation_id');
             })
             ->groupBy('timelogs.user_id');
-        
+
         $this->applyFilter($query, $request, false, 'timelogs.updated_at');
 
         $table_times = $query->get()->toArray();
@@ -1731,19 +1737,19 @@ class ReportsController extends Controller
     public function tableConvTimes($request)
     {
         $query = \Modules\TimeTracking\Entities\Timelog::select([
-                // To avoid PostgreSQL error:
-                // column "conversations.id" must appear in the GROUP BY clause or be used in an aggregate function
-                'timelogs.conversation_id as id',
-                \DB::raw('MAX(conversations.subject) as subject'),
-                \DB::raw('MAX(conversations.number) as number'),
-                \DB::raw('SUM(timelogs.time_spent) as time_spent'),
-            ])
+            // To avoid PostgreSQL error:
+            // column "conversations.id" must appear in the GROUP BY clause or be used in an aggregate function
+            'timelogs.conversation_id as id',
+            \DB::raw('MAX(conversations.subject) as subject'),
+            \DB::raw('MAX(conversations.number) as number'),
+            \DB::raw('SUM(timelogs.time_spent) as time_spent'),
+        ])
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'timelogs.conversation_id');
             })
             //->where('time_spent', '>', 0)
             ->groupBy('timelogs.conversation_id');
-        
+
         $this->applyFilter($query, $request, false, 'timelogs.updated_at');
 
         $table_times = $query->get()->sortBy('time_spent')->reverse()->toArray();
@@ -1760,14 +1766,14 @@ class ReportsController extends Controller
     public function tableCustomerTimes($request)
     {
         $query = \Modules\TimeTracking\Entities\Timelog::select([
-                'conversations.customer_id',
-                \DB::raw('SUM(timelogs.time_spent) as time_spent')
-            ])
+            'conversations.customer_id',
+            \DB::raw('SUM(timelogs.time_spent) as time_spent')
+        ])
             ->rightJoin('conversations', function ($join) {
                 $join->on('conversations.id', '=', 'timelogs.conversation_id');
             })
             ->groupBy('conversations.customer_id');
-        
+
         $this->applyFilter($query, $request, false, 'timelogs.updated_at');
 
         $table_times = $query->get()->sortBy('time_spent')->reverse()->toArray();
@@ -1820,5 +1826,112 @@ class ReportsController extends Controller
         if (!\Reports::canAccessReports()) {
             \Helper::denyAccess();
         }
+    }
+
+
+    public function exportActiveAndClosedTickets()
+    {
+        // Modify the SQL query to retrieve active and closed tickets.
+        $conversationData = Conversation::where('state', Conversation::STATE_PUBLISHED)
+            ->where(function($query) {
+                $query->where('status', Conversation::STATUS_ACTIVE)
+                ->orwhere('status', Conversation::STATUS_PENDING);
+            })->get();
+        $cdata = [];
+
+        foreach ($conversationData as $conversation) {
+            $conversationArray = [
+                'id' => $conversation->id,
+                'number' => $conversation->number,
+                'type' => Conversation::typeToName($conversation->type),
+                'status' => Conversation::statusCodeToName($conversation->status),
+                'state' => Conversation::stateCodeToName($conversation->state),
+                'mailbox' => Mailbox::find($conversation->mailbox_id)->name,
+                'customer_email' => Conversation::find($conversation->id)->customer_email,
+                'threads_count' => Conversation::find($conversation->id)->threads_count,
+                'subject' => Conversation::find($conversation->id)->subject,
+                'has_attachments' => Conversation::find($conversation->id)->has_attachments ? 'Yes' : 'No',
+                'channel' => Conversation::channelCodeToName($conversation->channel),
+                'created_at' => Conversation::find($conversation->id)->created_at->format('Y-m-d H:i'),
+                'last_reply_at' => Conversation::find($conversation->id)->last_reply_at->format('Y-m-d H:i'),
+                'last_reply_from' => ucfirst(Conversation::$persons[$conversation->last_reply_from] ?? ''),
+                'closed_On' => Conversation::find($conversation->id)->closed_at,
+            ];
+            if ($conversation->user_id != null) {
+                $assignee = User::find($conversation->user_id);
+                $conversationArray['assignee'] = $assignee->first_name . ' ' . $assignee->last_name;
+            } else {
+                $conversationArray['assignee'] = null;
+            }
+
+            if ($conversation->customer_id != null) {
+                $customer_name = Customer::find($conversation->customer_id);
+                $conversationArray['customer_name'] = $customer_name->first_name . ' ' . $customer_name->last_name;
+            } else {
+                $conversationArray['customer_name'] = null;
+            }
+
+            $cc = json_decode(Conversation::find($conversation->id)->cc, true);
+            if (is_array($cc) && !empty($cc)) {
+                $email = $cc[0];
+                $conversationArray['cc'] = $email;
+            } else {
+                $conversationArray['cc'] = null;
+            }
+            $bcc = json_decode(Conversation::find($conversation->id)->bcc, true);
+            if (is_array($bcc) && !empty($bcc)) {
+                $email = $bcc[0];
+                $conversationArray['bcc'] = $email;
+            } else {
+                $conversationArray['bcc'] = null;
+            }
+            if ($conversation->closed_by_user_id != null) {
+                $closed_by_user_id = User::find($conversation->closed_by_user_id);
+                $conversationArray['closed_by'] = $closed_by_user_id->first_name . ' ' . $closed_by_user_id->last_name;
+            } else {
+                $conversationArray['closed_by'] = null;
+            }
+
+            $conversationArray['preview'] = Conversation::find($conversation->id)->preview;
+
+            $cdata[] = $conversationArray;
+        }
+
+        $data = $cdata;
+        function cleanData(&$str)
+        {
+            if ($str == 't') $str = 'TRUE';
+            if ($str == 'f') $str = 'FALSE';
+
+            // Format date fields (assuming 'created_at' and 'updated_at' are date fields).
+            if (strpos($str, '-')) {
+                $str = date('Y-m-d H:i:s', strtotime($str));
+            }
+
+            // Add additional formatting for other fields as needed.
+
+            if (strstr($str, '"')) $str = '"' . str_replace('"', '""', $str) . '"';
+        }
+
+        // filename for download
+        $filename = 'conversations(Open Ticket)_' . date('Y-m-d') . '.csv';
+
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        header("Content-Type: text/csv");
+
+        $out = fopen("php://output", 'w');
+
+        $flag = false;
+        foreach ($data as $row) {
+            if (!$flag) {
+                // display field/column names as the first row
+                fputcsv($out, array_keys($row), ',', '"');
+                $flag = true;
+            }
+            array_walk($row, __NAMESPACE__ . '\cleanData');
+            fputcsv($out, array_values($row), ',', '"');
+        }
+
+        fclose($out);
     }
 }

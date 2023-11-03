@@ -133,7 +133,7 @@ class DashboardController extends Controller
             ->where('name', 'Product')->first();
 
         $productValues = [];
-        if (!empty($values)) {
+        if (!empty($productValue->options)) {
             $options = json_decode($productValue->options, true);
             foreach ($options as $key => $productValue) {
                 array_push($productValues, $productValue);
@@ -154,37 +154,58 @@ class DashboardController extends Controller
             $productIndex = array_search($filters['product'], $productValues) + 1;
         }
 
-        $query = Conversation::select(
-            DB::raw('COUNT(*) as total_count'),
-            DB::raw('COUNT(CASE WHEN folder_id = 1 THEN 1 ELSE NULL END) as unassigned_count'),
-            DB::raw('COUNT(CASE WHEN DATE_SUB(created_at, INTERVAL 3 DAY) AND folder_id != 4 AND folder_id != 6 THEN 1 END) as overdue_count'),
-            DB::raw('COUNT(CASE WHEN (status = 1 OR status = 2) AND folder_id != 6 THEN 1 ELSE NULL END) as unclosed_count'),
-            DB::raw('COUNT(CASE WHEN folder_id = 4 THEN 1 ELSE NULL END) as closed_tickets_count'),
-            DB::raw('COUNT(CASE WHEN status = 2 AND folder_id != 6 THEN 1 ELSE NULL END) as hold_ticket')
-        );
+        // Unassigned count
+        $queryCommon = Conversation::select();
 
         if ($filters['type'] != 0) {
-            $query->where('conversations.type', $filters['type']);
+            $queryCommon->where('conversations.type', $filters['type']);
         }
         if ($filters['mailbox'] != 0) {
-            $query->where('conversations.mailbox_id', $filters['mailbox']);
+            $queryCommon->where('conversations.mailbox_id', $filters['mailbox']);
         }
         if (!empty($from)) {
-            $query->where($date_field, '>=', date('Y-m-d 00:00:00', strtotime($from)));
+            $queryCommon->where($date_field, '>=', date('Y-m-d 00:00:00', strtotime($from)));
         }
         if (!empty($to)) {
-            $query->where($date_field_to, '<=', date('Y-m-d 23:59:59', strtotime($to)));
+            $queryCommon->where($date_field_to, '<=', date('Y-m-d 23:59:59', strtotime($to)));
         }
+        $totalCountQuery = clone $queryCommon;
+        $unassignedCountQuery = clone $queryCommon;
+        $overdueCountQuery = clone $queryCommon;
+        $unclosedCountQuery = clone $queryCommon;
+        $closedCountQuery = clone $queryCommon;
+        $holdTicketQuery = clone $queryCommon;
 
-        $results = $query->first();
+        $closedTicketChartQuery = clone $queryCommon;
+        $closedCountChartQuery = clone $queryCommon;
+        $slaTicketsChartQuery = clone $queryCommon;
 
-        $totalCount = $results->total_count;
-        $unassignedCount = $results->unassigned_count;
-        $overdueCount = $results->overdue_count;
-        $unclosedCount = $results->unclosed_count;
-        $closedCount = $results->closed_tickets_count;
-        $holdTicket = $results->hold_ticket;
-
+        $totalCount = $totalCountQuery->where(function ($query) {
+            $query->where('state', Conversation::STATE_PUBLISHED)
+                ->where('status', '!=', Conversation::STATUS_SPAM);
+        })->count();
+        $unassignedCount = $unassignedCountQuery->where(function ($query) {
+            $query->where('state', Conversation::STATE_PUBLISHED)
+                ->where('status', '!=', Conversation::STATUS_CLOSED)
+                ->whereNull('user_id');
+        })->count();
+        $overdueCount = $overdueCountQuery->where(function ($query) {
+            $query->where('created_at', '<=', Carbon::now()->subDays(3))
+                ->where('state', Conversation::STATE_PUBLISHED)
+                ->Where('status', '!=', Conversation::STATUS_CLOSED);
+        })->count();
+        $unclosedCount = $unclosedCountQuery->where(function ($query) {
+            $query->where('state', Conversation::STATE_PUBLISHED)
+                ->where('status', '!=', Conversation::STATUS_CLOSED);
+        })->count();
+        $closedCount = $closedCountQuery->where(function ($query) {
+            $query->where('state', Conversation::STATE_PUBLISHED)
+                ->where('status', Conversation::STATUS_CLOSED);
+        })->count();
+        $holdTicket = $holdTicketQuery->where(function ($query) {
+            $query->where('state', Conversation::STATE_PUBLISHED)
+                ->where('status', Conversation::STATUS_PENDING);
+        })->count();
         // For Weekly data
         $startDate = now()->startOfWeek();
         $endDate = now()->endOfWeek();
@@ -192,18 +213,66 @@ class DashboardController extends Controller
             'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
         ];
 
-
-        $closedTickets = Conversation::selectRaw('DAYNAME(closed_at) as day, COUNT(*) as count')
-            ->whereBetween('closed_at', [$startDate, $endDate])
-            ->groupBy('day')
-            ->pluck('count', 'day')
-            ->toArray();
-
-        $tickets = [];
-        foreach ($daysOfWeek as $day) {
-            $tickets[$day] = $closedTickets[$day] ?? 0;
+        //close ticket Category wise chart
+        $indexes = [];
+        for ($i = 1; $i <= count($categoryValues); $i++) {
+            $indexes[] = $i;
         }
+        $closedTicketChartCategory = $closedTicketChartQuery->whereHas('customFields', function ($query) use ($indexes) {
+            $query->where('name', 'Ticket Category')
+            ->where('conversation_custom_field.value', $indexes);
+        });
 
-        return view('/dashboard/dashboard', compact('filters', 'categoryValues', 'productValues', 'totalCount', 'unassignedCount', 'overdueCount', 'unclosedCount', 'closedCount', 'holdTicket', 'tickets'));
+        $closedTicketChart = $closedTicketChartCategory->where(function ($query) {
+            $query->where('state', Conversation::STATE_PUBLISHED)
+            ->where('status', Conversation::STATUS_CLOSED);
+        });
+
+        $closedTicketByDayOfWeek = $closedTicketChart
+            ->selectRaw('DAYOFWEEK(created_at) AS day_of_week, COUNT(*) AS count')
+            ->groupBy('day_of_week')
+            ->get();
+
+        $categoryTickets = array_fill(0, 7, 0);
+        foreach ($closedTicketByDayOfWeek as $result) {
+            // The day_of_week value is 1-based, so subtract 1 to get the correct index
+            $dayOfWeek = $result->day_of_week - 1;
+            $categoryTickets[$dayOfWeek] = $result->count;
+        }
+        //close ticket day of week wise chart
+        $closedCountChart = $closedCountChartQuery->where(function ($query) {
+            $query->where('state', Conversation::STATE_PUBLISHED)
+                ->where('status', Conversation::STATUS_CLOSED);
+        });
+
+        $closedCountByDayOfWeek = $closedCountChart
+            ->selectRaw('DAYOFWEEK(created_at) AS day_of_week, COUNT(*) AS count')
+            ->groupBy('day_of_week')
+            ->get();
+
+        $tickets = array_fill(0, 7, 0);
+        foreach ($closedCountByDayOfWeek as $result) {
+            // The day_of_week value is 1-based, so subtract 1 to get the correct index
+            $dayOfWeek = $result->day_of_week - 1;
+            $tickets[$dayOfWeek] = $result->count;
+        }
+        //sla chart
+        $slaTicketsChart = $slaTicketsChartQuery->where(function ($query) {
+            $query->where('created_at', '<=', Carbon::now()->subDays(3))
+                ->where('state', Conversation::STATE_PUBLISHED)
+                ->Where('status', '!=', Conversation::STATUS_CLOSED);
+        });
+        $slaTicketsCount = $slaTicketsChart
+            ->selectRaw('DAYOFWEEK(created_at) AS day_of_week, COUNT(*) AS count')
+            ->groupBy('day_of_week')
+            ->get();
+
+        $sla = array_fill(0, 7, 0);
+        foreach ($slaTicketsCount as $result) {
+            // The day_of_week value is 1-based, so subtract 1 to get the correct index
+            $dayOfWeek = $result->day_of_week - 1;
+            $sla[$dayOfWeek] = $result->count;
+        }
+        return view('/dashboard/dashboard', compact('filters', 'categoryValues', 'productValues', 'totalCount', 'unassignedCount', 'overdueCount', 'unclosedCount', 'closedCount', 'holdTicket', 'tickets', 'sla','categoryTickets'));
     }
 }

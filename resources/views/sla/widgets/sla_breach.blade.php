@@ -26,30 +26,43 @@
             }
 
             const data = <?php echo json_encode($sla); ?>;
+            const data_all = <?php echo json_encode($sla_all); ?>;
 
 
             var chartData = {
-                labels: weekNames,
+                // labels: weekNames,
                 datasets: [{
-                    label: "{{ __('Average Time Taken To Close Within SLA') }}",
-                    data: data,
-                    backgroundColor: 'rgba(0, 123, 255, 0.2)',
-                    borderColor: 'rgba(0, 123, 255, 1)',
-                    borderWidth: 1
-                }]
+                        label: "{{ __('SLA Breached Ticket') }}",
+                        data: data,
+                        backgroundColor: 'rgba(0, 255, 0, 0.5)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: "{{ __('SLA Total Ticket') }}",
+                        data: data_all,
+                        backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        borderWidth: 1
+                    }
+                ]
             };
 
             // Create the chart
             var lineChart = new Chart(ctxLine, {
-                type: 'line',
+                type: 'bar',
                 data: chartData,
                 options: {
                     indexAxis: 'x',
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
+                        x: {
+                            stacked: true,
+                        },
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            stacked: true,
                         }
                     }
                 }

@@ -26,8 +26,13 @@
                 </div>
                 <div class="col-sm-6">
                     <span class="circle circle-blue"></span>
-                    <p class="donutp">{{__('Hold Tickets')}}</p>
+                    <p class="donutp">{{__('Pending Tickets')}}</p>
                     <p class="donutp">{{ $holdTicket }}</p>
+                </div>
+                <div class="col-sm-6">
+                    <span class="circle circle-cyan"></span>
+                    <p class="donutp">{{__('SLA Breach ')}}</p>
+                    <p class="donutp">{{ $overdueCount }}</p>
                 </div>
             </div>
         </div>
@@ -44,9 +49,9 @@
         var data = {
             datasets: [{
                 data: ["{{ $unclosedCount }}", "{{ $closedCount }}",
-                    "{{ $holdTicket }}"
+                    "{{ $holdTicket }}","{{ $overdueCount }}"
                 ],
-                backgroundColor: ['#89F81B', 'red', '#173292'],
+                backgroundColor: ['#89F81B', 'red', '#173292','#00FFFF'],
                 borderColor: 'transparent',
             }]
         };

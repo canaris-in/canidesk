@@ -38,15 +38,15 @@
 		<nobr><input type="text" name="from" class="form-control rpt-filter-date" value="{{ $filters['from'] }}" />-<input type="text" name="to" class="form-control rpt-filter-date" value="{{ $filters['to'] }}" /></nobr>
 		{{--<button class="btn btn-primary" name="period">Oct 1, 2017 - Nov 1, 2017 <span class="caret"></span></button>--}}
 	</div>
-	{{--<div class="rpt-filter" data-toggle="tooltip" title="{{ __('Export') }}">
-		<button class="btn btn-primary"><i class="glyphicon glyphicon-download-alt"></i></button>
-	</div>--}}
 
 	<div class="rpt-filter" data-toggle="tooltip" title="{{ __('Refresh') }}">
 		<button class="btn btn-primary" id="rpt-btn-loader"><i class="glyphicon glyphicon-refresh"></i></button>
 	</div>
+    @action('reports.filters_button_append')
+    <div class="rpt-filter" data-toggle="tooltip" title="{{ __('Open Ticket Export') }}">
+        <a href="{{ route('reports.export') }}" class="btn btn-primary"><i class="glyphicon glyphicon-open-file"></i></a>
+    </div>
 
-	@action('reports.filters_button_append')
 </div>
 
 @php
