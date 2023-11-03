@@ -13,16 +13,18 @@
 
             // Define the chart data
             const currentDate = new Date();
-            const weekNames = [];
+            const last7DateNames = [];
+            const lastSevenDateNames = [];
 
-            for (let i = 6; i >= 0; i--) {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            for (let i = 7; i >= 0; i--) {
                 const day = new Date(currentDate);
                 day.setDate(day.getDate() - i);
-                const options = {
-                    weekday: 'long'
-                }; // Specify the format of the weekday
-                const weekName = new Intl.DateTimeFormat('en-US', options).format(day);
-                weekNames.push(weekName);
+                const dayOfMonth = day.getDate();
+                const month = months[day.getMonth()];
+                const dateName = `${dayOfMonth} ${month}`;
+                last7DateNames.push(dateName);
             }
 
             const data = <?php echo json_encode($sla); ?>;
@@ -30,11 +32,11 @@
 
 
             var chartData = {
-                // labels: weekNames,
+                labels: last7DateNames,
                 datasets: [{
                         label: "{{ __('SLA Breached Ticket') }}",
                         data: data,
-                        backgroundColor: 'rgba(0, 255, 0, 0.5)',
+                        backgroundColor: 'rgba(0, 255, 0, 0.7)',
                         borderColor: 'rgba(0, 123, 255, 1)',
                         borderWidth: 1
                     },
@@ -62,7 +64,6 @@
                         },
                         y: {
                             beginAtZero: true,
-                            stacked: true,
                         }
                     }
                 }
