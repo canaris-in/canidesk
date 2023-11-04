@@ -263,7 +263,7 @@
         }
 
         .circle-cyan {
-            background-color: #00FFFF;
+            background-color: rgba(46,165,251, 0.7);
         }
         .dm .form-control {
             display: inline;
