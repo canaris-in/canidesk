@@ -249,7 +249,6 @@ class WorkflowsServiceProvider extends ServiceProvider
         // JavaScript in the bottom
         \Eventy::addAction('javascript', function() {
             if (!\Route::is('conversations.view')) {
-                echo 'initWorkflowsBulk();';
             }
         });
 
