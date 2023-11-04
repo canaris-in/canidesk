@@ -141,7 +141,8 @@ class SlaReportController extends Controller
         if (!empty($to)) {
             $tickets->where($date_field_to, '<=', date('Y-m-d 23:59:59', strtotime($to)));
         }
-
+        $sla_from = date('Y-m-d', strtotime($from));
+        $sla_to = date('Y-m-d', strtotime($to));
         $slaTicketsChartQuery = clone $tickets;
         $slaTicketsChartQueryAll = clone $tickets;
 
@@ -174,8 +175,8 @@ class SlaReportController extends Controller
             $sla_all[$result->date] = $result->count;
         }
 
-        $user_email_permissions = $this->permissionsforSLA();;
+        $user_email_permissions = $this->permissionsforSLA();
 
-        return view('sla/report', compact('tickets', 'categoryValues', 'productValues', 'filters', 'user_email_permissions', 'sla','sla_all'));
+        return view('sla/report', compact('tickets', 'categoryValues', 'productValues', 'filters', 'user_email_permissions', 'sla','sla_all','sla_from','sla_to'));
     }
 }
