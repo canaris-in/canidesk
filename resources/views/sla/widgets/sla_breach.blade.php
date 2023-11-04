@@ -15,7 +15,7 @@
 
             var from = <?php echo json_encode($sla_from); ?>;
             var to = <?php echo json_encode($sla_to); ?>;
-            <?php echo json_encode($sla_to); ?>;
+
             const fromDate = new Date(from);
             const toDate = new Date(to);
 
