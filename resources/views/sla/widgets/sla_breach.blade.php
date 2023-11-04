@@ -2,37 +2,46 @@
 
 ?>
 <div class="lineChart dashboard-widgets dashboard-widgets--average-time-sla">
-    <canvas id="lineChart"></canvas>
+    <canvas id="barChart"></canvas>
 </div>
 
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Get the canvas element
-            var ctxLine = document.getElementById('lineChart').getContext('2d');
-
-            // Define the chart data
-            const currentDate = new Date();
-            const last7DateNames = [];
-            const lastSevenDateNames = [];
+            var ctxLine = document.getElementById('barChart').getContext('2d');
 
             const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-            for (let i = 7; i >= 0; i--) {
-                const day = new Date(currentDate);
-                day.setDate(day.getDate() - i);
-                const dayOfMonth = day.getDate();
-                const month = months[day.getMonth()];
+            var from = <?php echo json_encode($sla_from); ?>;
+            var to = <?php echo json_encode($sla_to); ?>;
+            <?php echo json_encode($sla_to); ?>;
+            const fromDate = new Date(from);
+            const toDate = new Date(to);
+
+            const dateNames = [];
+
+            const currentDate = new Date(fromDate);
+
+            while (currentDate <= toDate) {
+                const dayOfMonth = currentDate.getDate();
+                const month = months[currentDate.getMonth()];
                 const dateName = `${dayOfMonth} ${month}`;
-                last7DateNames.push(dateName);
+                dateNames.push(dateName);
+
+                // Move to the next day
+                currentDate.setDate(currentDate.getDate() + 1);
             }
+
+            console.log(dateNames);
+
 
             const data = <?php echo json_encode($sla); ?>;
             const data_all = <?php echo json_encode($sla_all); ?>;
 
 
             var chartData = {
-                labels: last7DateNames,
+                labels: dateNames,
                 datasets: [{
                         label: "{{ __('SLA Breached Ticket') }}",
                         data: data,
