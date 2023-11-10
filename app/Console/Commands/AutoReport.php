@@ -59,12 +59,12 @@ class AutoReport extends Command
         }
 
 
-     #the below code is for the comparision on real time with time and date with date
+        #the below code is for the comparision on real time with time and date with date
         if ($settings->frequency === 'Daily') {
             $nowTime = Carbon::now()->format('h:i');
             $compTime = $settings->time;
             $compTime = Carbon::createFromFormat('H:i:s', $compTime);
-            $emails=explode(',', $settings->to_email);
+            $emails = explode(',', $settings->to_email);
             // Format the time without seconds
             $compTime = $compTime->format('H:i');
 
@@ -91,7 +91,7 @@ class AutoReport extends Command
                     $message = 'Hello Rajesh, this is a test email from Canidesk.';
                     $fromEmail = 'rr7049908@gmail.com';
                     $fromName = '[ Canidesk Report ]';
-                    foreach($emails as $email){
+                    foreach ($emails as $email) {
                         Mail::raw($message, function ($mail) use ($email, $subject, $fromEmail, $fromName, $filePath) {
                             $mail->to($email)
                                 ->subject($subject)
@@ -106,7 +106,7 @@ class AutoReport extends Command
             $nowTime = Carbon::now()->format('h:i');
             $compTime = $settings->time;
             $compTime = Carbon::createFromFormat('H:i:s', $compTime);
-            $emails=explode(',', $settings->to_email);
+            $emails = explode(',', $settings->to_email);
             // Format the time without seconds
             $compTime = $compTime->format('H:i');
             $compDate = $settings->schedule;
@@ -134,7 +134,7 @@ class AutoReport extends Command
                     $message = 'Hello Rajesh, this is a test email from Canidesk.';
                     $fromEmail = 'rr7049908@gmail.com';
                     $fromName = '[ Canidesk Report ]';
-                    foreach($emails as $email){
+                    foreach ($emails as $email) {
                         Mail::raw($message, function ($mail) use ($email, $subject, $fromEmail, $fromName, $filePath) {
                             $mail->to($email)
                                 ->subject($subject)
@@ -149,7 +149,7 @@ class AutoReport extends Command
             $nowTime = Carbon::now()->format('h:i');
             $compTime = $settings->time;
             $compTime = Carbon::createFromFormat('H:i:s', $compTime);
-            $emails=explode(',', $settings->to_email);
+            $emails = explode(',', $settings->to_email);
             // Format the time without seconds
             $compTime = $compTime->format('H:i');
             $compDate = $settings->schedule;
@@ -177,7 +177,7 @@ class AutoReport extends Command
                     $message = 'Hello Rajesh, this is a test email from Canidesk.';
                     $fromEmail = 'rr7049908@gmail.com';
                     $fromName = '[ Canidesk Report ]';
-                    foreach($emails as $email){
+                    foreach ($emails as $email) {
                         Mail::raw($message, function ($mail) use ($email, $subject, $fromEmail, $fromName, $filePath) {
                             $mail->to($email)
                                 ->subject($subject)
@@ -188,6 +188,5 @@ class AutoReport extends Command
                 }
             }
         }
-
     }
 }
