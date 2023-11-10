@@ -122,9 +122,9 @@
             @include('dashboard.widgets.average_time_tickets_sla')
         </div>
     </div>
-    <div class="phone-button">
+    {{-- <div class="phone-button">
         <a href="{{ route('responsive.screen') }}"><i class="glyphicon glyphicon-phone"></i></a>
-    </div>
+    </div> --}}
 @endsection
 
 @push('styles')
