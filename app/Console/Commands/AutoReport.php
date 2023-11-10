@@ -89,7 +89,7 @@ class AutoReport extends Command
                     // $toEmail = 'rajesh@canaris.in';
                     $subject = 'Hi';
                     $message = 'Hello Rajesh, this is a test email from Canidesk.';
-                    $fromEmail = 'rr7049908@gmail.com';
+                    $fromEmail = 'support@canaris.in';
                     $fromName = '[ Canidesk Report ]';
                     foreach ($emails as $email) {
                         Mail::raw($message, function ($mail) use ($email, $subject, $fromEmail, $fromName, $filePath) {
@@ -132,7 +132,7 @@ class AutoReport extends Command
                     // $toEmail = 'rajesh@canaris.in';
                     $subject = 'Hi';
                     $message = 'Hello Rajesh, this is a test email from Canidesk.';
-                    $fromEmail = 'rr7049908@gmail.com';
+                    $fromEmail = 'support@canaris.in';
                     $fromName = '[ Canidesk Report ]';
                     foreach ($emails as $email) {
                         Mail::raw($message, function ($mail) use ($email, $subject, $fromEmail, $fromName, $filePath) {
@@ -175,7 +175,7 @@ class AutoReport extends Command
                     // $toEmail = 'rajesh@canaris.in';
                     $subject = 'Hi';
                     $message = 'Hello Rajesh, this is a test email from Canidesk.';
-                    $fromEmail = 'rr7049908@gmail.com';
+                    $fromEmail = 'support@canaris.in';
                     $fromName = '[ Canidesk Report ]';
                     foreach ($emails as $email) {
                         Mail::raw($message, function ($mail) use ($email, $subject, $fromEmail, $fromName, $filePath) {
