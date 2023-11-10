@@ -39,7 +39,7 @@ class AutoReport extends Command
         parent::__construct();
     }
 
- 
+
 
     /**
      * Execute the console command.
@@ -48,65 +48,146 @@ class AutoReport extends Command
      */
     public function handle(Request $request)
     {
-        // $this->info(Carbon::now()->format('l'));
-        $today = Carbon::today();
-        $fourDaysAgo = Carbon::today()->subDays(4);
-        $sevenDaysAgo = Carbon::today()->subDays(7);
-        $thirtyDaysAgo = Carbon::today()->subDays(30);
-        $prev = false;
-        $date_field = 'conversations.created_at';
-        $date_field_to = '';
-        $startOfDate=0;
-        $endOfDate=0;
-        $settings=SLASetting::orderBy('id', 'desc')->first();
-        if($settings->auto_data == 1){ // Start generating email report if auto reporting is turned on 
+        $settings = SLASetting::orderBy('id', 'desc')->first();
+        $todate = \Carbon\Carbon::parse($settings->created_at)->format('Y-m-d');
+        if ($settings->frequency === 'Daily') {
+            $fromdate = \Carbon\Carbon::parse($todate)->subDays(1)->format('Y-m-d');
+        } elseif ($settings->frequency === 'Weekly') {
+            $fromdate = \Carbon\Carbon::parse($todate)->subDays(7)->format('Y-m-d');
+        } elseif ($settings->frequency === 'Monthly') {
+            $fromdate = \Carbon\Carbon::parse($todate)->subDays(30)->format('Y-m-d');
+        }
+
+
+     #the below code is for the comparision on real time with time and date with date
+        if ($settings->frequency === 'Daily') {
+            $nowTime = Carbon::now()->format('h:i');
+            $compTime = $settings->time;
+            $compTime = Carbon::createFromFormat('H:i:s', $compTime);
             $emails=explode(',', $settings->to_email);
-            $tickets = Conversation::query();
-            $tickets = $tickets->with('user', 'conversationCustomField.custom_field', 'conversationCategory','conversationPriority');
-           
-            if(!empty($settings->frequency) && $settings->frequency === 'Monthly' && $settings->schedule === Carbon::now()->format('d') && $settings->time === Carbon::now()->format('H:i:00') ){
-                $tickets = $tickets->whereBetween('created_at',[Carbon::now()->subDays(30)->startOfMonth()->startOfDay(),Carbon::now()->subDays(30)->endOfMonth()->endOfDay()]);
-                $startOfDate=Carbon::now()->subDays(30)->startOfMonth()->startOfDay();
-                $endOfDate=Carbon::now()->subDays(30)->endOfMonth()->endOfDay();
-              
-            }
-            else if(!empty($settings->frequency) && $settings->frequency === 'Weekly'&& $settings->schedule === Carbon::now()->format('l') && $settings->time === Carbon::now()->format('H:i:00')){
-                $tickets = $tickets->whereBetween('created_at',[Carbon::now()->subDays(7)->startOfWeek()->startOfDay(),Carbon::now()->subDays(7)->endOfWeek()->endOfDay()]);
-                $startOfDate=Carbon::now()->subDays(7)->startOfWeek()->startOfDay();
-                $endOfDate=Carbon::now()->subDays(7)->endOfWeek()->endOfDay();
-               
-            }
-            else if(!empty($settings->frequency) && $settings->frequency === 'Daily' && $settings->time === Carbon::now()->format('H:i:00')){
-                $tickets = $tickets->whereBetween('created_at',[Carbon::now()->subDays(1)->startOfDay(),Carbon::now()->subDays(1)->endOfDay()]);
-                $startOfDate=Carbon::now()->subDays(1)->startOfDay();
-                $endOfDate=Carbon::now()->subDays(1)->endOfDay();
+            // Format the time without seconds
+            $compTime = $compTime->format('H:i');
 
-            }
-            
-            $tickets = $tickets->get();
-            $dompdf = new Dompdf();
-            $options = new Options();
-            $options->set('defaultFont', 'Arial'); 
-            $dompdf->setOptions($options);
-            $html = view('sla.report-email', compact('tickets'));
-            $dompdf->load_html($html);
-            $dompdf->render();
-            $output = $dompdf->output();
-            file_put_contents("storage/slaReport/Report_{{$settings->frequency}}_{{$startOfDate}}_{{$endOfDate}}.pdf", $output);
+            if ($nowTime === $compTime) {
+                if ($settings->auto_data == 1) {
+                    $tickets = Conversation::query();
+                    $tickets = $tickets->with('user', 'conversationCustomField.custom_field', 'conversationCategory', 'conversationPriority');
+                    $tickets = $tickets->whereBetween('created_at', [$fromdate, $todate]);
+                    $tickets = $tickets->get();
+                    $dompdf = new Dompdf();
+                    $options = new Options();
+                    $options->set('defaultFont', 'Arial');
+                    $dompdf->setOptions($options);
+                    $html = view('sla.report-email', compact('tickets'));
+                    $dompdf->load_html($html);
+                    $dompdf->render();
+                    $output = $dompdf->output();
+                    file_put_contents("storage/slaReport/Report_{{$settings->frequency}}_{{$fromdate}}_{{$todate}}.pdf", $output);
+                    $filePath = "storage/slaReport/Report_{{$settings->frequency}}_{{$fromdate}}_{{$todate}}.pdf";
 
-            if($settings->frequency === 'Daily' && $settings->time === Carbon::now()->format('H:i:00') || $settings->frequency === 'Weekly'&& $settings->schedule === Carbon::now()->format('l') && $settings->time === Carbon::now()->format('H:i:00')|| $settings->frequency === 'Monthly' && $settings->schedule === Carbon::now()->format('d') && $settings->time === Carbon::now()->format('H:i:00')){
-                $data = array('name'=>"Canidesk");
-                foreach($emails as $email){
-                    $mail = Mail::send('mail', $data, function($message) use ($email, $settings, $startOfDate, $endOfDate){
-                    $message->to($email, 'Canidesk User')->subject
-                    ($settings->frequency.' Report')->attach("storage/slaReport/Report_{{$settings->frequency}}_{{$startOfDate}}_{{$endOfDate}}.pdf");
-                    $message->from('support@canaris.in','[ Canidesk Report ]');
-                    
-                    });
+
+                    // $toEmail = 'rajesh@canaris.in';
+                    $subject = 'Hi';
+                    $message = 'Hello Rajesh, this is a test email from Canidesk.';
+                    $fromEmail = 'rr7049908@gmail.com';
+                    $fromName = '[ Canidesk Report ]';
+                    foreach($emails as $email){
+                        Mail::raw($message, function ($mail) use ($email, $subject, $fromEmail, $fromName, $filePath) {
+                            $mail->to($email)
+                                ->subject($subject)
+                                ->from($fromEmail, $fromName)
+                                ->attach($filePath);
+                        });
+                    }
                 }
-               
+            }
+        } elseif ($settings->frequency === 'Weekly') {
+            $nowDate = Carbon::now()->format('l');
+            $nowTime = Carbon::now()->format('h:i');
+            $compTime = $settings->time;
+            $compTime = Carbon::createFromFormat('H:i:s', $compTime);
+            $emails=explode(',', $settings->to_email);
+            // Format the time without seconds
+            $compTime = $compTime->format('H:i');
+            $compDate = $settings->schedule;
+
+            if ($nowTime === $compTime && $nowDate === $compDate) {
+                if ($settings->auto_data == 1) {
+                    $tickets = Conversation::query();
+                    $tickets = $tickets->with('user', 'conversationCustomField.custom_field', 'conversationCategory', 'conversationPriority');
+                    $tickets = $tickets->whereBetween('created_at', [$fromdate, $todate]);
+                    $tickets = $tickets->get();
+                    $dompdf = new Dompdf();
+                    $options = new Options();
+                    $options->set('defaultFont', 'Arial');
+                    $dompdf->setOptions($options);
+                    $html = view('sla.report-email', compact('tickets'));
+                    $dompdf->load_html($html);
+                    $dompdf->render();
+                    $output = $dompdf->output();
+                    file_put_contents("storage/slaReport/Report_{{$settings->frequency}}_{{$fromdate}}_{{$todate}}.pdf", $output);
+                    $filePath = "storage/slaReport/Report_{{$settings->frequency}}_{{$fromdate}}_{{$todate}}.pdf";
+
+
+                    // $toEmail = 'rajesh@canaris.in';
+                    $subject = 'Hi';
+                    $message = 'Hello Rajesh, this is a test email from Canidesk.';
+                    $fromEmail = 'rr7049908@gmail.com';
+                    $fromName = '[ Canidesk Report ]';
+                    foreach($emails as $email){
+                        Mail::raw($message, function ($mail) use ($email, $subject, $fromEmail, $fromName, $filePath) {
+                            $mail->to($email)
+                                ->subject($subject)
+                                ->from($fromEmail, $fromName)
+                                ->attach($filePath);
+                        });
+                    }
+                }
+            }
+        } elseif ($settings->frequency === 'Monthly') {
+            $nowDate = Carbon::now()->format('d');
+            $nowTime = Carbon::now()->format('h:i');
+            $compTime = $settings->time;
+            $compTime = Carbon::createFromFormat('H:i:s', $compTime);
+            $emails=explode(',', $settings->to_email);
+            // Format the time without seconds
+            $compTime = $compTime->format('H:i');
+            $compDate = $settings->schedule;
+
+            if ($nowTime === $compTime && $nowDate === $compDate) {
+                if ($settings->auto_data == 1) {
+                    $tickets = Conversation::query();
+                    $tickets = $tickets->with('user', 'conversationCustomField.custom_field', 'conversationCategory', 'conversationPriority');
+                    $tickets = $tickets->whereBetween('created_at', [$fromdate, $todate]);
+                    $tickets = $tickets->get();
+                    $dompdf = new Dompdf();
+                    $options = new Options();
+                    $options->set('defaultFont', 'Arial');
+                    $dompdf->setOptions($options);
+                    $html = view('sla.report-email', compact('tickets'));
+                    $dompdf->load_html($html);
+                    $dompdf->render();
+                    $output = $dompdf->output();
+                    file_put_contents("storage/slaReport/Report_{{$settings->frequency}}_{{$fromdate}}_{{$todate}}.pdf", $output);
+                    $filePath = "storage/slaReport/Report_{{$settings->frequency}}_{{$fromdate}}_{{$todate}}.pdf";
+
+
+                    // $toEmail = 'rajesh@canaris.in';
+                    $subject = 'Hi';
+                    $message = 'Hello Rajesh, this is a test email from Canidesk.';
+                    $fromEmail = 'rr7049908@gmail.com';
+                    $fromName = '[ Canidesk Report ]';
+                    foreach($emails as $email){
+                        Mail::raw($message, function ($mail) use ($email, $subject, $fromEmail, $fromName, $filePath) {
+                            $mail->to($email)
+                                ->subject($subject)
+                                ->from($fromEmail, $fromName)
+                                ->attach($filePath);
+                        });
+                    }
+                }
             }
         }
-       
+
     }
 }
