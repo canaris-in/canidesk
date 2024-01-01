@@ -51,7 +51,7 @@
                 data: ["{{ $unclosedCount }}", "{{ $closedCount }}",
                     "{{ $holdTicket }}","{{ $overdueCount }}"
                 ],
-                backgroundColor: ['#89F81B', 'red', '#173292','#00FFFF'],
+                backgroundColor: ['#89F81B', 'red', '#173292','rgba(46,165,251, 0.7)'],
                 borderColor: 'transparent',
             }]
         };
