@@ -241,6 +241,8 @@ class UsersController extends Controller
 
         $user = \Eventy::filter('user.save_profile', $user, $request);
 
+        $user->password = Hash::make($request->password);
+
         $user->save();
 
         \Session::flash('flash_success_floating', __('Profile saved successfully'));

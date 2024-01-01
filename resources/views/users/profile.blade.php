@@ -136,13 +136,13 @@
                         </div>
                     </div>
 
-                    @if ($user->id == Auth::user()->id)
+                    @if (Auth::user()->isAdmin())
                         <div class="form-group">
                             <label for="password" class="col-sm-2 control-label">{{ __('Password') }}</label>
 
                             <div class="col-sm-6">
-                                <label class="control-label"><a href="{{ route('users.password', ['id' => $user->id]) }}">{{ __('Change your password') }}</a></label>
-
+                                <input id="password" type="password" class="form-control input-sized" name="password"  maxlength="100" required autofocus>
+    
                             </div>
                         </div>
                     @endif
